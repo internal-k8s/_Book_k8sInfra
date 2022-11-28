@@ -25,16 +25,16 @@ echo "alias ka='kubectl apply -f'" >> ~/.bashrc
 echo 'complete -F __start_kubectl k' >> ~/.bashrc
 
 # git clone book source 
-git clone https://github.com/internal-k8s/_Book_k8sInfra.git
-mv /home/vagrant/_Book_k8sInfra.kit $HOME
-find $HOME/_Book_k8sInfra.kit -regex ".*\.\(sh\)" -exec chmod 700 {} \;
+git clone https://github.com/internal-k8s/_Book_k8sInfra.git 
+mv /home/vagrant/_Book_k8sInfra $HOME
+find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 
 # make rerepo-k8s-learning.kit and put permission
-cat <<EOF > /usr/local/bin/rerepo-k8sinfra.kit
+cat <<EOF > /usr/local/bin/rerepo-book-k8sinfra
 #!/usr/bin/env bash
-rm -rf $HOME/_Book_k8sInfra.kit 
-git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra.kit 
+rm -rf $HOME/_Book_k8sInfra
+git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 EOF
-chmod 700 /usr/local/bin/rerepo-k8sinfra.kit 
+chmod 700 /usr/local/bin/rerepo-book-k8sinfra
 

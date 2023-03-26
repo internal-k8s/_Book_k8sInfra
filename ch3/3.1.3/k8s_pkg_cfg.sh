@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Avoid 'dpkg-reconfigure: unable to re-open stdin: No file or directory'
+export DEBIAN_FRONTEND=noninteractive
 
 # update package list 
 apt-get update 

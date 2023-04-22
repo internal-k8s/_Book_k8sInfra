@@ -1,51 +1,51 @@
  vagrant provision
-==> c-k8s: Running provisioner: shell...
-    c-k8s: Running: C:/Users/Hoon/AppData/Local/Temp/vagrant-shell20230422-5408-7bn6wk.sh
-    c-k8s: Hit:1 http://kr.archive.ubuntu.com/ubuntu jammy InRelease
-    c-k8s: Get:2 http://kr.archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
-    c-k8s: Get:3 http://kr.archive.ubuntu.com/ubuntu jammy-backports InRelease [108 kB]
-    c-k8s: Get:4 http://kr.archive.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
-    c-k8s: Get:5 http://kr.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1,031 kB]
-    c-k8s: Get:6 http://kr.archive.ubuntu.com/ubuntu jammy-updates/main Translation-en [216 kB]
-    c-k8s: Get:7 http://kr.archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [816 kB]
-    c-k8s: Get:8 http://kr.archive.ubuntu.com/ubuntu jammy-updates/restricted Translation-en [128 kB]
-    c-k8s: Get:9 http://kr.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [902 kB]
-    c-k8s: Get:10 http://kr.archive.ubuntu.com/ubuntu jammy-updates/universe Translation-en [181 kB]
-    c-k8s: Get:11 http://kr.archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [24.1 kB]
-    c-k8s: Get:12 http://kr.archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [40.9 kB]
-    c-k8s: Get:13 http://kr.archive.ubuntu.com/ubuntu jammy-backports/main Translation-en [10.2 kB]
-    c-k8s: Get:14 http://kr.archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [22.2 kB]
-    c-k8s: Get:15 http://kr.archive.ubuntu.com/ubuntu jammy-backports/universe Translation-en [15.0 kB]
-    c-k8s: Get:16 http://kr.archive.ubuntu.com/ubuntu jammy-security/main amd64 Packages [764 kB]
-    c-k8s: Get:17 http://kr.archive.ubuntu.com/ubuntu jammy-security/main Translation-en [151 kB]
-    c-k8s: Get:18 http://kr.archive.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [773 kB]
-    c-k8s: Get:19 http://kr.archive.ubuntu.com/ubuntu jammy-security/restricted Translation-en [121 kB]
-    c-k8s: Get:20 http://kr.archive.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [718 kB]
-    c-k8s: Get:21 http://kr.archive.ubuntu.com/ubuntu jammy-security/universe Translation-en [119 kB]
-    c-k8s: Get:22 http://kr.archive.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [19.4 kB]
-    c-k8s: Fetched 6,387 kB in 10s (649 kB/s)
-    c-k8s: Reading package lists...
-    c-k8s: Reading package lists...
-    c-k8s: Building dependency tree...
-    c-k8s: Reading state information...
-    c-k8s: The following additional packages will be installed:
-    c-k8s:   distro-info-data
-    c-k8s: The following NEW packages will be installed:
-    c-k8s:   distro-info-data lsb-release
-    c-k8s: 0 upgraded, 2 newly installed, 0 to remove and 27 not upgraded.
-    c-k8s: Need to get 16.0 kB of archives.
-    c-k8s: After this operation, 87.0 kB of additional disk space will be used.
-    c-k8s: Get:1 http://kr.archive.ubuntu.com/ubuntu jammy-updates/main amd64 distro-info-data all 0.52ubuntu0.3 [5,258 B]
-    c-k8s: Get:2 http://kr.archive.ubuntu.com/ubuntu jammy/main amd64 lsb-release all 11.1.0ubuntu4 [10.8 kB]
-    c-k8s: dpkg-preconfigure: unable to re-open stdin: No such file or directory
-    c-k8s: Fetched 16.0 kB in 1s (15.3 kB/s)
-    c-k8s: Selecting previously unselected package distro-info-data.
+==> cp-k8s: Running provisioner: shell...
+    cp-k8s: Running: C:/Users/Hoon/AppData/Local/Temp/vagrant-shell20230422-5408-7bn6wk.sh
+    cp-k8s: Hit:1 http://kr.archive.ubuntu.com/ubuntu jammy InRelease
+    cp-k8s: Get:2 http://kr.archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+    cp-k8s: Get:3 http://kr.archive.ubuntu.com/ubuntu jammy-backports InRelease [108 kB]
+    cp-k8s: Get:4 http://kr.archive.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+    cp-k8s: Get:5 http://kr.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1,031 kB]
+    cp-k8s: Get:6 http://kr.archive.ubuntu.com/ubuntu jammy-updates/main Translation-en [216 kB]
+    cp-k8s: Get:7 http://kr.archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [816 kB]
+    cp-k8s: Get:8 http://kr.archive.ubuntu.com/ubuntu jammy-updates/restricted Translation-en [128 kB]
+    cp-k8s: Get:9 http://kr.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [902 kB]
+    cp-k8s: Get:10 http://kr.archive.ubuntu.com/ubuntu jammy-updates/universe Translation-en [181 kB]
+    cp-k8s: Get:11 http://kr.archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [24.1 kB]
+    cp-k8s: Get:12 http://kr.archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [40.9 kB]
+    cp-k8s: Get:13 http://kr.archive.ubuntu.com/ubuntu jammy-backports/main Translation-en [10.2 kB]
+    cp-k8s: Get:14 http://kr.archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [22.2 kB]
+    cp-k8s: Get:15 http://kr.archive.ubuntu.com/ubuntu jammy-backports/universe Translation-en [15.0 kB]
+    cp-k8s: Get:16 http://kr.archive.ubuntu.com/ubuntu jammy-security/main amd64 Packages [764 kB]
+    cp-k8s: Get:17 http://kr.archive.ubuntu.com/ubuntu jammy-security/main Translation-en [151 kB]
+    cp-k8s: Get:18 http://kr.archive.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [773 kB]
+    cp-k8s: Get:19 http://kr.archive.ubuntu.com/ubuntu jammy-security/restricted Translation-en [121 kB]
+    cp-k8s: Get:20 http://kr.archive.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [718 kB]
+    cp-k8s: Get:21 http://kr.archive.ubuntu.com/ubuntu jammy-security/universe Translation-en [119 kB]
+    cp-k8s: Get:22 http://kr.archive.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [19.4 kB]
+    cp-k8s: Fetched 6,387 kB in 10s (649 kB/s)
+    cp-k8s: Reading package lists...
+    cp-k8s: Reading package lists...
+    cp-k8s: Building dependency tree...
+    cp-k8s: Reading state information...
+    cp-k8s: The following additional packages will be installed:
+    cp-k8s:   distro-info-data
+    cp-k8s: The following NEW packages will be installed:
+    cp-k8s:   distro-info-data lsb-release
+    cp-k8s: 0 upgraded, 2 newly installed, 0 to remove and 27 not upgraded.
+    cp-k8s: Need to get 16.0 kB of archives.
+    cp-k8s: After this operation, 87.0 kB of additional disk space will be used.
+    cp-k8s: Get:1 http://kr.archive.ubuntu.com/ubuntu jammy-updates/main amd64 distro-info-data all 0.52ubuntu0.3 [5,258 B]
+    cp-k8s: Get:2 http://kr.archive.ubuntu.com/ubuntu jammy/main amd64 lsb-release all 11.1.0ubuntu4 [10.8 kB]
+    cp-k8s: dpkg-preconfigure: unable to re-open stdin: No such file or directory
+    cp-k8s: Fetched 16.0 kB in 1s (15.3 kB/s)
+    cp-k8s: Selecting previously unselected package distro-info-data.
 (Reading database ... 64840 files and directories currently installed.)
-    c-k8s: Preparing to unpack .../distro-info-data_0.52ubuntu0.3_all.deb ...
-    c-k8s: Unpacking distro-info-data (0.52ubuntu0.3) ...
-    c-k8s: Selecting previously unselected package lsb-release.
-    c-k8s: Preparing to unpack .../lsb-release_11.1.0ubuntu4_all.deb ...
-    c-k8s: Unpacking lsb-release (11.1.0ubuntu4) ...
-    c-k8s: Setting up distro-info-data (0.52ubuntu0.3) ...
-    c-k8s: Setting up lsb-release (11.1.0ubuntu4) ...
-    c-k8s: Processing triggers for man-db (2.10.2-1) ...
+    cp-k8s: Preparing to unpack .../distro-info-data_0.52ubuntu0.3_all.deb ...
+    cp-k8s: Unpacking distro-info-data (0.52ubuntu0.3) ...
+    cp-k8s: Selecting previously unselected package lsb-release.
+    cp-k8s: Preparing to unpack .../lsb-release_11.1.0ubuntu4_all.deb ...
+    cp-k8s: Unpacking lsb-release (11.1.0ubuntu4) ...
+    cp-k8s: Setting up distro-info-data (0.52ubuntu0.3) ...
+    cp-k8s: Setting up lsb-release (11.1.0ubuntu4) ...
+    cp-k8s: Processing triggers for man-db (2.10.2-1) ...

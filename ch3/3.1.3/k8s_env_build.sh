@@ -8,13 +8,15 @@ swapoff -a
 # sed to comment the swap partition in /etc/fstab (Rmv blank)
 sed -i.bak -r 's/(.+swap.+)/#\1/' /etc/fstab
 
+# ignored gpg key due to compatibility
+# echo 'APT::Get::AllowUnauthenticated “true”;' > /etc/apt/apt.conf.d/99ignoredgpg
+
 # add kubernetes repo
 apt-get update && apt-get install apt-transport-https ca-certificates curl
-curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg \
-            https://packages.cloud.google.com/apt/doc/apt-key.gpg
-echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] \
-      https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+echo \
+  "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] \
+  https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 # add docker-ce repo
 apt-get install -y \

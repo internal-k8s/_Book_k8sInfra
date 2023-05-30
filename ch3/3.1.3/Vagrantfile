@@ -16,20 +16,20 @@ Vagrant.configure("2") do |config|
   # Master Node #
   #=============#
 
-    config.vm.define "c-k8s-#{k8s_V[0..5]}" do |cfg|
+    config.vm.define "cp-k8s-#{k8s_V[0..5]}" do |cfg|
       cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
       cfg.vm.provider "virtualbox" do |vb|
-        vb.name = "c-k8s-#{k8s_V[0..5]}(github_SysNet4Admin)"
+        vb.name = "cp-k8s-#{k8s_V[0..5]}(github_SysNet4Admin)"
         vb.cpus = 2
         vb.memory = 2048
         vb.customize ["modifyvm", :id, "--groups", "/Book-k8s-U#{k8s_V[0..5]}-ctrd-#{ctrd_V[0..2]}(github_SysNet4Admin)"]
       end
-      cfg.vm.host_name = "c-k8s"
+      cfg.vm.host_name = "cp-k8s"
       cfg.vm.network "private_network", ip: "192.168.1.10"
       cfg.vm.network "forwarded_port", guest: 22, host: 60010, auto_correct: true, id: "ssh"
       cfg.vm.synced_folder "../data", "/vagrant", disabled: true
       cfg.vm.provision "shell", path: "k8s_env_build.sh", args: N
-      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, docker_V, ctrd_V, "C"]
+      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, docker_V, ctrd_V, "CP"]
       cfg.vm.provision "shell", path: "controlplane_node.sh"
     end
 

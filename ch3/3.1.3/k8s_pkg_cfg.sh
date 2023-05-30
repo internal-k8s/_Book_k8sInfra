@@ -7,7 +7,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update 
 
 # install NFS 
-if [ $4 = 'C' ]; then
+if [ $4 = 'CP' ]; then
   apt-get install nfs-server nfs-common -y 
 elif [ $4 = 'W' ]; then
   apt-get install nfs-common -y 

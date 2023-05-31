@@ -1,0 +1,7 @@
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.0 = c-k8s
+IP.0 = 192.168.1.10

@@ -6,7 +6,7 @@ ca_store=/usr/local/share/ca-certificates/
 mkdir -p /harbor-data
 mkdir -p $certs
 
-apt install sshpass -y
+apt-get install sshpass -y
 for i in {1..3}
   do
     sshpass -p vagrant scp -o StrictHostKeyChecking=no ca.crt 192.168.1.10$i:$ca_store

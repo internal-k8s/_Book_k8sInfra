@@ -14,6 +14,6 @@ for i in {1..3}
     sshpass -p vagrant ssh root@192.168.1.10$i update-ca-certificates && systemctl restart containerd
   done
 
-apt remove sshpass -y
+apt-get remove sshpass -y
 update-ca-certificates
 systemctl restart containerd

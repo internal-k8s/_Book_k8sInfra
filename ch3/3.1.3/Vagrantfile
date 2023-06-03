@@ -5,7 +5,7 @@
 # max number of worker nodes
 N = 3
 # each of components to install
-k8s_V    = '1.25.4-00'                   # Kubernetes
+k8s_V    = '1.25.10-00'                   # Kubernetes
 ctrd_V   = '1.6.10-1'                    # Containerd
 docker_V = '5:20.10.21~3-0~ubuntu-jammy' # Docker
 ## /configuration variables ##

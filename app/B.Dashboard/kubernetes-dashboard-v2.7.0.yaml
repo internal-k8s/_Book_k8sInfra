@@ -33,6 +33,7 @@ metadata:
 
 ---
 # change port from 443 to 80 
+# change targetPort from 8443 to 8080
 # change type from none to LoadBalancer
 #
 kind: Service
@@ -45,7 +46,7 @@ metadata:
 spec:
   ports:
     - port: 80
-      targetPort: 8443
+      targetPort: 8080
   selector:
     k8s-app: kubernetes-dashboard
   type: LoadBalancer

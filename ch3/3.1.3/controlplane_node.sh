@@ -15,11 +15,15 @@ mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
-# raw_address for gitcontent
-raw_git="raw.githubusercontent.com/sysnet4admin/IaC/master/manifests" 
-
-# config for kubernetes's network 
-kubectl apply -f https://$raw_git/172.16_eht1_net_calico_v3.25.0.yaml
+# install cilium-cli and add permisssion to execute 
+curl -L https://github.com/sysnet4admin/BB/raw/main/cilium-cli/v0.14.6/cilium \
+     -o /usr/local/bin/cilium
+chmod 744 /usr/local/bin/cilium 
+# config for kubernetes's network by cilium 
+cilium install \
+  --version=v1.13.3 \
+    --helm-set ipam.mode=kubernetes \
+    --helm-set ipv4NativeRoutingCIDR="172.16.0.0/16"
 
 # kubectl completion on bash-completion dir
 kubectl completion bash >/etc/bash_completion.d/kubectl

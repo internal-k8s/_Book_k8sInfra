@@ -33,7 +33,7 @@ metadata:
 
 ---
 # change port from 443 to 80 
-# change targetPort from 8443 to 8080
+# change targetPort from 8443 to 9090
 # change type from none to LoadBalancer
 #
 kind: Service
@@ -46,7 +46,7 @@ metadata:
 spec:
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 9090
   selector:
     k8s-app: kubernetes-dashboard
   type: LoadBalancer
@@ -174,7 +174,10 @@ subjects:
     namespace: kubernetes-dashboard
 
 ---
-
+# change port type from HTTPS to HTTP
+# change ports from 8443 to 9090
+# add args 
+#
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -201,7 +204,7 @@ spec:
           image: kubernetesui/dashboard:v2.7.0
           imagePullPolicy: Always
           ports:
-            - containerPort: 8443
+            - containerPort: 9090
               protocol: TCP
           args:
             - --enable-skip-login
@@ -221,9 +224,9 @@ spec:
               name: tmp-volume
           livenessProbe:
             httpGet:
-              scheme: HTTPS
+              scheme: HTTP
               path: /
-              port: 8443
+              port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30
           securityContext:

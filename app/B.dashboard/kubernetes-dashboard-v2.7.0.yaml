@@ -13,8 +13,9 @@
 # limitations under the License.
 #
 ###
-# Source From https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
-
+# Not Source from https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+# Source from https://raw.githubusercontent.com/kubernetes/dashboard/master/charts/recommended.yaml
+#
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -232,9 +233,9 @@ spec:
       serviceAccountName: kubernetes-dashboard
       nodeSelector:
         "kubernetes.io/os": linux
-      # Comment the following tolerations if Dashboard must not be deployed on master
+      # Comment the following tolerations if Dashboard must not be deployed on control plane nodes
       tolerations:
-        - key: node-role.kubernetes.io/master
+        - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
 
 ---
@@ -278,7 +279,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: dashboard-metrics-scraper
-          image: kubernetesui/metrics-scraper:v1.0.8
+          image: kubernetesui/metrics-scraper:v1.0.9
           ports:
             - containerPort: 8000
               protocol: TCP
@@ -300,9 +301,9 @@ spec:
       serviceAccountName: kubernetes-dashboard
       nodeSelector:
         "kubernetes.io/os": linux
-      # Comment the following tolerations if Dashboard must not be deployed on master
+      # Comment the following tolerations if Dashboard must not be deployed on control plane nodes
       tolerations:
-        - key: node-role.kubernetes.io/master
+        - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
       volumes:
         - name: tmp-volume

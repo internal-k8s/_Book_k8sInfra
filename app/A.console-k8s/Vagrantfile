@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# each of components to install 
+k8s_V    = '1.25.9-00'                   # Kubernetes
+ctrd_V   = '1.6.10-1'                    # Containerd
+docker_V = '5:20.10.21~3-0~ubuntu-jammy' # Docker
+## /configuration variables ###
+
+Vagrant.configure("2") do |config|
+
+  #==============#
+  # console Node #
+  #==============#
+
+  config.vm.define "console-k8s" do |cfg|
+    cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
+    cfg.vm.provider "virtualbox" do |vb|
+      vb.name = "console-k8s(github_SysNet4Admin)"
+      vb.cpus = 1
+      vb.memory = 1024
+      vb.customize ["modifyvm", :id, "--groups", "/Book-k8s-U#{k8s_V[0..5]}-ctrd-#{ctrd_V[0..2]}(github_SysNet4Admin)"]
+    end
+    cfg.vm.host_name = "console-k8s"
+    cfg.vm.network "private_network", ip: "192.168.1.241"
+    cfg.vm.network "forwarded_port", guest: 22, host: 60241, auto_correct: true, id: "ssh"
+    cfg.vm.synced_folder "../data", "/vagrant", disabled: true
+    cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, docker_V, ctrd_V ]
+    cfg.vm.provision "file", source: "grap_kubeconfig.sh", destination: "/tmp/grap_kubeconfig.sh"
+    cfg.vm.provision "shell", inline: "chmod 744 /tmp/grap_kubeconfig.sh ; mv /tmp/grap_kubeconfig.sh /root/grap_kubeconfig.sh" 
+  end
+
+end

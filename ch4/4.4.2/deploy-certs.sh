@@ -9,8 +9,9 @@ mkdir -p $certs
 apt-get install sshpass -y
 for i in {1..3}
   do
-    sshpass -p vagrant scp -o StrictHostKeyChecking=no ca.crt 192.168.1.10$i:$ca_store
-    sshpass -p vagrant ssh root@192.168.1.10$i update-ca-certificates && systemctl restart containerd
+    sshpass -p vagrant scp -o StrictHostKeyChecking=no ~/ca.crt 192.168.1.10$i:$ca_store
+    sshpass -p vagrant ssh root@192.168.1.10$i update-ca-certificates
+    sshpass -p vagrant ssh root@192.168.1.10$i systemctl restart containerd
   done
 
 cp ca.crt $certs

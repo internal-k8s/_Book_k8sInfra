@@ -12,9 +12,9 @@ docker_V = '5:20.10.21~3-0~ubuntu-jammy' # Docker
 
 Vagrant.configure("2") do |config|
 
-  #====================#
-  # Contorl-Plane Node #
-  #====================#
+  #=============#
+  # Master Node #
+  #=============#
 
     config.vm.define "cp-k8s-#{k8s_V[0..5]}" do |cfg|
       cfg.vm.box = "sysnet4admin/Ubuntu-k8s"

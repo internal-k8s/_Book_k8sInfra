@@ -2,6 +2,6 @@
 
 이름            | 버전     | 빈칸
 ----            | ----     | ----
-kubernetes      | v1.25.9  |
+kubernetes      | v1.25.9 |
 ContainerD      | 1.6.10   |
 Docker          | 20.10.21 | 

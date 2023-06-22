@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpy-ip
+  labels:
+    app: dpy-ip
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dpy-ip
+  template:
+    metadata:
+      labels:
+        app: dpy-ip
+    spec:
+      containers:
+      - name: echo-ip
+        image: sysnet4admin/echo-ip
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ing-ip 
+spec:
+  selector:
+    app: dpy-ip  
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP

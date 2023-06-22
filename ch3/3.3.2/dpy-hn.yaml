@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpy-hn
+  labels:
+    app: dpy-hn
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dpy-hn
+  template:
+    metadata:
+      labels:
+        app: dpy-hn
+    spec:
+      containers:
+      - name: echo-hname
+        image: sysnet4admin/echo-hname 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ing-hn 
+spec:
+  selector:
+    app: dpy-hn  
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP

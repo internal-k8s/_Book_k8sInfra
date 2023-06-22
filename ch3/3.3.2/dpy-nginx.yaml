@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpy-nginx
+  labels:
+    app: dpy-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dpy-nginx
+  template:
+    metadata:
+      labels:
+        app: dpy-nginx 
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ing-default 
+spec:
+  selector:
+    app: dpy-nginx  
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP

@@ -5,9 +5,9 @@
 # max number of worker nodes
 N = 3
 # each of components to install
-k8s_V    = '1.25.9-00'                   # Kubernetes
-ctrd_V   = '1.6.10-1'                    # Containerd
-docker_V = '5:20.10.21~3-0~ubuntu-jammy' # Docker
+k8s_V    = '1.27.4-00'                   # Kubernetes
+ctrd_V   = '1.6.21-1'                    # Containerd
+docker_V = '5:24.0.4-1~ubuntu.22.04~jammy' # Docker
 ## /configuration variables ##
 
 Vagrant.configure("2") do |config|
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 22, host: 60010, auto_correct: true, id: "ssh"
       cfg.vm.synced_folder "../data", "/vagrant", disabled: true
       cfg.vm.provision "shell", path: "k8s_env_build.sh", args: N
-      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, ctrd_V, "CP"]
+      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, docker_V, ctrd_V, "CP"]
       cfg.vm.provision "shell", path: "controlplane_node.sh"
     end
 
@@ -51,7 +51,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 22, host: "6010#{i}", auto_correct: true, id: "ssh"
       cfg.vm.synced_folder "../data", "/vagrant", disabled: true
       cfg.vm.provision "shell", path: "k8s_env_build.sh", args: N
-      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, ctrd_V, "W" ]
+      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, docker_V, ctrd_V, "W" ]
       cfg.vm.provision "shell", path: "worker_nodes.sh"
     end
   end

@@ -19,7 +19,7 @@ echo \
   "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] \
   https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-# add docker-ce repo with containerD 
+# add docker-ce repo
 apt-get install -y \
         gnupg \
         lsb-release
@@ -29,15 +29,12 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# packets traversing the bridge are processed by iptables for filtering
-echo 1 > /proc/sys/net/ipv4/ip_forward
 # enable br_filter for iptables 
 modprobe br_netfilter
 
-
 # local small dns & vagrant cannot parse and delivery shell code.
 echo "127.0.0.1 localhost" > /etc/hosts # localhost name will use by calico-node
-echo "192.168.1.10 cp-k8s" >> /etc/hosts
+echo "192.168.1.10 m-k8s" >> /etc/hosts
 for (( i=1; i<=$1; i++  )); do echo "192.168.1.10$i w$i-k8s" >> /etc/hosts; done
 
 # config DNS  

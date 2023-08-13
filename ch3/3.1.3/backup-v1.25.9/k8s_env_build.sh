@@ -11,33 +11,30 @@ sed -i.bak -r 's/(.+swap.+)/#\1/' /etc/fstab
 # ignored gpg key due to compatibility
 # echo 'APT::Get::AllowUnauthenticated “true”;' > /etc/apt/apt.conf.d/99ignoredgpg
 
+# add kubernetes repo
 apt-get update && apt-get install apt-transport-https ca-certificates curl
-# add kubernetes repo ONLY for 22.04
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
 echo \
-  "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] \
+  "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] \
   https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-# add docker-ce repo with containerD 
+# add docker-ce repo
 apt-get install -y \
+        ca-certificates \
         gnupg \
         lsb-release
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# packets traversing the bridge are processed by iptables for filtering
-echo 1 > /proc/sys/net/ipv4/ip_forward
 # enable br_filter for iptables 
 modprobe br_netfilter
 
-
 # local small dns & vagrant cannot parse and delivery shell code.
 echo "127.0.0.1 localhost" > /etc/hosts # localhost name will use by calico-node
-echo "192.168.1.10 cp-k8s" >> /etc/hosts
+echo "192.168.1.10 m-k8s" >> /etc/hosts
 for (( i=1; i<=$1; i++  )); do echo "192.168.1.10$i w$i-k8s" >> /etc/hosts; done
 
 # config DNS  

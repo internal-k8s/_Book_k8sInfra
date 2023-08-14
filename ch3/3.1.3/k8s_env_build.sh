@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Avoid 'dpkg-reconfigure: unable to re-open stdin: No file or directory'
+# avoid 'dpkg-reconfigure: unable to re-open stdin: No file or directory'
 export DEBIAN_FRONTEND=noninteractive
 
 # swapoff -a to disable swapping

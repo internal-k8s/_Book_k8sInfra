@@ -22,7 +22,23 @@ apt-get install -y kubelet=$1 kubectl=$1 kubeadm=$1 containerd.io=$2
 containerd config default > /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 
+# Fixed container runtime to containerd
+#cat <<EOF > /etc/default/kubelet
+#KUBELET_KUBEADM_ARGS=--container-runtime=remote \
+#                     --container-runtime-endpoint=/run/containerd/containerd.sock \
+#                     --cgroup-driver=systemd
+#EOF
+
+# Avoid WARN&ERRO(default endpoints) when crictl run  
+#cat <<EOF > /etc/crictl.yaml
+#runtime-endpoint: unix:///run/containerd/containerd.sock
+#image-endpoint: unix:///run/containerd/containerd.sock
+#EOF
+
 # Ready to install for k8s 
 systemctl restart containerd ; systemctl enable containerd
 systemctl enable --now kubelet
 
+# avoid kubelet.go:2424] "Error getting node" err="node \"cp-k8s\" not found"
+# https://admantium.medium.com/kubernetes-with-kubeadm-cluster-installation-from-scratch-810adc1b0a64
+apt-get install apparmor -y

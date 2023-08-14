@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
+# Fixed Internal-IP (temp) when eth1 could fix by autodetect calico 
+cat <<EOF > /etc/default/kubelet
+KUBELET_EXTRA_ARGS=--node-ip=192.168.1.10
+EOF
+
 # init kubernetes (w/ containerd)
 kubeadm init --token 123456.1234567890123456 --token-ttl 0 \
              --pod-network-cidr=172.16.0.0/16 \
              --apiserver-advertise-address=192.168.1.10 
+#             --apiserver-advertise-address=192.168.1.10 \
+#             --cri-socket=unix:///run/containerd/containerd.sock
 
 # config for control-plane node only 
 mkdir -p $HOME/.kube

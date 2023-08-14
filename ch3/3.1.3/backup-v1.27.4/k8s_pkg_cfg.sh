@@ -27,11 +27,11 @@ sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.t
 #rm /etc/containerd/config.toml ; systemctl restart containerd 
 
 # Fixed container runtime to containerd
-cat <<EOF > /etc/default/kubelet
-KUBELET_KUBEADM_ARGS=--container-runtime=remote \
-                     --container-runtime-endpoint=/run/containerd/containerd.sock \
-                     --cgroup-driver=systemd
-EOF
+#cat <<EOF > /etc/default/kubelet
+#KUBELET_KUBEADM_ARGS=--container-runtime=remote \
+#                     --container-runtime-endpoint=/run/containerd/containerd.sock \
+#                     --cgroup-driver=systemd
+#EOF
 
 # Fixed Internal-IP  
 #if   [ $4 = 'M' ]; then

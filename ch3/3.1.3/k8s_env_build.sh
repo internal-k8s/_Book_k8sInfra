@@ -34,7 +34,6 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 # enable br_filter for iptables 
 modprobe br_netfilter
 
-
 # local small dns & vagrant cannot parse and delivery shell code.
 echo "127.0.0.1 localhost" > /etc/hosts # localhost name will use by calico-node
 echo "192.168.1.10 cp-k8s" >> /etc/hosts

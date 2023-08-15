@@ -18,11 +18,10 @@ fi
 # but aim to latest version. so fixed version by manually
 apt-get install -y kubelet=$1 kubectl=$1 kubeadm=$1 containerd.io=$2
 
-# containerd configure to default and change cgroups to systemd 
+# containerd configure to default and cgroup managed by systemd 
 containerd config default > /etc/containerd/config.toml
 sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 
 # ready to install for k8s 
 systemctl restart containerd ; systemctl enable containerd
 systemctl enable --now kubelet
-

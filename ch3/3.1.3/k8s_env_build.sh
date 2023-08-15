@@ -8,8 +8,9 @@ swapoff -a
 # sed to comment the swap partition in /etc/fstab (Rmv blank)
 sed -i.bak -r 's/(.+swap.+)/#\1/' /etc/fstab
 
-apt-get update && apt-get install apt-transport-https ca-certificates curl
 # add kubernetes repo ONLY for 22.04
+apt-get update && apt-get install apt-transport-https ca-certificates curl
+
 mkdir -p /etc/apt/keyrings
 curl -fsSL \
   https://packages.cloud.google.com/apt/doc/apt-key.gpg \
@@ -19,7 +20,7 @@ echo \
   https://apt.kubernetes.io/ kubernetes-xenial main" \
   | tee /etc/apt/sources.list.d/kubernetes.list
 
-# add docker-ce repo with containerD
+# add docker-ce repo with containerd
 apt-get install gnupg lsb-release
 
 curl -fsSL \

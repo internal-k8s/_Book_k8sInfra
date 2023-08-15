@@ -28,7 +28,7 @@ git clone https://github.com/internal-k8s/_Book_k8sInfra.git
 mv /home/vagrant/_Book_k8sInfra $HOME
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 
-# make rerepo-k8s-learning.kit and put permission
+# make rerepo-book-k8sinfra and put permission
 cat <<EOF > /usr/local/bin/rerepo-book-k8sinfra
 #!/usr/bin/env bash
 rm -rf $HOME/_Book_k8sInfra

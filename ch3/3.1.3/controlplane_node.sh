@@ -10,9 +10,8 @@ mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
-# CNI raw address
+# CNI raw address & config for kubernetes's network 
 CNI_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/master/k8s/CNI"
-# config for kubernetes's network
 kubectl apply -f $CNI_ADDR/172.16_net_calico_v3.26.0.yaml
 
 # kubectl completion on bash-completion dir

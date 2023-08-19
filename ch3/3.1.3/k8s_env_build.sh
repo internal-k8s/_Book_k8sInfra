@@ -9,8 +9,6 @@ swapoff -a
 sed -i.bak -r 's/(.+swap.+)/#\1/' /etc/fstab
 
 # add kubernetes repo ONLY for 22.04
-apt-get update && apt-get install apt-transport-https ca-certificates curl
-
 mkdir -p /etc/apt/keyrings
 curl -fsSL \
   https://packages.cloud.google.com/apt/doc/apt-key.gpg \
@@ -21,8 +19,7 @@ echo \
   | tee /etc/apt/sources.list.d/kubernetes.list
 
 # add docker-ce repo with containerd
-apt-get install gnupg lsb-release
-
+apt-get update && apt-get install gnupg lsb-release
 curl -fsSL \
   https://download.docker.com/linux/ubuntu/gpg \
   | gpg --dearmor -o /etc/apt/keyrings/docker-archive-keyring.gpg

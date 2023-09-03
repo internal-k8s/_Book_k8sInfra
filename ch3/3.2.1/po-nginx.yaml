@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    run: nginx
+    run: po-nginx
   name: po-nginx
 spec:
   containers:

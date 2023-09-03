@@ -1,9 +1,9 @@
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
   labels:
-    app: rs-nginx
-  name: rs-nginx
+    app: deploy-nginx
+  name: deploy-nginx
 spec:
   replicas: 3
   selector:
@@ -15,5 +15,6 @@ spec:
         app: po-nginx
     spec:
       containers:
-      - image: nginx
-        name: nginx
+      - name: nginx
+        image: nginx
+        

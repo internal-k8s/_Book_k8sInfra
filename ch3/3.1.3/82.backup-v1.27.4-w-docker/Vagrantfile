@@ -13,7 +13,7 @@ docker_V = '5:24.0.4-1~ubuntu.22.04~jammy' # Docker
 Vagrant.configure("2") do |config|
 
   #====================#
-  # Contorl-Plane Node #
+  # Control-Plane Node #
   #====================#
 
     config.vm.define "cp-k8s-#{k8s_V[0..5]}" do |cfg|

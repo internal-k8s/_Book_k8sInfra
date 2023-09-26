@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-echo-hname
+  labels:
+    app: deploy-echo-hname
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: po-echo-hname
+  template:
+    metadata:
+      labels:
+        app: po-echo-hname 
+    spec:
+      containers:
+      - name: echo-hname
+        image: sysnet4admin/echo-hname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-echo-hname 
+spec:
+  selector:
+    app: deploy-echo-hname  
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80 
+  type: LoadBalancer
+

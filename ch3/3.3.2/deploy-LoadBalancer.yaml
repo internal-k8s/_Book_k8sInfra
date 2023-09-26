@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lb-pods
+  name: lb-hname
   labels:
-    app: lb-pods 
+    app: lb-hname
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: lb-pods
+      app: lb-hname
   template:
     metadata:
       labels:
-        app: lb-pods 
+        app: lb-hname
     spec:
       containers:
       - name: echo-hname
@@ -21,10 +21,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: lb-svc 
+  name: lb-hname-svc 
 spec:
   selector:
-    app: lb-pods   
+    app: lb-hname   
   ports:
     - name: http
       port: 80

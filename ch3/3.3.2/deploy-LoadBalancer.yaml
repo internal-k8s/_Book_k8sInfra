@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-echo-hname
+  name: lb-pods
   labels:
-    app: deploy-echo-hname
+    app: lb-pods 
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: po-echo-hname
+      app: lb-pods
   template:
     metadata:
       labels:
-        app: po-echo-hname 
+        app: lb-pods 
     spec:
       containers:
       - name: echo-hname
@@ -24,7 +24,7 @@ metadata:
   name: lb-svc 
 spec:
   selector:
-    app: deploy-echo-hname  
+    app: lb-pods   
   ports:
     - name: http
       port: 80

@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dpy-nginx
+  name: ing-cl-default
   labels:
-    app: dpy-nginx
+    app: ing-cl-default
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: dpy-nginx
+      app: ing-cl-default
   template:
     metadata:
       labels:
-        app: dpy-nginx 
+        app: ing-cl-default
     spec:
       containers:
       - name: nginx
@@ -21,12 +21,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ing-default 
+  name: ing-cl-default-svc 
 spec:
   selector:
-    app: dpy-nginx  
+    app: ing-cl-default   
   ports:
     - name: http
       port: 80
-      targetPort: 80
+      targetPort: 80 
   type: ClusterIP

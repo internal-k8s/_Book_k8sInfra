@@ -1,32 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dpy-ip
+  name: ing-cl-hname
   labels:
-    app: dpy-ip
+    app: ing-cl-hname
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: dpy-ip
+      app: ing-cl-hname
   template:
     metadata:
       labels:
-        app: dpy-ip
+        app: ing-cl-hname
     spec:
       containers:
-      - name: echo-ip
-        image: sysnet4admin/echo-ip
+      - name: echo-hname
+        image: sysnet4admin/echo-hname
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ing-ip 
+  name: ing-cl-hname-svc 
 spec:
   selector:
-    app: dpy-ip  
+    app: ing-cl-hname   
   ports:
     - name: http
       port: 80
-      targetPort: 80
-  type: ClusterIP
+      targetPort: 80 

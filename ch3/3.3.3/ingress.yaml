@@ -13,20 +13,20 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ing-default
+            name: ing-cl-default-svc
             port:
               number: 80
       - path: /hn
         pathType: Prefix
         backend:
           service:
-            name: ing-hn
+            name: ing-cl-hname-svc
             port:
               number: 80
       - path: /ip 
         pathType: Prefix
         backend:
           service:
-            name: ing-ip
+            name: ing-cl-ip-svc
             port:
               number: 80

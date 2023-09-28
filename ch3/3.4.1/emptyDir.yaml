@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: emptyDir 
+  name: emptydir 
   labels:
-    app: emptyDir  
+    app: emptydir  
 spec:
   containers:
   - name: web-page

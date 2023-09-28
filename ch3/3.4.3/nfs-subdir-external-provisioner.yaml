@@ -3,16 +3,10 @@
 # default storageClass.name is nfs-client 
 # apply new namespace 
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: nfs-provisioner
----
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: nfs-client-provisioner
-  namespace: nfs-provisioner 
 spec:
   replicas: 1
   selector:
@@ -50,7 +44,7 @@ kind: ServiceAccount
 metadata:
   name: nfs-client-provisioner
   # replace with namespace where provisioner is deployed
-  namespace: nfs-provisioner 
+  namespace: default
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -81,7 +75,7 @@ subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
     # replace with namespace where provisioner is deployed
-  namespace: nfs-provisioner 
+    namespace: default
 roleRef:
   kind: ClusterRole
   name: nfs-client-provisioner-runner
@@ -92,7 +86,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-nfs-client-provisioner
   # replace with namespace where provisioner is deployed
-  namespace: nfs-provisioner 
+  namespace: default
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]
@@ -103,12 +97,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-nfs-client-provisioner
   # replace with namespace where provisioner is deployed
-  namespace: nfs-provisioner 
+  namespace: default
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
     # replace with namespace where provisioner is deployed
-  namespace: nfs-provisioner 
+    namespace: default
 roleRef:
   kind: Role
   name: leader-locking-nfs-client-provisioner

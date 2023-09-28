@@ -8,8 +8,8 @@ kind: Namespace
 metadata:
   name: nfs-provisioner 
 ---
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: nfs-client-provisioner
   namespace: nfs-provisioner 

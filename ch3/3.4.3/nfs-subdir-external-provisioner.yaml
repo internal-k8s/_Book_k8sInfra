@@ -106,4 +106,3 @@ roleRef:
   kind: Role
   name: leader-locking-nfs-client-provisioner
   apiGroup: rbac.authorization.k8s.io
-

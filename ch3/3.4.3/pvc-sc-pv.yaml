@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pvc-sts-pv 
+  name: pvc-sc-pv 
   labels:
-    app: pvc-sts-pv 
+    app: pvc-sc-pv 
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: pvc-sts-pv
+      app: pvc-sc-pv
   template:
     metadata:
       labels:
-        app: pvc-sts-pv
+        app: pvc-sc-pv
     spec:
       containers:
       - name: audit-trail 

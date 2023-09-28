@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: nfs-provisioner 
+  name: nfs-provisioner
 ---
 apiVersion: apps/v1
 kind: Deployment

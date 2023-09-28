@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-pvc 
+  name: pvc-sts-pv 
   labels:
-    app: deploy-pvc 
+    app: pvc-sts-pv 
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: deploy-pvc
+      app: pvc-sts-pv
   template:
     metadata:
       labels:
-        app: deploy-pvc
+        app: pvc-sts-pv
     spec:
       containers:
-      - name: chk-log 
+      - name: audit-trail 
         image: sysnet4admin/audit-trail 
         volumeMounts:
         - name: pvc-vol

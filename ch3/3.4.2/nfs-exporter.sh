@@ -31,8 +31,8 @@ fi
 # check purpose
 echo -e "Check created configurations"
 echo -e "==="
-echo -e "/etc/exports:"
+echo -e "cat /etc/exports:"
 echo -e "$(cat /etc/exports)" | ( DASH=$'  - ' ; sed "s/^/$DASH/" )
 echo -e "---"
-echo -e "ls nfs/shared:"
+echo -e "ls /nfs_shared:"
 echo -e "$(ls /nfs_shared/)" | ( DASH=$'  - ' ; sed "s/^/$DASH/" )

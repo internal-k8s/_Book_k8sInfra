@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-4-hpa
+  labels:
+    app: deploy-4-hpa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-4-hpa
+  template:
+    metadata:
+      labels:
+        app: deploy-4-hpa
+    spec:
+      containers:
+      - name: chk-hn
+        image: sysnet4admin/chk-hn
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "20m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-deploy-4-hpa 
+spec:
+  selector:
+    app: deploy-4-hpa
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80 
+  type: LoadBalancer

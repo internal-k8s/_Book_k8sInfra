@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-4-hpa
+  name: hpa
   labels:
-    app: deploy-4-hpa
+    app: hpa
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: deploy-4-hpa
+      app: hpa
   template:
     metadata:
       labels:
-        app: deploy-4-hpa
+        app: hpa
     spec:
       containers:
-      - name: chk-hn
-        image: sysnet4admin/chk-hn
+      - name: echo-hname
+        image: sysnet4admin/echo-hname 
         resources:
           requests:
             cpu: "10m"
@@ -26,10 +26,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: lb-deploy-4-hpa 
+  name: lb-hpa 
 spec:
   selector:
-    app: deploy-4-hpa
+    app: hpa
   ports:
     - name: http
       port: 80

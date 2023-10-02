@@ -136,6 +136,9 @@ spec:
     spec:
       containers:
       - args:
+        # Manually Add for lab env(SysNet4Admin/k8s)
+        # skip tls internal usage purpose
+        - --kubelet-insecure-tls
         - --cert-dir=/tmp
         - --secure-port=4443
         - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname

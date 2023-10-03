@@ -38,4 +38,3 @@ git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfr
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 EOF
 chmod 700 /usr/local/bin/rerepo-Book_k8sInfra
-

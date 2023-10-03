@@ -15,15 +15,15 @@ spec:
         app: hpa
     spec:
       containers:
-      - name: echo-hname
-        image: sysnet4admin/echo-hname 
+      - name: hpa-cpu-memory 
+        image: sysnet4admin/hpa-cpu-memory  
         resources:
           requests:
             cpu: "10m"
-            memory: "5Mi"
+            memory: "10Mi"
           limits:
             cpu: "20m"
-            memory: "10Mi"
+            memory: "20Mi"
 ---
 apiVersion: v1
 kind: Service

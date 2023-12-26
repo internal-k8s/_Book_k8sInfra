@@ -9,7 +9,6 @@ SCRIPTSDIR=$HOME/_Book_k8sInfra/app/D.operator/0.vagrant/extra-k8s-pkg
 # helm 3.9.1 installer
 sh $SCRIPTSDIR/get-helm-3.9.1.sh
 # repo edu add 
-sh $SCRIPTSDIR/helm-repo-add.sh 
 # helm completion on bash-completion dir & alias+ 
 helm completion bash > /etc/bash_completion.d/helm
 echo 'alias h=helm' >> ~/.bashrc

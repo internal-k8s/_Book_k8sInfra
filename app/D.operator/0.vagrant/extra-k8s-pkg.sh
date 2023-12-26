@@ -4,7 +4,7 @@
 # PATH=$PATH:/usr/local/bin
 
 # main scripfiles dir 
-SCRIPTSDIR=$HOME/_Book_k8sInfra/app/D.operator/0.vagrant/extra-k8s-pkg
+SCRIPTSDIR=$HOME/_Book_k8sInfra/app/D.operator/0.vagrant/extra-k8s-pkgs
 
 # helm 3.9.1 installer
 sh $SCRIPTSDIR/get-helm-3.9.1.sh

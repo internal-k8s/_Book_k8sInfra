@@ -5,7 +5,7 @@
 # max number of worker nodes
 N = 3
 # each of components to install
-k8s_V    = '1.27.4-00'                   # Kubernetes
+k8s_V    = '1.25.9-00'                   # Kubernetes
 ctrd_V   = '1.6.21-1'                    # Containerd
 docker_V = '5:20.10.21~3-0~ubuntu-jammy' # Docker
 ## /configuration variables ##
@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.provision "shell", path: "k8s_env_build.sh", args: N
       cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, docker_V, ctrd_V, "CP"]
       cfg.vm.provision "shell", path: "controlplane_node.sh"
-      cfg.vm.provision "shell", path: "extra-k8s-pkg.sh"
+      cfg.vm.provision "shell", path: "extra-k8s-pkgs.sh", env: { "PATH" => "$PATH:/usr/local/bin" }
     end
 
   #==============#

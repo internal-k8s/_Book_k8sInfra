@@ -37,6 +37,10 @@ kubectl completion bash >/etc/bash_completion.d/kubectl
 # Configure nfs-common and nfs-server for dynamic provisoning
 # Install storageclass for elasticsearch
 
+mkdir -p /nfs_shared/dynamic-vol
+echo "/nfs_shared/dynamic-vol 192.168.1.0/24(rw,sync,no_root_squash)" >> /etc/exports
+systemctl enable nfs-kernel-server --now
+systemctl restart nfs-kernel-server
 
 # alias kubectl to k 
 echo 'alias k=kubectl' >> ~/.bashrc

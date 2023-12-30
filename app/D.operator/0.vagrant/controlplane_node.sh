@@ -43,7 +43,6 @@ echo "/nfs_shared/dynamic-vol 192.168.1.0/24(rw,sync,no_root_squash)" >> /etc/ex
 systemctl enable nfs-kernel-server --now
 systemctl restart nfs-kernel-server
 
-
 # alias kubectl to k 
 echo 'alias k=kubectl' >> ~/.bashrc
 echo "alias ka='kubectl apply -f'" >> ~/.bashrc

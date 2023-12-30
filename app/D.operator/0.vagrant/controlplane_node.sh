@@ -26,7 +26,7 @@ cilium install \
     --helm-set ipam.mode=kubernetes \
     --helm-set ipv4NativeRoutingCIDR="172.16.0.0/16" \
     --helm-set enable-l2-announcements="true" \
-    --helm-set kube-proxy-replacement="true" \
+    --helm-set kubeProxyReplacement="true" \
     --helm-set externalIPs="true"
 
 # kubectl completion on bash-completion dir

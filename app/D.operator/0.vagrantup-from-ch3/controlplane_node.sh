@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 
-# Fixed Internal-IP (temp) when eth1 could fix by autodetect calico 
-cat <<EOF > /etc/default/kubelet
-KUBELET_EXTRA_ARGS=--node-ip=192.168.1.10
-EOF
-
-# init kubernetes (w/ containerd)
+# init kubernetes 
 kubeadm init --token 123456.1234567890123456 --token-ttl 0 \
              --pod-network-cidr=172.16.0.0/16 \
-             --apiserver-advertise-address=192.168.1.10 \
-             --cri-socket=unix:///run/containerd/containerd.sock
+             --apiserver-advertise-address=192.168.1.10 
 
 # config for control-plane node only 
 mkdir -p $HOME/.kube
@@ -27,38 +21,41 @@ cilium install \
     --helm-set ipv4NativeRoutingCIDR="172.16.0.0/16" \
     --helm-set enable-l2-announcements="true" \
     --helm-set kubeProxyReplacement="true" \
-    --helm-set externalIPs="true"
+    --helm-set externalIPs="true" \
+    --helm-set hubble.enable="true"
 
 # kubectl completion on bash-completion dir
 kubectl completion bash >/etc/bash_completion.d/kubectl
 
-# extra-pkg-install for below task.
-# install helm cli
-# Configure nfs-common and nfs-server for dynamic provisoning
-# Install storageclass for elasticsearch
-
-mkdir -p /nfs_shared/dynamic-vol
-chmod -R 766 /nfs_shared/dynamic-vol/
-echo "/nfs_shared/dynamic-vol 192.168.1.0/24(rw,sync,no_root_squash)" >> /etc/exports
-systemctl enable nfs-kernel-server --now
-systemctl restart nfs-kernel-server
-
 # alias kubectl to k 
-echo 'alias k=kubectl' >> ~/.bashrc
-echo "alias ka='kubectl apply -f'" >> ~/.bashrc
+echo 'alias k=kubectl'               >> ~/.bashrc
+echo "alias ka='kubectl apply -f'"   >> ~/.bashrc
+echo "alias kg-po-ip-stat-no='kubectl get pods -o=custom-columns=\
+NAME:.metadata.name,IP:.status.podIP,STATUS:.status.phase,NODE:.spec.nodeName'" \
+                                     >> ~/.bashrc 
 echo 'complete -F __start_kubectl k' >> ~/.bashrc
+
+# add storageclass
+sh -c "$HOME/_Book_k8sInfra/ch3/3.4.3/nfs-exporter.sh dynamic-vol"
+kubectl create -f $HOME/_Book_k8sInfra/ch3/3.4.3/nfs-subdir-external-provisioner-v4.0.2.yaml
+kubectl create -f $HOME/_Book_k8sInfra/ch3/3.4.3/storageclass.yaml
+
+# add metallb
+kubectl create -f $HOME/_Book_k8sInfra/ch3/3.3.2/metallb-native-v0.13.10.yaml
+kubectl wait pods -l=app=metallb,component=controller -n metallb-system --for=condition=ready --timeout=2m
+
+kubectl create -f $HOME/_Book_k8sInfra/ch3/3.3.2/metallb-l2-iprange.yaml
 
 # git clone book source 
 git clone https://github.com/internal-k8s/_Book_k8sInfra.git 
 mv /home/vagrant/_Book_k8sInfra $HOME
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 
-# make rerepo-k8s-learning.kit and put permission
-cat <<EOF > /usr/local/bin/rerepo-book-k8sinfra
+# make rerepo-Book-k8sInfra and input proper permission
+cat <<EOF > /usr/local/bin/rerepo-Book_k8sInfra
 #!/usr/bin/env bash
 rm -rf $HOME/_Book_k8sInfra
 git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 EOF
-chmod 700 /usr/local/bin/rerepo-book-k8sinfra
-
+chmod 700 /usr/local/bin/rerepo-Book_k8sInfra

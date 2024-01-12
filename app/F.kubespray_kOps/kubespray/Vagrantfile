@@ -1,0 +1,63 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+## configuration variables ##
+# max number of control-plane nodes 
+CP = 3 
+# max number of worker nodes
+WK = 6
+# each of components to install
+#k8s_V    = '1.27.4-00'                   # Kubernetes
+#ctrd_V   = '1.6.21-1'                    # Containerd
+## /configuration variables ##
+
+Vagrant.configure("2") do |config|
+
+  #====================#
+  # Control-Plane Node #
+  #====================#
+  
+  (1..CP).each do |n|
+    config.vm.define "cp1#{n}-k8s" do |cfg|
+      cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
+      cfg.vm.provider "virtualbox" do |vb|
+        vb.name = "cp1#{n}-k8s(github_SysNet4Admin)"
+        vb.cpus = 2
+        vb.memory = 2048 #minimum is 1500MB but ansible_memtotal_mb is less than set vaule
+        vb.customize ["modifyvm", :id, "--groups", "/k8s-MtpCP-kubespray(github_SysNet4Admin)"]
+      end
+      cfg.vm.host_name = "cp1#{n}-k8s"
+      cfg.vm.network "private_network", ip: "192.168.1.1#{n}"
+      cfg.vm.network "forwarded_port", guest: 22, host: "6001#{n}", auto_correct: true, id: "ssh"
+      cfg.vm.synced_folder "../data", "/vagrant", disabled: true
+      cfg.vm.provision "file", source: "auto_pass.sh", destination: "auto_pass.sh"
+      cfg.vm.provision "shell", path: "config.sh", args: [CP, WK]
+      if n == 1
+        cfg.vm.provision "shell", path: "cp11-k8s-console.sh"
+        cfg.vm.provision "shell", path: "pre-kubespray.sh"
+      end
+    end 
+  end
+
+  #==============#
+  # Worker Nodes #
+  #==============#
+
+  (1..WK).each do |n|
+    config.vm.define "w10#{n}-k8s" do |cfg|  
+      cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
+      cfg.vm.provider "virtualbox" do |vb|
+        vb.name = "w10#{n}-k8s(github_SysNet4Admin)"
+        vb.cpus = 1
+        vb.memory = 1536 #minimum is 1024MB but ansible_memtotal_mb is less than set vaule
+        vb.customize ["modifyvm", :id, "--groups", "/k8s-MtpCP-kubespray(github_SysNet4Admin)"]
+      end
+      cfg.vm.host_name = "w10#{n}-k8s"
+      cfg.vm.network "private_network", ip: "192.168.1.10#{n}"
+      cfg.vm.network "forwarded_port", guest: 22, host: "6010#{n}", auto_correct: true, id: "ssh"
+      cfg.vm.synced_folder "../data", "/vagrant", disabled: true
+      cfg.vm.provision "file", source: "auto_pass.sh", destination: "auto_pass.sh"
+      cfg.vm.provision "shell", path: "config.sh", args: [CP, WK]
+    end
+  end
+end

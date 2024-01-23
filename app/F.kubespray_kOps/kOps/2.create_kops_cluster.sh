@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+# vars 
 KUBERNETES_VERSION=1.28.5
 REGION=$(aws configure get region)
 ZONE="${REGION}a"
@@ -7,6 +9,7 @@ CP_TYPE="t3.medium"
 NODE_TYPE="t3.small"
 NODE_COUNT=3
 
+# run command 
 kops create cluster --kubernetes-version=1.28.5 \
   --zones=$ZONE \
   --networking=$CNI \

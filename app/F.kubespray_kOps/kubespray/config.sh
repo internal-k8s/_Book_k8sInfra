@@ -9,7 +9,8 @@ swapoff -a
 sed -i.bak -r 's/(.+ swap .+)/#\1/' /etc/fstab
 
 # local small dns & vagrant cannot parse and delivery shell code.
-for (( c=1; c<=$1; c++  )); do echo "192.168.1.1$c m1$c-k8s" >> /etc/hosts; done
+echo "127.0.0.1 localhost" > /etc/hosts 
+for (( c=1; c<=$1; c++  )); do echo "192.168.1.1$c cp1$c-k8s" >> /etc/hosts; done
 for (( w=1; w<=$2; w++  )); do echo "192.168.1.10$w w10$w-k8s" >> /etc/hosts; done
 
 # authority between all masters and workers

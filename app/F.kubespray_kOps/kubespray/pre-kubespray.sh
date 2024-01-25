@@ -24,7 +24,7 @@ sudo mv kubespray /root
 pip3.10 install -r /root/kubespray/requirements.txt
 
 
-cat <<EOF >  /root/kubesprary/ansible_hosts.ini
+cat <<EOF >  /root/kubespray/ansible_hosts.ini
 [all]
 cp11-k8s ansible_host=192.168.1.11 ip=192.168.1.11
 cp12-k8s ansible_host=192.168.1.12 ip=192.168.1.12
@@ -41,12 +41,12 @@ cp11-k8s
 cp12-k8s 
 cp13-k8s 
 
-[kube-master]
+[kube-controlplane]
 cp11-k8s 
 cp12-k8s 
 cp13-k8s 
 
-[kube-node]
+[kube-worker]
 w101-k8s 
 w102-k8s 
 w103-k8s 
@@ -57,8 +57,8 @@ w106-k8s
 [calico-rr]
 
 [k8s-cluster:children]
-kube-master
+kube-controlplane
 etcd
-kube-node
+kube-worker
 calico-rr
 EOF

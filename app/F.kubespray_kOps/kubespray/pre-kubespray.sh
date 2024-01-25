@@ -21,7 +21,7 @@ sudo mv kubespray /root
 #pbr==5.11.1
 #ruamel.yaml==0.17.35
 #ruamel.yaml.clib==0.2.8
-pip3.10 install -r /root/kubespray/requirements.txt
+pip3.10 install -r /root/kubespray/requirements.txt --root-user-action=ignore
 
 
 cat <<EOF >  /root/kubespray/ansible_hosts.ini
@@ -36,17 +36,17 @@ w104-k8s ansible_host=192.168.1.104 ip=192.168.1.104
 w105-k8s ansible_host=192.168.1.105 ip=192.168.1.105
 w106-k8s ansible_host=192.168.1.106 ip=192.168.1.106
 
+[kube_control_plane]
+cp11-k8s 
+cp12-k8s 
+cp13-k8s 
+
 [etcd]
 cp11-k8s 
 cp12-k8s 
 cp13-k8s 
 
-[kube-controlplane]
-cp11-k8s 
-cp12-k8s 
-cp13-k8s 
-
-[kube-worker]
+[kube_node]
 w101-k8s 
 w102-k8s 
 w103-k8s 
@@ -54,11 +54,10 @@ w104-k8s
 w105-k8s 
 w106-k8s 
 
-[calico-rr]
+[calico_rr]
 
-[k8s-cluster:children]
-kube-controlplane
-etcd
-kube-worker
-calico-rr
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+calico_rr
 EOF

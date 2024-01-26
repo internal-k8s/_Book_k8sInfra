@@ -19,3 +19,9 @@ sudo chmod 744 /root/auto_pass.sh
 
 # when git clone from windows '$'\r': command not found' issue happened
 sudo sed -i -e 's/\r$//' /root/auto_pass.sh 
+
+# softlink due to resolv.conf changement (https://app.vagrantup.com/sysnet4admin/boxes/Ubuntu-k8s)
+# kuberuntime_sandbox.go:45] "Failed to generate sandbox config for pod" err="open /run/systemd/resolve/resolv.conf: not a directory"
+mkdir /run/systemd/resolve
+ln -s /etc/resolv.conf /run/systemd/resolve/resolv.conf
+#

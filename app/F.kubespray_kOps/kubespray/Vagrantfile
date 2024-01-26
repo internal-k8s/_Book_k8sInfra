@@ -3,7 +3,7 @@
 
 ## configuration variables ##
 # max number of control-plane nodes 
-CP = 3 
+CP = 3
 # max number of worker nodes
 WK = 6
 # each of components to install
@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.provider "virtualbox" do |vb|
         vb.name = "cp1#{n}-k8s(github_SysNet4Admin)"
         vb.cpus = 2
-        vb.memory = 2048 #minimum is 1500MB but ansible_memtotal_mb is less than set vaule
+        vb.memory = 1640 #minimum is 1500MB but ansible_memtotal_mb is less than set vaule
         vb.customize ["modifyvm", :id, "--groups", "/k8s-MtpCP-kubespray(github_SysNet4Admin)"]
       end
       cfg.vm.host_name = "cp1#{n}-k8s"
@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.provider "virtualbox" do |vb|
         vb.name = "w10#{n}-k8s(github_SysNet4Admin)"
         vb.cpus = 1
-        vb.memory = 1536 #minimum is 1024MB but ansible_memtotal_mb is less than set vaule
+        vb.memory = 1152 #minimum is 1024MB but ansible_memtotal_mb is less than set vaule
         vb.customize ["modifyvm", :id, "--groups", "/k8s-MtpCP-kubespray(github_SysNet4Admin)"]
       end
       cfg.vm.host_name = "w10#{n}-k8s"

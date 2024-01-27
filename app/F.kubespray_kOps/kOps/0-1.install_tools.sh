@@ -23,7 +23,7 @@ rm -rf ./aws
 
 
 # default config for aws 
-mkdir ~/.aws
+mkdir ~/.aws && \
 cat <<EOF > ~/.aws/config 
 [default]
 region = us-east-1

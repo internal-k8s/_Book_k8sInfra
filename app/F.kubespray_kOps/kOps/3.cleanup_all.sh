@@ -12,11 +12,4 @@ rm ./terraform/.terraform.lock.hcl
 rm ./terraform/terraform.tfstate
 rm ./terraform/terraform.tfstate.backup
 
-# remove tools 
-rm /usr/local/bin/kops
-rm /usr/local/bin/terraform
-rm /usr/local/bin/aws
-rm /usr/local/bin/aws_completer
-rm -rf /usr/local/aws-cli
-
 echo "Successfully cleanup all!"

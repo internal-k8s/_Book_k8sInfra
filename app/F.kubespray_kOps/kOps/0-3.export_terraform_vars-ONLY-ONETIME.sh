@@ -13,3 +13,6 @@ echo 'export KOPS_STATE_STORE=s3://$TF_VAR_state_store' >> ~/.bashrc
 
 # confirm input vars 
 tail -n4 ~/.bashrc 
+
+# reload bashrc 
+exec bash 

@@ -23,12 +23,12 @@ INSTALLED_TERRAFORM_VERSION=$(terraform version | head -n 1 | awk -F 'v' '{print
 INSTALLED_KOPS_VERSION=$(kops version | awk -F ' ' '{print $3}')
 INSTALLED_AWS_CLI_VERSION=$(aws --version | awk -F ' ' '{print $1}' | awk -F '/' '{print $2}')
 
-echo "installed tools"
+echo -e "\n Installed tools list!"
+echo "==========================="
 echo "terraform: $INSTALLED_TERRAFORM_VERSION"
 echo "kops: $INSTALLED_KOPS_VERSION"
 echo "AWS CLI: $INSTALLED_AWS_CLI_VERSION"
-
-
+echo "==========================="
 
 # default config for aws 
 mkdir ~/.aws && \

@@ -4,7 +4,7 @@
 export DEBIAN_FRONTEND=noninteractive
 
 # kubectl completion on bash-completion dir
-#kubectl completion bash >/etc/bash_completion.d/kubectl
+echo 'kubectl completion bash >/etc/bash_completion.d/kubectl' >> ~/.bashrc 
 
 # alias kubectl to k 
 echo 'alias k=kubectl'               >> ~/.bashrc

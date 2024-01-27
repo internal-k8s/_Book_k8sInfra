@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # terraform init 
-terraform init
+terraform -chdir=./terraform init
 
 # deploy aws infra by terraform 
-terraform apply -auto-approve 
+terraform -chdir=./terraform apply -auto-approve
 

@@ -19,6 +19,14 @@ rm awscliv2.zip
 rm -rf ./aws
 
 # verification the tools 
+INSTALLED_TERRAFORM_VERSION=$(terraform version | head -n 1 | awk -F 'v' '{print $2}')
+INSTALLED_KOPS_VERSION=$(kops version | awk -F ' ' '{print $3}')
+INSTALLED_AWS_CLI_VERSION=$(aws --version | awk -F ' ' '{print $1}' | awk -F '/' '{print $2}')
+
+echo "installed tools"
+echo "terraform: $INSTALLED_TERRAFORM_VERSION"
+echo "kops: $INSTALLED_KOPS_VERSION"
+echo "AWS CLI: $INSTALLED_AWS_CLI_VERSION"
 
 
 

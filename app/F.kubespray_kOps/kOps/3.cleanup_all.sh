@@ -4,13 +4,13 @@
 kops delete cluster --name $NAME --yes
 
 # delete aws infra by terraform 
-terraform destroy -auto-approve 
+terraform -chdir=./terraform destroy -auto-approve 
 
 # remove terraform files 
-rm -rf .terraform
-rm .terraform.lock.hcl
-rm terraform.tfstate
-rm terraform.tfstate.backup
+rm -rf ./terraform/.terraform
+rm ./terraform/.terraform.lock.hcl
+rm ./terraform/terraform.tfstate
+rm ./terraform/terraform.tfstate.backup
 
 # remove tools 
 rm /usr/local/bin/kops

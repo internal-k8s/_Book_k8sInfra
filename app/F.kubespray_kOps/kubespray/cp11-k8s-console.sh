@@ -14,3 +14,16 @@ NAME:.metadata.name,IP:.status.podIP,STATUS:.status.phase,NODE:.spec.nodeName'" 
                                      >> ~/.bashrc 
 echo 'complete -F __start_kubectl k' >> ~/.bashrc
 
+# git clone book source 
+git clone https://github.com/internal-k8s/_Book_k8sInfra.git 
+mv /home/vagrant/_Book_k8sInfra $HOME
+find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
+
+# make rerepo-Book-k8sInfra and input proper permission
+cat <<EOF > /usr/local/bin/rerepo-Book_k8sInfra
+#!/usr/bin/env bash
+rm -rf $HOME/_Book_k8sInfra
+git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra
+find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
+EOF
+chmod 700 /usr/local/bin/rerepo-Book_k8sInfra

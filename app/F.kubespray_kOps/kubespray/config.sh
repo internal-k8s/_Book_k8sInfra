@@ -19,9 +19,3 @@ sudo chmod 744 /root/auto_pass.sh
 
 # when git clone from windows '$'\r': command not found' issue happened
 sudo sed -i -e 's/\r$//' /root/auto_pass.sh 
-
-# temp configuration 
-# Will apply for Ubuntu v0.8.3 
-systemctl enable systemd-resolved.service
-systemctl start systemd-resolved
-

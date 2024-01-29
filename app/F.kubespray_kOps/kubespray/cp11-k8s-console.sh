@@ -5,15 +5,13 @@ export DEBIAN_FRONTEND=noninteractive
 
 # kubectl completion on bash-completion dir
 echo -e "\n# kubectl auto-com & alias" >> ~/.bashrc 
-echo 'kubectl completion bash >/etc/bash_completion.d/kubectl' >> ~/.bashrc 
-
-# alias kubectl to k 
 echo 'alias k=kubectl'               >> ~/.bashrc
 echo "alias ka='kubectl apply -f'"   >> ~/.bashrc
 echo "alias kg-po-ip-stat-no='kubectl get pods -o=custom-columns=\
 NAME:.metadata.name,IP:.status.podIP,STATUS:.status.phase,NODE:.spec.nodeName'" \
                                      >> ~/.bashrc 
 echo 'complete -F __start_kubectl k' >> ~/.bashrc
+echo 'kubectl completion bash >/etc/bash_completion.d/kubectl' >> ~/.bashrc 
 
 # git clone book source 
 git clone https://github.com/internal-k8s/_Book_k8sInfra.git 

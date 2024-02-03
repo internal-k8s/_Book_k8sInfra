@@ -74,7 +74,7 @@ resource "aws_s3_bucket" "k8s_state_store" {
 }
 
 # aws s3api put-bucket-versioning --bucket book-k8s-state-store  --versioning-configuration Status=Enabled
-# 상태 저장소로 사용하는 S3 버킷의 버전 관리 기능을 황성화합니다.
+# 상태 저장소로 사용하는 S3 버킷의 버전 관리 기능을 활성화합니다.
 resource "aws_s3_bucket_versioning" "k8s_state_store_versioning" {
   bucket = aws_s3_bucket.k8s_state_store.id
   versioning_configuration {

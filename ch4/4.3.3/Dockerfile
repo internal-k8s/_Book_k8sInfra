@@ -1,7 +1,7 @@
 FROM openjdk:11
 LABEL description="Echo IP Java Application"
 EXPOSE 80
-RUN git clone https://github.com/gnu-gnu/inbuilder.git
+RUN git clone https://github.com/iac-sources/inbuilder.git 
 WORKDIR inbuilder
 RUN chmod 700 mvnw
 RUN ./mvnw clean package

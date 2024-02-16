@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java11-debian11
+FROM gcr.io/distroless/java21-debian12
 LABEL description="Echo IP Java Application"
 EXPOSE 80
 COPY ./target/app-in-host.jar /opt/app-in-image.jar

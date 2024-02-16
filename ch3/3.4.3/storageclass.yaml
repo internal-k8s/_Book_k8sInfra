@@ -4,5 +4,6 @@ metadata:
   name: managed-nfs-storage
 provisioner: k8s-sigs.io/nfs-subdir-external-provisioner
 parameters:
+  # default > pathPattern: "${.PVC.namespace}/${.PVC.annotations.nfs.io/storage-path}"
   pathPattern: "${.PVC.namespace}-${.PVC.name}"
   onDelete: delete

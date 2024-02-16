@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM azul/zulu-openjdk:21.0.2-21.32
 LABEL description="Echo IP Java Application"
 EXPOSE 80
 COPY ./target/app-in-host.jar /opt/app-in-image.jar

@@ -16,6 +16,6 @@ echo "[2/4] 내보낸 docker-multistage-img.tar 파일을 $1 노드에 전달합
 sshpass -p vagrant scp -o StrictHostKeyChecking=no -q $TEMP_FILE_PATH root@$1:$TEMP_FILE_PATH
 
 echo "[3/4] $1 노드에 전달된 docker-multistage-img.tar가 도커 네임스페이스($DOCKER_NAMESPACE)에 해당 이미지를 넣습니다."
-sshpass -p vagrant ssh root@$1 ctr --namespace $DOCKER_NAMESPACE image import --base-name multistage-img $TEMP_FILE_PATH
+sshpass -p vagrant ssh root@$1 docker load -i $TEMP_FILE_PATH
 
 echo -e "[4/4] 작업이 완료되었습니다.\n다시 'kubectl get pods' 명령을 통해 파드 상태를 확인해 주세요."

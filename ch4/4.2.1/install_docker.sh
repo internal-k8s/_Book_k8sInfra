@@ -5,5 +5,5 @@ docker_V='5:24.0.6-1~ubuntu.22.04~jammy'
 
 # install & enable docker 
 apt-get update 
-apt-get install -y docker-ce=$docker_V docker-ce-cli=$docker_V 
+apt-get install docker-ce=$docker_V -y
 systemctl enable --now docker

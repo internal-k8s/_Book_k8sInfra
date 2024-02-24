@@ -18,4 +18,4 @@ sshpass -p vagrant scp -o StrictHostKeyChecking=no -q $TEMP_DOCKER_FILE_PATH roo
 echo "[Step 3/4] Load 'docker-multistage-img.tar' in $1 node's Kubernetes namespace($Kubernetes_NAMESPACE)"
 sshpass -p vagrant ssh root@$1 ctr --namespace $KUBERNETES_NAMESPACE image import --base-name multistage-img $TEMP_DOCKER_FILE_PATH
 
-echo -e "[Step 4/4] Successfully completed \n Run 'kubectl get pods' again"
+echo -e "[Step 4/4] Successfully completed \nCHECK PURPOSE: Run 'kubectl get pods' again"

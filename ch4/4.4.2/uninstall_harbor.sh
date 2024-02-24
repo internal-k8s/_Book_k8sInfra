@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-TAG=v2.8.1
+TAG=v2.10.0
 
 echo "stop harbor..."
 docker compose -f harbor/docker-compose.yml down
 
 echo "remove harbor..."
-rm -f harbor-online-installer-v2.8.1.tgz
 rm -rf ./harbor
 rm -rf /harbor-data
 

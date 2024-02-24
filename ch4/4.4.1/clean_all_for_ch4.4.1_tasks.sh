@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CRI_NAME="c2d"
+CRI_NAME="d2c"
 IMG_NAME="multistage-img"
 
 echo "[1/5] $CRI_NAME 디플로이먼트를 삭제합니다."

@@ -5,11 +5,16 @@ echo "stop harbor..."
 docker compose -f harbor/docker-compose.yml down
 
 echo "remove harbor..."
-rm -rf ./harbor
+# preserve initial scripts
+mv ./harbor/get_harbor.sh ./
+mv ./harbor/modify_config.sh ./
+rm -rf ./harbor/*
 rm -rf /harbor-data
+mv get_harbor.sh ./harbor
+mv modify_config.sh ./harbor
 
 echo "remove harbor images..."
-docker rmi goharbor/redis-photon:$TAG \
+docker rmi -f goharbor/redis-photon:$TAG \
 goharbor/harbor-registryctl:$TAG \
 goharbor/registry-photon:$TAG \
 goharbor/nginx-photon:$TAG \

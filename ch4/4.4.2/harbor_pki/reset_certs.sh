@@ -23,6 +23,5 @@ rm -rf $DOCKER_CERT_STORE
 rm -f $HOST_CERT_STORE/harbor_ca.crt
 
 echo "reset control plane environment..."
-apt-get remove sshpass -y
 update-ca-certificates -f
 systemctl restart containerd

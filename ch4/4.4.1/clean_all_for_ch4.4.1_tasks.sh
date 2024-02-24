@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
+CRI_NAME="c2d"
 IMG_NAME="multistage-img"
 
-echo "[1/5] $IMG_NAME 디플로이먼트를 삭제합니다."
-kubectl delete deployment $IMG_NAME 
+echo "[1/5] $CRI_NAME 디플로이먼트를 삭제합니다."
+kubectl delete deployment $CRI_NAME 
 
 echo "[2/5] w1-k8s의 도커와 컨테이너디가 관리하는 $IMG_NAME 이미지를 삭제합니다."
 sshpass -p vagrant ssh root@w1-k8s docker rmi $IMG_NAME > /dev/null 2>&1

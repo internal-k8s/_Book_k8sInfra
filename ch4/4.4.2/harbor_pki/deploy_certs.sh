@@ -9,9 +9,6 @@ mkdir -p /harbor-data
 echo "create Docker certificate store..."
 mkdir -p $DOCKER_CERT_STORE
 
-echo "install sshpass for deploying certificate..."
-apt-get install sshpass -y
-
 echo "deploy certificate to worker nodes..."
 for i in {1..3}
   do

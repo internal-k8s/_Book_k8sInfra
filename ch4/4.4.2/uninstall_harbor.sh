@@ -8,8 +8,13 @@ echo "stop harbor..."
 docker compose -f harbor/docker-compose.yml down
 
 echo "remove harbor..."
+# preserve initial scripts
+mv ./harbor/get_harbor.sh .
+mv ./harbor/modify_config.sh .
 rm -rf ./harbor
-rm -rf /harbor-data
+mkdir harbor
+mv get_harbor.sh ./harbor
+mv modify_config.sh ./harbor
 
 echo "remove harbor images..."
 docker rmi goharbor/redis-photon:$TAG \
@@ -38,7 +43,8 @@ for i in {1..3}
   done
 
 echo "remove deployed private key and certificate on control plane..."
-rm -f /harbor-data/server.* ./ca.* ./server.csr
+rm -f ./harbor_pki/ca.crt ./harbor_pki/ca.key ./harbor_pki/server.csr
+rm -rf /harbor-data
 rm -rf $DOCKER_CERT_STORE
 rm -f $HOST_CERT_STORE/harbor_ca.crt
 

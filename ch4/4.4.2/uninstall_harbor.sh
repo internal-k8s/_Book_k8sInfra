@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
+
 TAG=v2.10.0
 HARBOR_HOST=192.168.1.10:8443
 DOCKER_CERT_STORE=/etc/docker/certs.d/$HARBOR_HOST
 HOST_CERT_STORE=/usr/local/share/ca-certificates
 
-echo "stop harbor..."
+echo "Stopping Harbor..."
 docker compose -f harbor/docker-compose.yml down
 
-echo "remove harbor..."
+echo "Remove Harbor & files..."
 # preserve initial scripts
 mv ./harbor/get_harbor.sh .
 mv ./harbor/modify_config.sh .
@@ -16,7 +17,7 @@ mkdir harbor
 mv get_harbor.sh ./harbor
 mv modify_config.sh ./harbor
 
-echo "remove harbor images..."
+echo "Removing Harbor images..."
 docker rmi goharbor/redis-photon:$TAG \
 goharbor/harbor-registryctl:$TAG \
 goharbor/registry-photon:$TAG \
@@ -28,7 +29,7 @@ goharbor/harbor-portal:$TAG \
 goharbor/harbor-db:$TAG \
 goharbor/prepare:$TAG
 
-echo "remove deployed certificate..."
+echo "Removing deployed certificates..."
 for i in {1..3}
   do
     echo "remove certificate on w$i-k8s"
@@ -42,12 +43,12 @@ for i in {1..3}
             systemctl restart containerd
   done
 
-echo "remove deployed private key and certificate on control plane..."
+echo "Remove deployed private key and certificate on control plane..."
 rm -f ./harbor_pki/ca.crt ./harbor_pki/ca.key ./harbor_pki/server.csr
 rm -rf /harbor-data
 rm -rf $DOCKER_CERT_STORE
 rm -f $HOST_CERT_STORE/harbor_ca.crt
 
-echo "reset control plane environment..."
+echo "Restart control plane to load the init environment..."
 update-ca-certificates -f
 systemctl restart containerd

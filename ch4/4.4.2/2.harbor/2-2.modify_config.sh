@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
-TEMPLATE=harbor.yml.tmpl
-echo "modify configuration template..."
+
+HARBOR_TEMPLATE=harbor.yml.tmpl
+HARBOR_PREPARE=harbor.yml 
+
+echo "Modify $HARBOR_TEMPLATE to prepare the Harbor"
 sed -i 's/hostname: reg.mydomain.com/hostname: 192.168.1.10/' \
-       $TEMPLATE
+       $HARBOR_TEMPLATE
 sed -i 's/port: 443/port: 8443/' \
-       $TEMPLATE
+       $HARBOR_TEMPLATE
 sed -i 's/certificate: \/your\/certificate\/path/certificate: \/harbor-data\/server.crt/' \
-       $TEMPLATE
+       $HARBOR_TEMPLATE
 sed -i 's/private_key: \/your\/private\/key\/path/private_key: \/harbor-data\/server.key/' \
-       $TEMPLATE
+       $HARBOR_TEMPLATE
 sed -i 's/harbor_admin_password: Harbor12345/harbor_admin_password: admin/' \
-       $TEMPLATE
+       $HARBOR_TEMPLATE
 sed -i 's/data_volume: \/data/data_volume: \/harbor-data/' \
-       $TEMPLATE
-echo "generate configuration YAML"
-mv $TEMPLATE harbor.yml
+       $HARBOR_TEMPLATE
+
+echo "Overwrite modified $HARBOR_TEMPLATE to $HARBOR_PREPARE"
+mv $HARBOR_TEMPLATE $HARBOR_PREPARE
+
+echo "Successfully completed"

@@ -13,7 +13,7 @@ mkdir -p /harbor-data
 echo "[Step 2/5] Create Docker certificate store..."
 mkdir -p $DOCKER_CERT_DIR
 
-echo "[Step 3/5] Deploy certificate to worker nodes..."
+echo "[Step 3/5] Deploying certificate to each of worker nodes..."
 for i in {1..3}
   do
     echo "Deploy to node w$i-k8s"

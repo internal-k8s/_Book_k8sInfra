@@ -4,13 +4,16 @@ HARBOR_HOST=192.168.1.10:8443
 DOCKER_CERT_DIR=/etc/docker/certs.d/$HARBOR_HOST
 HOST_CERT_DIR=/usr/local/share/ca-certificates
 
-echo "Create Harbor data directory..."
+# if 4.4.1 skipped, it should run. so add here. 
+apt-get install sshpass -y > /dev/null 2>&1
+
+echo "[Step 1/5] Create Harbor data directory..."
 mkdir -p /harbor-data
 
-echo "Create Docker certificate store..."
+echo "[Step 2/5] Create Docker certificate store..."
 mkdir -p $DOCKER_CERT_DIR
 
-echo "Deploy certificate to worker nodes..."
+echo "[Step 3/5] Deploy certificate to worker nodes..."
 for i in {1..3}
   do
     echo "Deploy to node w$i-k8s"
@@ -22,11 +25,11 @@ for i in {1..3}
 	    systemctl restart containerd
   done
 
-echo "Deploy certificate to control plane..."
+echo "[Step 4/5] Deploy certificate to control plane..."
 cp ca.crt $DOCKER_CERT_DIR/ca.crt
 cp ca.crt $HOST_CERT_DIR/harbor_ca.crt
 
-echo "Deploy private key and certificate to Harbor..."
+echo "[Step 5/5] Deploy private key and certificate to Harbor..."
 mv server.key /harbor-data
 mv server.crt /harbor-data
 update-ca-certificates 

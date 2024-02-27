@@ -8,3 +8,8 @@ mv harbor/* .
 echo "Remove garbage files..."
 rm -f harbor-online-installer-v2.10.0.tgz
 rm -rf harbor
+
+echo "Add sequece number for prepare & install"
+mv prepare 2-3.prepare 
+mv install 2-4.install
+

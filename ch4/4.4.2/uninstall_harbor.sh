@@ -6,16 +6,16 @@ DOCKER_CERT_STORE=/etc/docker/certs.d/$HARBOR_HOST
 HOST_CERT_STORE=/usr/local/share/ca-certificates
 
 echo "[Step 1/6] Stopping Harbor..."
-docker compose -f harbor/docker-compose.yml down
+docker compose -f 2.harbor/docker-compose.yml down
 
 echo "[Step 2/6] Remove Harbor & files..."
 # preserve initial scripts
-mv ./harbor/get_harbor.sh .
-mv ./harbor/modify_config.sh .
-rm -rf ./harbor
-mkdir harbor
-mv get_harbor.sh ./harbor
-mv modify_config.sh ./harbor
+mv ./2.harbor/2-1.get_harbor.sh .
+mv ./2.harbor/2-2.modify_config.sh .
+rm -rf ./2.harbor
+mkdir 2.harbor
+mv 2-1.get_harbor.sh ./2.harbor
+mv 2-2.modify_config.sh ./2.harbor
 
 echo "[Step 3/6] Removing Harbor images..."
 docker rmi goharbor/redis-photon:$TAG \
@@ -44,7 +44,7 @@ for i in {1..3}
   done
 
 echo "[Step 5/6] Remove deployed private key and certificate on control plane..."
-rm -f ./harbor_pki/ca.crt ./harbor_pki/ca.key ./harbor_pki/server.csr
+rm -f ./1.harbor_pki/ca.crt ./1.harbor_pki/ca.key ./1.harbor_pki/server.csr
 rm -rf /harbor-data
 rm -rf $DOCKER_CERT_STORE
 rm -f $HOST_CERT_STORE/harbor_ca.crt

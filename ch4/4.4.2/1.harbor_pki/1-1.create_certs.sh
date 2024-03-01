@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "Create CA key..."
+echo "Create CA key"
 openssl genrsa -out ca.key 4096
 
 echo "Create CA certificate"
@@ -7,7 +7,7 @@ openssl req -x509 -new -noenc -sha512 -days 3650 \
         -config $(dirname "$0")/certificate.csr \
         -key ca.key -out ca.crt
 
-echo "Create server certificate key..."
+echo "Create server certificate key"
 openssl genrsa -out server.key 4096
 
 echo "Create server certificate CSR"

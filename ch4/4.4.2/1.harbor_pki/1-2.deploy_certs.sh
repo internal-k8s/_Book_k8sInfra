@@ -29,8 +29,8 @@ echo "[Step 4/5] Copy certificate to control plane"
 cp ca.crt $DOCKER_CERT_DIR/ca.crt
 cp ca.crt $HOST_CERT_DIR/harbor_ca.crt
 
-echo "[Step 5/5] Copy server key and certificate to Harbor"
-cp server.key /harbor-data
-cp server.crt /harbor-data
+echo "[Step 5/5] Move server key and certificate to Harbor"
+mv server.key /harbor-data
+mv server.crt /harbor-data
 update-ca-certificates 
 systemctl restart containerd

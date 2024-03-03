@@ -52,3 +52,5 @@ rm -f $HOST_CERT_DIR/harbor_ca.crt
 echo "[Step 6/6] Restart control plane to load the init environment"
 update-ca-certificates -f
 systemctl restart containerd
+rm -f /usr/lib/systemd/system/harbor.service
+systemctl daemon-reload

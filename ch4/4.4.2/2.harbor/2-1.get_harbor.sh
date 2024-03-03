@@ -16,10 +16,10 @@ echo "install.sh >>> 2-4.install.sh"
 mv prepare 2-3.prepare
 mv install.sh 2-4.install.sh
 
-# Modify 2-4.install.sha
+# modify 2-4.install.sha
 sed -i 's/prepare $prepare_para/2-3.prepare $prepare_para/' 2-4.install.sh
 
-# Create systemd startup service for Harbor
+# create systemd startup service for Harbor
 cat <<EOF > /usr/lib/systemd/system/harbor.service
 [Unit]
 Description=Harbor startup service
@@ -37,6 +37,6 @@ ExecStop=/usr/bin/docker compose -f $HARBOR_FILE_DIR/docker-compose.yml down
 WantedBy=multi-user.target
 EOF
 
-# Reload and enable systemd service
+# reload and enable systemd service
 systemctl daemon-reload
 systemctl enable harbor

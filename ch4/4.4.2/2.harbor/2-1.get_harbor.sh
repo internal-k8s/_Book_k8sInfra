@@ -24,14 +24,14 @@ cat <<EOF > /usr/lib/systemd/system/harbor.service
 [Unit]
 Description=Harbor startup service
 Requires=docker.service
-ConditionPathExists=/root/_Book_k8sInfra/ch4/4.4.2/2.harbor/docker-compose.yml
+ConditionPathExists=$HARBOR_FILE_DIR/docker-compose.yml
 After=network.target systemd-networkd-wait-online.service systemd-resolved.service syslog.service docker.service
 Wants=network.target systemd-networkd-wait-online.service systemd-resolved.service syslog.service docker.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/docker compose -f /root/_Book_k8sInfra/ch4/4.4.2/2.harbor/docker-compose.yml up
-ExecStop=/usr/bin/docker compose -f /root/_Book_k8sInfra/ch4/4.4.2/2.harbor/docker-compose.yml down
+ExecStart=/usr/bin/docker compose -f $HARBOR_FILE_DIR/docker-compose.yml up
+ExecStop=/usr/bin/docker compose -f $HARBOR_FILE_DIR/docker-compose.yml down
 
 [Install]
 WantedBy=multi-user.target
@@ -39,4 +39,4 @@ EOF
 
 # Reload and enable systemd service
 systemctl daemon-reload
-systemctl enable harbor --now
+systemctl enable harbor

@@ -1,20 +1,42 @@
 #!/usr/bin/env bash
+HARBOR_FILE_DIR=$(dirname $(realpath "$0"))
 
 echo "Download harbor-online-installer-v.2.10.0..."
 curl -LO https://github.com/goharbor/harbor/releases/download/v2.10.0/harbor-online-installer-v2.10.0.tgz
 tar -xvf harbor-online-installer-v2.10.0.tgz
 mv harbor/* .
 
-echo "Remove garbage files"
+echo "Remove garbage files..."
 rm -f harbor-online-installer-v2.10.0.tgz
 rm -rf harbor
 
 echo "Add sequence number: "
 echo "prepare    >>> 2-3.prepare"
 echo "install.sh >>> 2-4.install.sh"
-mv prepare 2-3.prepare 
+mv prepare 2-3.prepare
 mv install.sh 2-4.install.sh
 
-# modify 2-4.install.sha
+# Modify 2-4.install.sha
 sed -i 's/prepare $prepare_para/2-3.prepare $prepare_para/' 2-4.install.sh
 
+# Create systemd startup service for Harbor
+cat <<EOF > /usr/lib/systemd/system/harbor.service
+[Unit]
+Description=Harbor startup service
+Requires=docker.service
+ConditionPathExists=/root/_Book_k8sInfra/ch4/4.4.2/2.harbor/docker-compose.yml
+After=network.target systemd-networkd-wait-online.service systemd-resolved.service syslog.service docker.service
+Wants=network.target systemd-networkd-wait-online.service systemd-resolved.service syslog.service docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/docker compose -f /root/_Book_k8sInfra/ch4/4.4.2/2.harbor/docker-compose.yml up
+ExecStop=/usr/bin/docker compose -f /root/_Book_k8sInfra/ch4/4.4.2/2.harbor/docker-compose.yml down
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload and enable systemd service
+systemctl daemon-reload
+systemctl enable harbor --now

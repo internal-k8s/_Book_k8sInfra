@@ -10,7 +10,7 @@ jenkins:
       containerCap: 10
       containerCapStr: "10"
       jenkinsTunnel: "jenkins-agent.default.svc.cluster.local:50000"
-      jenkinsUrl: "http://192.168.1.11"
+      jenkinsUrl: "http://jenkins.default.svc.cluster.local:8080"
       name: "kubernetes"
       namespace: "default"
       podLabels:
@@ -20,67 +20,61 @@ jenkins:
       templates:
       - containers:
         - args: "^${computer.jnlpmac} ^${computer.name}"
-          command: ""
           envVars:
           - envVar:
               key: "JENKINS_URL"
-              value: "http://jenkins.default.svc.cluster.local:80/"
-          image: "jenkins/inbound-agent:3107.v665000b_51092-15"
-          livenessProbe:
-            failureThreshold: 0
-            initialDelaySeconds: 0
-            periodSeconds: 0
-            successThreshold: 0
-            timeoutSeconds: 0
+              value: "http://jenkins.default.svc.cluster.local:8080/"
+          image: "jenkins/inbound-agent:3248.v65ecb_254c298-1"
           name: "jnlp"
           resourceLimitCpu: "512m"
           resourceLimitMemory: "512Mi"
           resourceRequestCpu: "512m"
           resourceRequestMemory: "512Mi"
           workingDir: "/home/jenkins/agent"
-        id: "c6441dbc474cd880232d3dc2549a297f0c9b8dd592adf21000f4a8f8168d226f"
+        id: "98d73d53e16a7cb91a7b32c4919957504f5605e430e5ca4da5878e8d7a0092ff"
         label: "jenkins-jenkins-agent"
         name: "default"
         namespace: "default"
         nodeUsageMode: "NORMAL"
         podRetention: "never"
-        serviceAccount: "jenkins"
+        serviceAccount: "default"
         slaveConnectTimeout: 100
         slaveConnectTimeoutStr: "100"
-        volumes:
-        - hostPathVolume:
-            hostPath: "/usr/bin/kubectl"
-            mountPath: "/usr/bin/kubectl"
-            readOnly: false
-        - hostPathVolume:
-            hostPath: "/usr/bin/docker"
-            mountPath: "/usr/bin/docker"
-            readOnly: false
-        - hostPathVolume:
-            hostPath: "/var/run/docker.sock"
-            mountPath: "/var/run/docker.sock"
-            readOnly: false
         yamlMergeStrategy: "override"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: true
   disableRememberMe: false
   disabledAdministrativeMonitors:
+  - "hudson.util.DoubleLaunchChecker"
   - "hudson.model.UpdateCenter$CoreUpdateMonitor"
   - "jenkins.diagnostics.RootUrlNotSetMonitor"
-  - "jenkins.security.UpdateSiteWarningsMonitor"
+  - "jenkins.security.UpdateSiteWarningsMonitor"  
   labelAtoms:
   - name: "built-in"
   - name: "jenkins-jenkins-agent"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "swapSpace"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "responseTime"
   numExecutors: 0
   primaryView:
     all:
       name: "all"
   projectNamingStrategy: "standard"
   quietPeriod: 5
+  remotingSecurity:
+    enabled: true
   scmCheckoutRetryCount: 0
   securityRealm:
     local:
@@ -88,9 +82,10 @@ jenkins:
       enableCaptcha: false
       users:
       - id: "admin"
-        password: "admin"
+        name: "Jenkins Admin"
         properties:
         - "apiToken"
+        - "consoleUrlProvider"
         - "mailer"
         - "myView"
         - preferredProvider:
@@ -110,6 +105,9 @@ globalCredentialsConfiguration:
   configuration:
     providerFilter: "none"
     typeFilter: "none"
+appearance:
+  prism:
+    theme: PRISM
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false

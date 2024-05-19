@@ -47,9 +47,6 @@ jenkins:
   disableRememberMe: false
   disabledAdministrativeMonitors:
   - "hudson.util.DoubleLaunchChecker"
-  - "hudson.model.UpdateCenter$CoreUpdateMonitor"
-  - "jenkins.diagnostics.RootUrlNotSetMonitor"
-  - "jenkins.security.UpdateSiteWarningsMonitor"  
   labelAtoms:
   - name: "built-in"
   - name: "jenkins-jenkins-agent"

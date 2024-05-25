@@ -23,7 +23,7 @@ jenkins:
           envVars:
           - envVar:
               key: "JENKINS_URL"
-              value: "http://jenkins.default.svc.cluster.local:8080/"
+              value: "http://192.168.1.11"
           image: "jenkins/inbound-agent:3248.v65ecb_254c298-1"
           livenessProbe:
             failureThreshold: 0

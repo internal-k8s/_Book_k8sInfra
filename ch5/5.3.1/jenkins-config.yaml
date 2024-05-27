@@ -101,6 +101,17 @@ jenkins:
     local:
       allowsSignup: false
       enableCaptcha: false
+      users:
+      - id: "admin"
+        password: "admin"
+        properties:
+        - "apiToken"
+        - "mailer"
+        - "myView"
+        - preferredProvider:
+            providerId: "default"
+        - "timezone"
+        - "experimentalFlags"      
   slaveAgentPort: 50000
   updateCenter:
     sites:

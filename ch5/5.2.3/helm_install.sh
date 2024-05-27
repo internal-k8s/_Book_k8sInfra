@@ -24,6 +24,9 @@
 : ${VERIFY_SIGNATURES:="false"}
 : ${HELM_INSTALL_DIR:="/usr/local/bin"}
 : ${GPG_PUBRING:="pubring.kbx"}
+# custom for Book_k8s_infra
+: ${DESIRED_VERSION:="v3.15.0"}
+
 
 HAS_CURL="$(type "curl" &> /dev/null && echo true || echo false)"
 HAS_WGET="$(type "wget" &> /dev/null && echo true || echo false)"

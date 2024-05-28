@@ -10,7 +10,7 @@ jenkins:
       containerCap: 10
       containerCapStr: "10"
       jenkinsTunnel: "jenkins-agent.default.svc.cluster.local:50000"
-      jenkinsUrl: "http://jenkins.default.svc.cluster.local:8080"
+      jenkinsUrl: "http://jenkins.default.svc.cluster.local:80"
       name: "kubernetes"
       namespace: "default"
       podLabels:

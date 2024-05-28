@@ -103,16 +103,15 @@ jenkins:
       enableCaptcha: false
       users:
       - id: "admin"
-        name: "Jenkins Admin"
+        password: "admin"
         properties:
         - "apiToken"
-        - "consoleUrlProvider"
         - "mailer"
         - "myView"
         - preferredProvider:
             providerId: "default"
         - "timezone"
-        - "experimentalFlags"
+        - "experimentalFlags"      
   slaveAgentPort: 50000
   updateCenter:
     sites:

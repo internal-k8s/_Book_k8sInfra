@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hpa-cpu-memory 
-        image: sysnet4admin/hpa-cpu-memory  
+        image: sysnet4admin/hpa-cpu-memory
         resources:
           requests:
             cpu: "10m"

@@ -116,7 +116,7 @@ jenkins:
   updateCenter:
     sites:
     - id: "default"
-      url: "https://raw.githubusercontent.com/internal-gnu/jenkins-update-center/main/2.440.3/update-center.json"
+      url: "https://raw.githubusercontent.com/k8s-edu/edu_Book_k8sInfra_v2/main/update-center/update-center.json"
   views:
   - all:
       name: "all"

@@ -13,7 +13,7 @@ helm install jenkins book-k8sinfra-v2/jenkins \
 --set controller.tolerations[0].operator=Exists \
 --set controller.runAsUser=1000 \
 --set controller.runAsGroup=1000 \
---set controller.image.tag="2\.452\.1-jdk17" \
+--set controller.image.tag="2.440.3-jdk17" \
 --set controller.serviceType=LoadBalancer \
 --set controller.servicePort=80 \
 --set controller.jenkinsOpts="$jkopt1 $jkopt2" \

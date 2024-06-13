@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 VERSION=v5.4.1
 
-OS=windows
 if [[ "$OSTYPE" == linux* ]]; then
   OS=linux
 elif [[ "$OSTYPE" == darwin* ]]; then

@@ -29,5 +29,4 @@ DOWNLOAD_URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kus
 
 curl -L $DOWNLOAD_URL -o /tmp/kustomize.tar.gz
 tar -xzf /tmp/kustomize.tar.gz -C  /usr/local/bin
-INSTALLED_VERSION=$(kustomize version)
-echo "kustomize $INSTALLED_VERSION($OS/$ARCH) install successfully"
+echo "kustomize install successfully"

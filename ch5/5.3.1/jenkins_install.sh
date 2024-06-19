@@ -17,4 +17,5 @@ helm install jenkins book-k8sinfra-v2/jenkins \
 --set controller.serviceType=LoadBalancer \
 --set controller.servicePort=80 \
 --set controller.jenkinsOpts="$jkopt1 $jkopt2" \
---set controller.javaOpts="$jvopt1 $jvopt2 $jvopt3"
+--set controller.javaOpts="$jvopt1 $jvopt2 $jvopt3" \
+--set controller.installLatestPlugins=false

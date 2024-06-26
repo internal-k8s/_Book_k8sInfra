@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 VERSION=v5.4.1
 
 if [[ "$OSTYPE" == linux* ]]; then
@@ -29,4 +30,4 @@ DOWNLOAD_URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kus
 
 curl -L $DOWNLOAD_URL -o /tmp/kustomize.tar.gz
 tar -xzf /tmp/kustomize.tar.gz -C  /usr/local/bin
-echo "kustomize install successfully"
+echo "kustomize installed successfully"

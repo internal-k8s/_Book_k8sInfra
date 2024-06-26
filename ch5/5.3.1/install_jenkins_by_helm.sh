@@ -8,6 +8,8 @@ JV_OPT2="-Dcasc.jenkins.config=https://raw.githubusercontent.com\
 JV_OPT3="-Dhudson.model.DownloadService.noSignatureCheck=true"
 
 helm install jenkins edu/jenkins \
+--namespace ci-cd \
+--create-namespace \
 --set persistence.existingClaim=pvc-jenkins \
 --set controller.nodeSelector."kubernetes\.io/hostname"=cp-k8s \
 --set controller.tolerations[0].key=node-role.kubernetes.io/control-plane \

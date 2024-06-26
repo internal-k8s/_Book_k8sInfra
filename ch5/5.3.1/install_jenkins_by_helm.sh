@@ -4,7 +4,7 @@ JK_OPT1="--sessionTimeout=1440"
 JK_OPT2="--sessionEviction=86400"
 JV_OPT1="-Duser.timezone=Asia/Seoul"
 JV_OPT2="-Dcasc.jenkins.config=https://raw.githubusercontent.com\
-         /k8s-edu/Bkv2_main/main/jenkins-cfg/jcasc/jenkins-config.yaml"
+/k8s-edu/Bkv2_main/main/jenkins-cfg/jcasc/jenkins-config.yaml"
 JV_OPT3="-Dhudson.model.DownloadService.noSignatureCheck=true"
 
 helm install jenkins edu/jenkins \

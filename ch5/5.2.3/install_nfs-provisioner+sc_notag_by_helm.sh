@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-helm install nfs-provisioner edu/nfs-subdir-external-provisioner \
+helm install nfs-prvs-release edu/nfs-subdir-external-provisioner \
 --namespace nfs-provisioner \
 --create-namespace \
 --set nfs.server='192.168.1.10' \

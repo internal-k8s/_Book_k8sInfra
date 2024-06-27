@@ -15,12 +15,16 @@ helm install jenkins edu/jenkins \
 --set controller.tolerations[0].key=node-role.kubernetes.io/control-plane \
 --set controller.tolerations[0].effect=NoSchedule \
 --set controller.tolerations[0].operator=Exists \
+--set controller.admin.createSecret=false \
+--set controller.admin.username=admin \
+--set controller.admin.password=admin \
+--set controller.initContainerEnv[0].name=JENKINS_UC \
+--set controller.initContainerEnv[0].value=https://raw.githubusercontent.com\
+/k8s-edu/Bkv2_main/main/jenkins-cfg/update-center/update-center.json \
 --set controller.runAsUser=1000 \
 --set controller.runAsGroup=1000 \
---set controller.image.tag="2.440.3-jdk17" \
+--set controller.image.tag=2.440.3-jdk17 \
 --set controller.serviceType=LoadBalancer \
 --set controller.servicePort=80 \
 --set controller.jenkinsOpts="$JK_OPT1 $JK_OPT2" \
---set controller.javaOpts="$JV_OPT1 $JV_OPT2 $JV_OPT3" \
---set controller.installLatestPlugins=false
-
+--set controller.javaOpts="$JV_OPT1 $JV_OPT2 $JV_OPT3"

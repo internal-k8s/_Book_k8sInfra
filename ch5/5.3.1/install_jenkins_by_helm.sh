@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
+JK_CFG="https://raw.githubusercontent.com/k8s-edu/Bkv2_main/main/jenkins-cfg"
 JK_OPT1="--sessionTimeout=1440"
 JK_OPT2="--sessionEviction=86400"
 JV_OPT1="-Duser.timezone=Asia/Seoul"
-JV_OPT2="-Dcasc.jenkins.config=https://raw.githubusercontent.com\
-/k8s-edu/Bkv2_main/main/jenkins-cfg/jcasc/jenkins-config.yaml"
+JV_OPT2="-Dcasc.jenkins.config=$JK_CFG/jcasc/jenkins-config.yaml"
 JV_OPT3="-Dhudson.model.DownloadService.noSignatureCheck=true"
 
 helm install jenkins edu/jenkins \
@@ -19,8 +19,7 @@ helm install jenkins edu/jenkins \
 --set controller.admin.username=admin \
 --set controller.admin.password=admin \
 --set controller.initContainerEnv[0].name=JENKINS_UC \
---set controller.initContainerEnv[0].value=https://raw.githubusercontent.com\
-/k8s-edu/Bkv2_main/main/jenkins-cfg/update-center/update-center.json \
+--set controller.initContainerEnv[0].value=$JK_CFG/update-center/update-center.json \
 --set controller.runAsUser=1000 \
 --set controller.runAsGroup=1000 \
 --set controller.image.tag=2.440.3-jdk17 \

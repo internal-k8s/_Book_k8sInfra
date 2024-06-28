@@ -15,8 +15,6 @@ helm install jenkins edu/jenkins \
 --set controller.tolerations[0].key=node-role.kubernetes.io/control-plane \
 --set controller.tolerations[0].effect=NoSchedule \
 --set controller.tolerations[0].operator=Exists \
---set controller.admin.createSecret=false \
---set controller.admin.username=admin \
 --set controller.admin.password=admin \
 --set controller.initContainerEnv[0].name=JENKINS_UC \
 --set controller.initContainerEnv[0].value=$JK_CFG/update-center/update-center.json \

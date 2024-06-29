@@ -4,6 +4,7 @@ metadata:
   labels:
     app: gitops-nginx
   name: gitops-nginx
+  namespace: default
 spec:
   replicas: 2
   selector:

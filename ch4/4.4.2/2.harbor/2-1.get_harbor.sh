@@ -18,6 +18,7 @@ mv install.sh 2-4.install.sh
 
 # modify 2-4.install.sha
 sed -i 's/prepare $prepare_para/2-3.prepare $prepare_para/' 2-4.install.sh
+sed -i 's/$DOCKER_COMPOSE up -d/$DOCKER_COMPOSE -p harbor up -d/' 2-4.install.sh
 
 # create systemd startup service for Harbor
 cat <<EOF > /usr/lib/systemd/system/harbor.service

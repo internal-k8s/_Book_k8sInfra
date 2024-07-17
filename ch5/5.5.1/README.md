@@ -6,7 +6,7 @@ GitOps에 관해 좀 더 자세한 내용이 궁금하시다면
 [깃옵스(GitOps)를 여행하려는 입문자를 위한 안내서](https://yozm.wishket.com/magazine/detail/2010/)를 읽어보세요 :) 
 
 ---
-**Argo CD**를 이용한 GitOps 실습은 부록에 준비되어 있으니 참고하세요! </br>
+**Argo CD**를 이용한 추가 GitOps 실습은 부록에 준비되어 있으니 참고하세요! </br>
 <img src="https://argo-cd.readthedocs.io/en/stable/assets/argocd-ui.gif">
 
 [조 훈](https://github.com/sysnet4admin), 

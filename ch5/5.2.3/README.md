@@ -20,3 +20,7 @@ helm install jenkins edu/jenkins
 helm search repo <rep-name> 
 ```
 
+## Prerequisite
+```bash 
+bash nfs_exporter.sh dynamic-vol
+```

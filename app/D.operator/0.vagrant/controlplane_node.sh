@@ -19,7 +19,7 @@ cilium install \
   --version=v1.14.5 \
     --helm-set ipam.mode=kubernetes \
     --helm-set ipv4NativeRoutingCIDR="172.16.0.0/16" \
-    --helm-set enable-l2-announcements="true" \
+    --helm-set l2announcements.enabled="true" \
     --helm-set kubeProxyReplacement="true" \
     --helm-set externalIPs="true" \
     --helm-set hubble.enable="true"

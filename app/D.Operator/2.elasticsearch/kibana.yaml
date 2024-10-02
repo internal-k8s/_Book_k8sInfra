@@ -8,10 +8,6 @@ spec:
   elasticsearchRef:
     name: elasticsearch
     namespace: default
-  http:
-    tls:
-      selfSignedCertificate:
-        disabled: true
     service:
       spec:
         type: LoadBalancer

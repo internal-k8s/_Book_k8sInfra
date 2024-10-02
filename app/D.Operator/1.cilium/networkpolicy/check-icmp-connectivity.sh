@@ -14,4 +14,4 @@ kubectl exec net-conn-console -- ping -c 3 $ALLOW_IP
 echo -e "\n\n"
 
 echo "> [console to deny] ping 3회 테스트"
-kubectl exec exec net-conn-console -- ping -c 3 $DENY_IP
+kubectl exec net-conn-console -- ping -c 3 $DENY_IP

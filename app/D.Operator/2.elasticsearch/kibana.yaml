@@ -8,6 +8,7 @@ spec:
   elasticsearchRef:
     name: elasticsearch
     namespace: default
+  http:
     service:
       spec:
         type: LoadBalancer

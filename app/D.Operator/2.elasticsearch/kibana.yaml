@@ -20,5 +20,4 @@ spec:
   config:
     elasticsearch.requestHeadersWhitelist:
       - authorization
-    server.publicBaseUrl:
-      - "http://192.168.1.50"
+    server.publicBaseUrl: "http://192.168.1.50"

@@ -3,7 +3,7 @@
 ALLOW_IP=$(kubectl get pods net-conn-allow -o jsonpath="{.status.podIP}")
 DENY_IP=$(kubectl get po net-conn-deny -o jsonpath="{.status.podIP}")
 
-echo "현재 배포된 pod 상태"
+echo "현재 배포된 파드 상태"
 echo "=============================================="
 kubectl get po -o wide --show-labels
 echo "=============================================="

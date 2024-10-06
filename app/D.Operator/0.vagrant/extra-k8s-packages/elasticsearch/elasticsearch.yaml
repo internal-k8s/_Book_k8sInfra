@@ -2,11 +2,16 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: elasticsearch
+  namespace: elastic-system
 spec:
   version: 8.11.3
   nodeSets:
   - name: master
     count: 1
+    config:
+      node.roles: ["master"]
+      node.store.allow_mmap: false
+      node.remote_cluster_client: false
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
@@ -28,12 +33,12 @@ spec:
              requests:
                cpu: 200m
                memory: 256Mi
+  - name: data
+    count: 1
     config:
-      node.roles: ["master"]
-  - name: data-nodes
-    count: 2
-    config:
-      node.roles: ["data"]
+      node.store.allow_mmap: false
+      node.remote_cluster_client: false
+      node.roles: ["data", "ingest"]
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data
@@ -44,7 +49,14 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        accessModes:
-        - ReadWriteOnce
-    config:
-      node.store.allow_mmap: false
+    podTemplate:
+      spec:
+        containers:
+         - name: elasticsearch
+           resources:
+             limits:
+               cpu: 1000m
+               memory: 1Gi
+             requests:
+               cpu: 200m
+               memory: 256Mi

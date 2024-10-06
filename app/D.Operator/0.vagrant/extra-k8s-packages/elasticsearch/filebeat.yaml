@@ -2,6 +2,7 @@ apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
 metadata:
   name: filebeat
+  namespace: elastic-system
 spec:
   type: filebeat
   version: 8.11.3

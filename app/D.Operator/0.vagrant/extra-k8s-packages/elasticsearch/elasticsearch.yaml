@@ -5,7 +5,7 @@ metadata:
 spec:
   version: 8.11.3
   nodeSets:
-  - name: default
+  - name: master
     count: 1
     volumeClaimTemplates:
     - metadata:
@@ -28,5 +28,26 @@ spec:
              requests:
                cpu: 200m
                memory: 256Mi
+    config:
+      node.roles: ["data"]
+  - name: data-nodes
+    count: 2
+    config:
+      node.roles: ["data"]
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        storageClassName: managed-nfs-storage
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1000Gi
     config:
       node.store.allow_mmap: false

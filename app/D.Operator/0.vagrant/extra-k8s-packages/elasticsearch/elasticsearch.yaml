@@ -11,7 +11,6 @@ spec:
     config:
       node.roles: ["master"]
       node.store.allow_mmap: false
-      node.remote_cluster_client: false
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
@@ -37,7 +36,6 @@ spec:
     count: 1
     config:
       node.store.allow_mmap: false
-      node.remote_cluster_client: false
       node.roles: ["data", "ingest"]
     volumeClaimTemplates:
     - metadata:

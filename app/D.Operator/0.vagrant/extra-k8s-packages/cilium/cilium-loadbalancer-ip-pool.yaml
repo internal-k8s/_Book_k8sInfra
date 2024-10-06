@@ -4,4 +4,4 @@ metadata:
   name: lb-address-pool
 spec:
   blocks:
-  - cidr: 192.168.1.214/32
+  - cidr: 192.168.1.213/32

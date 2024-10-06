@@ -29,7 +29,7 @@ spec:
                cpu: 200m
                memory: 256Mi
     config:
-      node.roles: ["data"]
+      node.roles: ["master"]
   - name: data-nodes
     count: 2
     config:
@@ -46,8 +46,5 @@ spec:
             storage: 1Gi
         accessModes:
         - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1000Gi
     config:
       node.store.allow_mmap: false

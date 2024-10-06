@@ -2,6 +2,7 @@
 
 # init kubernetes 
 kubeadm init --token 123456.1234567890123456 --token-ttl 0 \
+             --skip-phases=addon/kube-proxy \
              --pod-network-cidr=172.16.0.0/16 \
              --apiserver-advertise-address=192.168.1.10 
 
@@ -10,15 +11,11 @@ mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
-# TODO: need integration BB/raw CNI raw address & config for kubernetes's network 
-CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
-CLI_ARCH=amd64
-if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
-curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
-sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
-rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
-# config for kubernetes's network by cilium 
+# cilium install
+curl -L --fail --remote-name-all https://github.com/sysnet4admin/BB/raw/refs/heads/main/cilium-cli/v0.16.19/cilium-linux-amd64.tar.gz
+sudo tar xvfC cilium-linux-amd64.tar.gz /usr/local/bin
+
+# config for kubernetes's network by cilium
 cilium install \
   --version=v1.16.2 \
   --helm-set ipam.mode=kubernetes \

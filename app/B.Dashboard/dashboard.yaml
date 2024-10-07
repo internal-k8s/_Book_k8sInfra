@@ -15,6 +15,7 @@
 ###
 # Not Source from https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 # Source from https://raw.githubusercontent.com/kubernetes/dashboard/master/charts/recommended.yaml
+# There are so many changement from v3.0.0 and helm is only supported after v3.0.0 officially. 
 #
 apiVersion: v1
 kind: Namespace
@@ -47,9 +48,10 @@ spec:
   ports:
     - port: 80
       targetPort: 9090
+      nodePort: 31000
   selector:
     k8s-app: kubernetes-dashboard
-  type: LoadBalancer
+  type: NodePort
 
 ---
 
@@ -182,7 +184,6 @@ spec:
       serviceAccountName: kubernetes-dashboard
       nodeSelector:
         "kubernetes.io/os": linux
-      # Comment the following tolerations if Dashboard must not be deployed on control plane nodes
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule

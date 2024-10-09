@@ -1,0 +1,82 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+## configuration variables ###
+########### name   m_ip w_ip #
+cl_val = [["bk8s", 110, 11,2],
+          ["hk8s", 120, 12,1],
+          ["wk8s", 130, 13,1]]
+# each of components to install 
+k8s_V    = '1.30.1-1.1'                   # Kubernetes
+ctrd_V   = '1.6.21-1'                     # Containerd
+## /configuration variables ###
+
+Vagrant.configure("2") do |config|
+
+  cl_val.each do |cv|
+  
+  #====================#
+  # Control-Plane Node #
+  #====================#
+
+    config.vm.define "#{cv[0]}-cp" do |cfg|
+      cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
+      cfg.vm.provider "virtualbox" do |vb|
+        vb.name = "#{cv[0]}-cp(github_SysNet4Admin)"
+        vb.cpus = 2
+        vb.memory = 1800 # a little consumed more 
+        vb.customize ["modifyvm", :id, "--groups", "/Multi-CTX(github_SysNet4Admin)"]
+      end
+      cfg.vm.host_name = "#{cv[0]}-cp"
+      cfg.vm.network "private_network", ip: "192.168.1.#{cv[1]}"
+      cfg.vm.network "forwarded_port", guest: 22, host: "60#{cv[1]}", auto_correct: true, id: "ssh"
+      cfg.vm.synced_folder "../data", "/vagrant", disabled: true 
+      cfg.vm.provision "shell", path: "k8s_env_build.sh", args: [ cv[0], cv[1], cv[2], cv[3], k8s_V[0..3] ]
+      cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, ctrd_V, "CP" ]
+      cfg.vm.provision "shell", path: "controlplane_node.sh", args: [ cv[1], cv[0] ]
+    end
+  
+  #==============#
+  # Worker Nodes #
+  #==============#
+
+    (1..cv[3]).each do |i|
+      config.vm.define "#{cv[0]}-w#{i}" do |cfg|
+        cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
+        cfg.vm.provider "virtualbox" do |vb|
+          vb.name = "#{cv[0]}-w#{i}(github_SysNet4Admin)"
+          vb.cpus = 1
+          vb.memory = 512
+          vb.customize ["modifyvm", :id, "--groups", "/Multi-CTX(github_SysNet4Admin)"]
+        end
+        cfg.vm.host_name = "#{cv[0]}-w#{i}"
+        cfg.vm.network "private_network", ip: "192.168.1.#{cv[2]}#{i}"
+        cfg.vm.network "forwarded_port", guest: 22, host: "60#{cv[2]}#{i}", auto_correct: true, id: "ssh"
+        cfg.vm.synced_folder "../data", "/vagrant", disabled: true
+        cfg.vm.provision "shell", path: "k8s_env_build.sh", args: [ cv[0], cv[1], cv[2], cv[3], k8s_V[0..3] ]
+        cfg.vm.provision "shell", path: "k8s_pkg_cfg.sh", args: [ k8s_V, ctrd_V, "W" ]
+        cfg.vm.provision "shell", path: "work_nodes.sh", args: [ cv[1], "#{cv[2]}#{i}" ]
+      end
+    end
+  end
+
+  #==============#
+  # Console Node #
+  #==============#
+
+  config.vm.define "console-k8s" do |cfg|
+    cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
+    cfg.vm.provider "virtualbox" do |vb|
+      vb.name = "console-k8s(github_SysNet4Admin)"
+      vb.cpus = 1
+      vb.memory = 512
+      vb.customize ["modifyvm", :id, "--groups", "/Multi-CTX(github_SysNet4Admin)"]
+    end
+    cfg.vm.host_name = "console-k8s"
+    cfg.vm.network "private_network", ip: "192.168.1.210"
+    cfg.vm.network "forwarded_port", guest: 22, host: 60210, auto_correct: true, id: "ssh"
+    cfg.vm.synced_folder "../data", "/vagrant", disabled: true
+    cfg.vm.provision "shell", path: "k8s_con_pack.sh", args: [ k8s_V, "#{cl_val[0][1]}", "#{cl_val[1][1]}", "#{cl_val[2][1]}", k8s_V[0..3] ]
+  end
+
+end

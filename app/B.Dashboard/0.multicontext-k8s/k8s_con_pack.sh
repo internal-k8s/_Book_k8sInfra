@@ -18,8 +18,11 @@ echo \
 # update repo info 
 apt-get update 
 
-# install kubectl
-apt-get install kubectl=$1 -y 
+# install kubectl fzf kubectx due to change k8s context faster
+apt-get install kubectl=$1 fzf -y 
+git clone https://github.com/ahmetb/kubectx /tmp/kubectx
+mv /tmp/kubectx/kubectx /usr/local/bin/kubectx
+mv /tmp/kubectx/kubens  /usr/local/bin/kubens
 
 # kubectl completion on bash-completion dir due to completion already installed 
 kubectl completion bash >/etc/bash_completion.d/kubectl

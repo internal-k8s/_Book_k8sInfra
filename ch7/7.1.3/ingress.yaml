@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-ingress
+  namespace: default
+spec:
+  ingressClassName: cilium
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: open-webui-gemma2-2b
+            port:
+              number: 80
+        path: /gemma2
+        pathType: Prefix
+      - backend:
+          service:
+            name: open-webui-llama3-2-1b
+            port:
+              number: 80
+        path: /llama3-2
+        pathType: Prefix
+      - backend:
+          service:
+            name: open-webui-qwen2-5-0-5b
+            port:
+              number: 80
+        path: /qwen2-5
+        pathType: Prefix
+      - backend:
+        service:
+          name: open-webui
+          port:
+            number: 80
+        path: /
+        pathType: Prefix
+      

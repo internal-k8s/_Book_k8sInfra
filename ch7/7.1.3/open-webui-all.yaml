@@ -29,7 +29,7 @@ spec:
   selector:
     app.kubernetes.io/instance: open-webui
     app.kubernetes.io/component: open-webui
-  type: ClusterIP
+  type: LoadBalancer
   ports:
   - protocol: TCP
     name: http

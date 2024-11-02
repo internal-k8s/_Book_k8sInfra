@@ -3,7 +3,7 @@
 
 ## configuration variables ##
 # max number of worker nodes
-N = 3
+N = 1
 # each of components to install
 k8s_V    = '1.30.1-1.1'                   # Kubernetes
 ctrd_V   = '1.6.21-1'                    # Containerd
@@ -42,7 +42,8 @@ Vagrant.configure("2") do |config|
       cfg.vm.provider "virtualbox" do |vb|
         vb.name = "w#{i}-k8s-#{k8s_V[0..5]}(github_SysNet4Admin)"
         vb.cpus = 1
-        vb.memory = 2048
+        # vb.memory = 2048
+        vb.memory = 6114
         vb.customize ["modifyvm", :id, "--groups", "/Book-k8s-U#{k8s_V[0..5]}-ctrd-#{ctrd_V[0..2]}(github_SysNet4Admin)"]
       end
       cfg.vm.host_name = "w#{i}-k8s"

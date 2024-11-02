@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  name: ollama-llama3-2-1b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama-llama3-2-1b
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ollama-llama3-2-1b
+    spec:
+      containers:
+      - image: sysnet4admin/ollama-llama3.2:1b
+        imagePullPolicy: IfNotPresent
+        name: ollama-llama3-2-1b
+        ports:
+        - containerPort: 11434
+          protocol: TCP
+      nodeSelector:
+        kubernetes.io/hostname: w2-k8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-llama3-2-1b
+spec:
+  ports:
+  - port: 11434
+    protocol: TCP
+    targetPort: 11434
+  selector:
+    app: ollama-llama3-2-1b

@@ -1,0 +1,95 @@
+---
+# Source: open-webui-llama3-2-1b/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: open-webui-llama3-2-1b
+  labels:
+    app.kubernetes.io/instance: open-webui-llama3-2-1b
+    app.kubernetes.io/component: open-webui-llama3-2-1b
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: 2Gi
+---
+# Source: open-webui-llama3-2-1b/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui-llama3-2-1b
+  labels:
+    helm.sh/chart: open-webui-llama3-2-1b-3.4.3
+    app.kubernetes.io/version: "0.3.35"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: open-webui-llama3-2-1b
+    app.kubernetes.io/component: open-webui-llama3-2-1b
+spec:
+  selector:
+    app.kubernetes.io/instance: open-webui-llama3-2-1b
+    app.kubernetes.io/component: open-webui-llama3-2-1b
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: http
+---
+# Source: open-webui-llama3-2-1b/templates/workload-manager.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui-llama3-2-1b
+  labels:
+    helm.sh/chart: open-webui-llama3-2-1b-3.4.3
+    app.kubernetes.io/version: "0.3.35"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: open-webui-llama3-2-1b
+    app.kubernetes.io/component: open-webui-llama3-2-1b
+spec:
+  replicas: 1
+  serviceName: open-webui-llama3-2-1b
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: open-webui-llama3-2-1b
+      app.kubernetes.io/component: open-webui-llama3-2-1b
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: open-webui-llama3-2-1b-3.4.3
+        app.kubernetes.io/version: "0.3.35"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/instance: open-webui-llama3-2-1b
+        app.kubernetes.io/component: open-webui-llama3-2-1b
+    spec:
+      initContainers:
+      - name: copy-app-data
+        image: ghcr.io/open-webui/open-webui:0.3.35
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'cp -R -n /app/backend/data/* /tmp/app-data/']
+        volumeMounts:
+        - name: data
+          mountPath: /tmp/app-data
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      containers:
+      - name: open-webui-llama3-2-1b
+        image: ghcr.io/open-webui/open-webui:0.3.35
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+        volumeMounts:
+        - name: data
+          mountPath: /app/backend/data
+        env:
+        - name: WEBUI_AUTH
+          value: "False"
+        - name: "OLLAMA_BASE_URLS"
+          value: "http://ollama-llama3-2-1b.default.svc.cluster.local:11434"
+        tty: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: open-webui-llama3-2-1b

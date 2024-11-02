@@ -1,0 +1,95 @@
+---
+# Source: open-webui/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: open-webui
+  labels:
+    app.kubernetes.io/instance: open-webui
+    app.kubernetes.io/component: open-webui
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: 2Gi
+---
+# Source: open-webui/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui
+  labels:
+    helm.sh/chart: open-webui-3.4.3
+    app.kubernetes.io/version: "0.3.35"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: open-webui
+    app.kubernetes.io/component: open-webui
+spec:
+  selector:
+    app.kubernetes.io/instance: open-webui
+    app.kubernetes.io/component: open-webui
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: http
+---
+# Source: open-webui/templates/workload-manager.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui
+  labels:
+    helm.sh/chart: open-webui-3.4.3
+    app.kubernetes.io/version: "0.3.35"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: open-webui
+    app.kubernetes.io/component: open-webui
+spec:
+  replicas: 1
+  serviceName: open-webui
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: open-webui
+      app.kubernetes.io/component: open-webui
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: open-webui-3.4.3
+        app.kubernetes.io/version: "0.3.35"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/instance: open-webui
+        app.kubernetes.io/component: open-webui
+    spec:
+      initContainers:
+      - name: copy-app-data
+        image: ghcr.io/open-webui/open-webui:0.3.35
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'cp -R -n /app/backend/data/* /tmp/app-data/']
+        volumeMounts:
+        - name: data
+          mountPath: /tmp/app-data
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      containers:
+      - name: open-webui
+        image: ghcr.io/open-webui/open-webui:0.3.35
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+        volumeMounts:
+        - name: data
+          mountPath: /app/backend/data
+        env:
+        - name: WEBUI_AUTH
+          value: "False"
+        - name: "OLLAMA_BASE_URLS"
+          value: "http://ollama-gemma2-2b.default.svc.cluster.local:11434;http://ollama-qwen2-5-0-5b.default.svc.cluster.local:11434;http://ollama-llama3-2-1b.default.svc.cluster.local:11434"
+        tty: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: open-webui

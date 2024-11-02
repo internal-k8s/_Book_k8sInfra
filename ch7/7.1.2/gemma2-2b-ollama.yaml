@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  name: ollama-gemma2-2b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama-gemma2-2b
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ollama-gemma2-2b
+    spec:
+      containers:
+      - image: sysnet4admin/ollama-gemma2:2b
+        imagePullPolicy: IfNotPresent
+        name: ollama-gemma2-2b
+        ports:
+        - containerPort: 11434
+          protocol: TCP
+      nodeSelector:
+        kubernetes.io/hostname: w1-k8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-gemma2-2b
+spec:
+  ports:
+  - port: 11434
+    protocol: TCP
+    targetPort: 11434
+  selector:
+    app: ollama-gemma2-2b

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  name: ollama-qwen2-5-0-5b
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama-qwen2-5-0-5b
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ollama-qwen2-5-0-5b
+    spec:
+      containers:
+      - image: sysnet4admin/ollama-qwen2.5:1.5b
+        imagePullPolicy: IfNotPresent
+        name: ollama-qwen2-5-0-5b
+        ports:
+        - containerPort: 11434
+          protocol: TCP
+      nodeSelector:
+        kubernetes.io/hostname: w3-k8s
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: ollama-qwen2-5-0-5b
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-qwen2-5-0-5b
+spec:
+  ports:
+  - port: 11434
+    protocol: TCP
+    targetPort: 11434
+  selector:
+    app: ollama-qwen2-5-0-5b

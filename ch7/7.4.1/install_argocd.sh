@@ -8,3 +8,6 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 
 PASSWORD="$(kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
 echo "🔒 Admin initial password is $PASSWORD"
+
+ENDPOINT="$(kubectl get service argocd-server -n argocd -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+echo "✅ Go to argocd web ui: http://$ENDPOINT"

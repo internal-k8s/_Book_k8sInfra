@@ -8,3 +8,8 @@ kubectl annotate storageclass managed-nfs-storage storageclass.kubernetes.io/is-
 # Setup loadbalancer
 (sleep 540 && kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.1.1/extra-k8s-packages/cilium/cilium-l2announcement-policy.yaml)&
 (sleep 560 && kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.1.1/extra-k8s-packages/cilium/cilium-loadbalancer-ip-pool.yaml)&
+
+helm install prometheus-stack edu/kube-prometheus-stack  \
+--namespace=monitoring \
+--create-namespace \
+-f $HOME/_Book_k8sInfra/ch7/7.1.1/extra-k8s-packages/prometheus-operator/values.yaml

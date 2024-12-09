@@ -9,6 +9,7 @@ kubectl annotate storageclass managed-nfs-storage storageclass.kubernetes.io/is-
 (sleep 540 && kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.1.1/extra-k8s-packages/cilium/cilium-l2announcement-policy.yaml)&
 (sleep 560 && kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.1.1/extra-k8s-packages/cilium/cilium-loadbalancer-ip-pool.yaml)&
 $HOME/_Book_k8sInfra/ch5/5.2.3/install_helm.sh
+helm repo add edu-k8s https://k8s-edu.github.io/Bkv2_main/helm-charts/
 helm install prometheus-stack edu/kube-prometheus-stack  \
 --namespace=monitoring \
 --create-namespace \

@@ -12,6 +12,19 @@ prometheus:
     loadBalancerIP: 192.168.1.11
     port: 80
   prometheusSpec:
+    storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: "managed-nfs-storage"
+            accessModes:
+            - "ReadWriteOnce"
+            resources:
+              requests:
+                storage: "8Gi"
+    image:
+      registry: prom
+      repository: prometheus
+      tag: v3.0.1
     version: v3.0.1
     scrapeInterval: "15s"
     evaluationInterval: "15s"
@@ -19,7 +32,7 @@ prometheus:
 grafana:
   adminPassword: "admin"
   image:
-    tag: "11.3.0"
+    tag: "11.4.0"
   service:
     type: LoadBalancer
     loadBalancerIP: 192.168.1.12
@@ -28,19 +41,6 @@ grafana:
   grafana.ini:
     server:
       root_url: "http://192.168.1.12"
-
-
-prometheus:
-  prometheusSpec:
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: "managed-nfs-storage"
-          accessModes:
-          - "ReadWriteOnce"
-          resources:
-            requests:
-              storage: "8Gi"
 
 kubeEtcd:
   service:

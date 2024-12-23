@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+helm install prometheus edu/prometheus \
+--namespace monitoring \
+--create-namespace \
+--set prometheus-pushgateway.enabled=false \
+--set alertmanager.enabled=false \
+--set nodeExporter.tolerations[0].key=node-role.kubernetes.io/control-plane \
+--set nodeExporter.tolerations[0].effect=NoSchedule \
+--set nodeExporter.tolerations[0].operator=Exist \
+--set server.securityContext.runAsGroup=1000 \
+--set server.securityContext.runAsUser=1000 \
+--set server.securityContext.runAsNonRoot=false \
+--set server.statefulSet.enabled=true \
+--set server.persistentVolume.storageClass="managed-nfs-storage" \
+--set server.service.type="LoadBalancer" \
+--set server.extraFlags[0]="storage.tsdb.no-lockfile" 

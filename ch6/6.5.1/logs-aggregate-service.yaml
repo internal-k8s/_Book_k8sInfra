@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.0.4
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "128m"
+        ports:
+        - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aggregate-service-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: aggregate-service
+      data:
+        redis:
+          host: redis.default.svc.cluster.local
+          port: 6379
+    springdoc:
+      api-docs:
+        path: /api-docs
+    logging:
+      structured:
+        format:
+          console: ecs
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: prometheus, health # /actuator/prometheus endpoint
+      metrics:
+        tags:
+          application: app # add tag to each prometheus metric
+        distribution:
+          percentiles-histogram:
+            http:
+              server:
+                requests: 'true'
+          minimum-expected-value: # Publish fewer histogram buckets by clamping the range of expected values.
+            http.server.requests: 5ms
+          maximum-expected-value:
+            http.server.requests: 1000ms
+      server:
+        port: 8081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aggregate-service
+spec:
+  selector:
+    matchLabels:
+      app: aggregate-service
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8081"
+        prometheus.io/path: "/actuator/prometheus"
+      labels:
+        app: aggregate-service
+    spec:
+      containers:
+      - name: aggregate-service
+        image: seongjumoon/aggregate-service:logs
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: SPRING_CONFIG_LOCATION
+          value: /config/application.yml
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+          readOnly: true
+      volumes:
+      - name: config-volume
+        configMap:
+          name: aggregate-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aggregate-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: aggregate-service
+  ports:
+  - port: 80
+    targetPort: 8080

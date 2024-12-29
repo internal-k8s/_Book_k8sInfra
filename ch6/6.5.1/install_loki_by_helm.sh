@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 echo "Install Log Stoage Loki by Helm"
 helm install loki edu/loki \
 --namespace monitoring \
@@ -22,14 +21,9 @@ helm install loki edu/loki \
 --set singleBinary.replicas=1 \
 --set singleBinary.persistence.enableStatefulSetAutoDeletePVC=false \
 --set singleBinary.persistence.storageClass="managed-nfs-storage" \
---set nodeSelector."kubernetes\.io/hostname"=cp-k8s \
---set singleBinary.tolerations[0].key=node-role.kubernetes.io/control-plane \
---set singleBinary.tolerations[0].effect=NoSchedule \
---set singleBinary.tolerations[0].operator=Exists \
 --set read.replicas=0 \
 --set backend.replicas=0 \
 --set write.replicas=0 
-
 echo "Install Fluent Bit by Helm"
 helm install fluent-bit edu/fluent-bit \
 --namespace monitoring \

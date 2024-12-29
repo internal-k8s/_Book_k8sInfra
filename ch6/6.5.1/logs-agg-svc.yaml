@@ -35,12 +35,12 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: aggregate-service-config
+  name: agg-svc-config
 data:
   application.yml: |
     spring:
       application:
-        name: aggregate-service
+        name: agg-svc
       data:
         redis:
           host: redis.default.svc.cluster.local
@@ -75,11 +75,11 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aggregate-service
+  name: agg-svc
 spec:
   selector:
     matchLabels:
-      app: aggregate-service
+      app: agg-svc
   template:
     metadata:
       annotations:
@@ -87,11 +87,11 @@ spec:
         prometheus.io/port: "8081"
         prometheus.io/path: "/actuator/prometheus"
       labels:
-        app: aggregate-service
+        app: agg-svc
     spec:
       containers:
-      - name: aggregate-service
-        image: seongjumoon/aggregate-service:logs
+      - name: agg-svc
+        image: seongjumoon/agg-svc:logs
         imagePullPolicy: Always
         resources:
           requests:
@@ -112,16 +112,16 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: aggregate-service-config
+          name: agg-svc-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: aggregate-service
+  name: agg-svc
 spec:
   type: LoadBalancer
   selector:
-    app: aggregate-service
+    app: agg-svc
   ports:
   - port: 80
     targetPort: 8080

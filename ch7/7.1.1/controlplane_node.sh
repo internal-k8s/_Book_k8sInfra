@@ -11,19 +11,20 @@ mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
-# cilium install
-curl -L --fail --remote-name-all https://github.com/sysnet4admin/BB/raw/refs/heads/main/cilium-cli/v0.16.19/cilium-linux-amd64.tar.gz
-sudo tar xvfC cilium-linux-amd64.tar.gz /usr/local/bin
+# install cilium binary 
+curl -LO \
+  https://github.com/sysnet4admin/BB/raw/refs/heads/main/cilium-cli/v0.16.19/cilium-linux-amd64.tar.gz
+tar xvfC cilium-linux-amd64.tar.gz /usr/local/bin
 
-# config for kubernetes's network by cilium
+# config for kubernetes's network by cilium (+hubble)
 cilium install \
-   --version=v1.16.2 \
+  --version=v1.16.2 \
   --helm-set ipam.mode=kubernetes \
   --helm-set ipv4NativeRoutingCIDR="172.16.0.0/16" \
   --helm-set l2announcements.enabled="true" \
   --helm-set kubeProxyReplacement="true" \
   --helm-set externalIPs.enabled="true" \
-  --helm-set hubble.enable="true" 
+  --helm-set hubble.ui=enabled="true"
 
 # kubectl completion on bash-completion dir
 kubectl completion bash > /etc/bash_completion.d/kubectl
@@ -49,3 +50,4 @@ git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfr
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 EOF
 chmod 700 /usr/local/bin/rerepo-Book_k8sInfra
+

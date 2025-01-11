@@ -10,21 +10,10 @@ kubeadm init --token 123456.1234567890123456 --token-ttl 0 \
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
-
-# install cilium binary 
-curl -LO \
-  https://github.com/sysnet4admin/BB/raw/refs/heads/main/cilium-cli/v0.16.19/cilium-linux-amd64.tar.gz
-tar xvfC cilium-linux-amd64.tar.gz /usr/local/bin
-
-# config for kubernetes's network by cilium (+hubble)
-cilium install \
-  --version=v1.16.2 \
-  --helm-set ipam.mode=kubernetes \
-  --helm-set ipv4NativeRoutingCIDR="172.16.0.0/16" \
-  --helm-set l2announcements.enabled="true" \
-  --helm-set kubeProxyReplacement="true" \
-  --helm-set externalIPs.enabled="true" \
-  --helm-set hubble.ui=enabled="true"
+  
+# CNI raw address & config for kubernetes's network 
+CNI_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/master/k8s/CNI"
+kubectl apply -f $CNI_ADDR/cilium-v1.16.2-w-hubble.yaml
 
 # kubectl completion on bash-completion dir
 kubectl completion bash > /etc/bash_completion.d/kubectl

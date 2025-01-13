@@ -12,7 +12,7 @@ cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
   
 # CNI raw address & config for kubernetes's network 
-CNI_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/master/k8s/CNI"
+CNI_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/CNI/"
 kubectl apply -f $CNI_ADDR/cilium-v1.16.2-w-hubble.yaml
 
 # kubectl completion on bash-completion dir

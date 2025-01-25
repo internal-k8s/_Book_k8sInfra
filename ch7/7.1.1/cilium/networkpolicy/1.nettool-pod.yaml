@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: net-conn-console
+  labels:
+    icmp: allow
+spec:
+  containers:
+  - image: sysnet4admin/net-tools-ifn
+    name: net
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: net-conn-allow
+  labels:
+    icmp: allow
+spec:
+  containers:
+  - image: sysnet4admin/net-tools-ifn
+    name: net
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: net-conn-deny
+  labels:
+    icmp: deny
+spec:
+  containers:
+  - image: sysnet4admin/net-tools-ifn
+    name: net

@@ -12,8 +12,6 @@ spec:
         - fields:
           - type: 8 
             family: IPv4
-          - type: EchoRequest
-            family: IPv6
   ingress:
     - fromEndpoints:
         - matchLabels:
@@ -22,8 +20,6 @@ spec:
         - fields:
           - type: 8 
             family: IPv4
-          - type: EchoRequest
-            family: IPv6
   enableDefaultDeny:
     egress: true 
     ingress: true

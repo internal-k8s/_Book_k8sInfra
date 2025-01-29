@@ -1,6 +1,5 @@
 
 #!/usr/bin/env bash
-
 helm install grafana edu/grafana \
 --namespace monitoring \
 --create-namespace \

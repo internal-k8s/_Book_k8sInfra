@@ -10,7 +10,7 @@ kubectl apply -f ~/_Book_k8sInfra/ch3/3.4.3/nfs-subdir-external-provisioner-v4.0
 kubectl apply -f ~/_Book_k8sInfra/ch3/3.4.3/storageclass.yaml
 bash ~/_Book_k8sInfra/ch3/3.4.3/nfs_exporter.sh "dynamic-vol"
 
-# Helm & repo add 
+# Helm & repo add and then helm_completion.sh to avoid reload shell previously
 bash ~/_Book_k8sInfra/ch5/5.2.3/install_helm.sh
 /usr/local/bin/helm repo add edu https://k8s-edu.github.io/Bkv2_main/helm-charts
 bash ~/_Book_k8sInfra/ch5/5.2.3/helm_completion.sh

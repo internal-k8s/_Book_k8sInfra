@@ -13,5 +13,5 @@ bash ~/_Book_k8sInfra/ch3/3.4.3/nfs_exporter.sh "dynamic-vol"
 # Helm & repo add 
 bash ~/_Book_k8sInfra/ch5/5.2.3/install_helm.sh
 bash ~/_Book_k8sInfra/ch5/5.2.3/helm_completion.sh
-/usr/local/bin/helm repo add edu https://k8s-edu.github.io/Bkv2_main/helm-charts
+bash /usr/local/bin/helm repo add edu https://k8s-edu.github.io/Bkv2_main/helm-charts
 

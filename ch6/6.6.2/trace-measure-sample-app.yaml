@@ -84,7 +84,7 @@ spec:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "8081"
+        prometheus.io/port: "8080"
         prometheus.io/path: "/actuator/prometheus"
       labels:
         app: agg-svc

@@ -70,7 +70,7 @@ data:
           maximum-expected-value:
             http.server.requests: 1000ms
       server:
-        port: 8081
+        port: 8080
 ---
 apiVersion: apps/v1
 kind: Deployment

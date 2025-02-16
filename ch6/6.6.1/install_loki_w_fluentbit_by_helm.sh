@@ -19,11 +19,11 @@ helm install loki edu/loki \
 --set chunksCache.enabled=false \
 --set resultsCache.enabled=false \
 --set singleBinary.replicas=1 \
---set singleBinary.persistence.enableStatefulSetAutoDeletePVC=false \
---set singleBinary.persistence.storageClass="managed-nfs-storage" \
 --set read.replicas=0 \
 --set backend.replicas=0 \
---set write.replicas=0 
+--set write.replicas=0 \
+--set singleBinary.persistence.enableStatefulSetAutoDeletePVC=false \
+--set singleBinary.persistence.storageClass="managed-nfs-storage" 
 echo "[2/2] Install log forwarder fluent-bit by Helm"
 helm install fluent-bit edu/fluent-bit \
 --namespace monitoring \

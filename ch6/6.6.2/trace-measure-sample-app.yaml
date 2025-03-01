@@ -91,7 +91,7 @@ spec:
     spec:
       containers:
       - name: agg-svc
-        image: seongjumoon/aggregate-service:traces
+        image: seongjumoon/aggregate-service:trace
         imagePullPolicy: Always
         resources:
           requests:

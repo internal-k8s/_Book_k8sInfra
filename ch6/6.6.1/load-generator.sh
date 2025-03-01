@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "Profile generate."
+echo "Log generate."
 echo "Write data to redis from user(id: 1000)"
 curl -X 'POST' -w '\n' \
   'http://192.168.1.13/api/v1/score/1000' \

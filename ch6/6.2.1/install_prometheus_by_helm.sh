@@ -13,4 +13,4 @@ helm install prometheus edu/prometheus \
 --set server.statefulSet.enabled=true \
 --set server.persistentVolume.storageClass="managed-nfs-storage" \
 --set server.service.type="LoadBalancer" \
---set server.extraFlags[0]="storage.tsdb.no-lockfile" 
+--set server.extraFlags[1]="storage.tsdb.no-lockfile" 

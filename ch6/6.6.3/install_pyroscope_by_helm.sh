@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-helm install pyroscope edu/pyroscope \
+helm upgrade --reuse-values grafana-stack edu/grafana-stack \
 --namespace monitoring \
 --create-namespace \
---set alloy.enabled=false
+--set pyroscope.enabled=true

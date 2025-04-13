@@ -1,7 +1,8 @@
 
 #!/usr/bin/env bash
-helm install tempo edu/tempo \
+helm upgrade --reuse-values grafana-stack edu/grafana-stack \
 --namespace monitoring \
 --create-namespace \
---set persistence.enabled=true \
---set persistence.storageClassName="managed-nfs-storage"
+--set tempo.enabled=true \
+--set tempo.persistence.enabled=true \
+--set tempo.persistence.storageClassName="managed-nfs-storage"

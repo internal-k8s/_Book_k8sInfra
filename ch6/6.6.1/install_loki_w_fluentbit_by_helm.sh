@@ -8,7 +8,7 @@ helm install grafana-stack edu/grafana-stack \
 --set loki.singleBinary.persistence.enableStatefulSetAutoDeletePVC=false \
 --set loki.singleBinary.persistence.storageClass="managed-nfs-storage"
 --set fluent-bit.enabled=true \
---set fluent-bit.loki.host=loki-gateway.monitoring.svc.cluster.local \
+--set fluent-bit.loki.host=grafana-stack-loki-gateway.monitoring.svc.cluster.local/\
 --set flient-bit.tolerations[0].key=node-role.kubernetes.io/control-plane \
 --set flient-bit.lolerations[0].effect=NoSchedule \
 --set fluent-bit.tolerations[0].operator=Exists

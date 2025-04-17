@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 echo "📊 로그 데이터를 생성합니다."
+AGG_SVC_HOST=$(kubectl get svc agg-svc -n colosseum -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 echo "사용자 ID 1000의 점수를 100점씩 집계하는 API를 호출합니다."
 WRITE_RESPONSE=$(curl -X 'POST' -w '\n' \
-  'http://192.168.1.13/api/v1/score/1000' \
+  "http://$AGG_SVC_HOST/api/v1/score/1000" \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -15,7 +16,7 @@ echo -e "사용자 ID 1000의 점수가 서버에 반영되었습니다.\n> 현�
 
 echo "사용자 ID 1000의 점수를 읽어오는 API를 호출합니다."
 READ_RESPONSE=$(curl -X 'GET' -w '\n' \
-  'http://192.168.1.13/api/v1/score/1000' \
+  "http://$AGG_SVC_HOST/api/v1/score/1000" \
   -H 'accept: application/json')
 echo "HTTP 응답: $READ_RESPONSE"
 SCORE=$(echo $READ_RESPONSE | jq -r '.score')

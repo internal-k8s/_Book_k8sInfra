@@ -17,3 +17,5 @@ docker build -f ./Dockerfile.profile -t 192.168.1.10:8443/library/aggregate-serv
 
 echo "re-deploy fix application."
 kubectl set image deploy agg-svc -n colosseum agg-svc=192.168.1.10:8443/library/aggregate-service:fix
+
+cd -

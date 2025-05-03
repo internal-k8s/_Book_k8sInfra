@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 echo "Clone from github, agg-svc codebase"
-git clone https://github.com/k8s-edu/Bkv2_sub_agg-svc
-cd Bkv2_sub_agg-svc
+git clone https://github.com/k8s-edu/Bkv2_sub_colosseum
+cd Bkv2_sub_colosseum/Bkv2_sub_colosseum-agg
 
 echo "Finding slow warn log."
 grep -r "This request was processed abnormally" -C 2

@@ -19,6 +19,7 @@ bash 1-1.create_certs.sh ; bash 1-2.deploy_certs.sh
 cd ../2.harbor
 bash 2-1.get_harbor.sh   ; bash 2-2.modify_config.sh
 bash 2-3.prepare         ; bash 2-4.install.sh
+echo "Waiting 10secs for harbor on" ; sleep 10
 docker login 192.168.1.10:8443 -u admin -p admin
 
 # Helm & repo add and then helm_completion.sh to avoid reload shell previously

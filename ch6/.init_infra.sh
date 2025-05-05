@@ -26,7 +26,3 @@ docker login 192.168.1.10:8443 -u admin -p admin
 bash ~/_Book_k8sInfra/ch5/5.2.3/install_helm.sh
 /usr/local/bin/helm repo add edu https://k8s-edu.github.io/Bkv2_main/helm-charts
 bash ~/_Book_k8sInfra/ch5/5.2.3/helm_completion.sh
-
-# Return to the playground 
-cd ~/_Book_k8sInfra/ch6/
-

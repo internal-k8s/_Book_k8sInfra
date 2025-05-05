@@ -22,6 +22,4 @@ bash 2-3.prepare         ; bash 2-4.install.sh
 echo "Waiting 10secs for harbor on" ; sleep 10
 docker login 192.168.1.10:8443 -u admin -p admin
 
-# Return to the playground 
-cd ~/_Book_k8sInfra/ch5/
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+HARBOR_FILE_DIR=/opt/harbor
 HARBOR_HOST=192.168.1.10:8443
 DOCKER_CERT_DIR=/etc/docker/certs.d/$HARBOR_HOST
 HOST_CERT_DIR=/usr/local/share/ca-certificates
@@ -18,7 +19,7 @@ for i in {1..3}
   do
     echo "Copy to node w$i-k8s"
     sshpass -p vagrant scp -o StrictHostKeyChecking=no \
-	    ./ca.crt 192.168.1.10$i:$HOST_CERT_DIR/harbor_ca.crt
+	    $HARBOR_FILE_DIR/ca.crt 192.168.1.10$i:$HOST_CERT_DIR/harbor_ca.crt
     sshpass -p vagrant ssh root@192.168.1.10$i \
 	    update-ca-certificates 
     sshpass -p vagrant ssh root@192.168.1.10$i \
@@ -26,11 +27,9 @@ for i in {1..3}
   done
 
 echo "[Step 4/5] Copy certificate to control plane"
-cp ca.crt $DOCKER_CERT_DIR/ca.crt
-cp ca.crt $HOST_CERT_DIR/harbor_ca.crt
+cp $HARBOR_FILE_DIR/ca.crt $DOCKER_CERT_DIR/ca.crt
+cp $HARBOR_FILE_DIR/ca.crt $HOST_CERT_DIR/harbor_ca.crt
 
-echo "[Step 5/5] Move server key and certificate to Harbor"
-mv server.key /harbor-data
-mv server.crt /harbor-data
+echo "[Step 5/5] Update certificate and restart containerd"
 update-ca-certificates 
 systemctl restart containerd

@@ -8,9 +8,9 @@ sed -i 's/hostname: reg.mydomain.com/hostname: 192.168.1.10/' \
        $HARBOR_TEMPLATE
 sed -i 's/port: 443/port: 8443/' \
        $HARBOR_TEMPLATE
-sed -i 's/certificate: \/your\/certificate\/path/certificate: \/harbor-data\/server.crt/' \
+sed -i 's/certificate: \/your\/certificate\/path/certificate: \/opt\/harbor\/server.crt/' \
        $HARBOR_TEMPLATE
-sed -i 's/private_key: \/your\/private\/key\/path/private_key: \/harbor-data\/server.key/' \
+sed -i 's/private_key: \/your\/private\/key\/path/private_key: \/opt\/harbor\/server.key/' \
        $HARBOR_TEMPLATE
 sed -i 's/harbor_admin_password: Harbor12345/harbor_admin_password: admin/' \
        $HARBOR_TEMPLATE

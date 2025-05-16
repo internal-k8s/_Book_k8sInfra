@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-HARBOR_FILE_DIR=$(dirname $(realpath "$0"))
+HARBOR_FILE_DIR=/opt/harbor
 
 echo "Download harbor-online-installer-v.2.10.0..."
 curl -LO https://github.com/goharbor/harbor/releases/download/v2.10.0/harbor-online-installer-v2.10.0.tgz
@@ -16,7 +16,7 @@ echo "install.sh >>> 2-4.install.sh"
 mv prepare 2-3.prepare
 mv install.sh 2-4.install.sh
 
-# modify 2-4.install.sha
+# modify 2-4.install.sh
 sed -i 's/prepare $prepare_para/2-3.prepare $prepare_para/' 2-4.install.sh
 sed -i 's/$DOCKER_COMPOSE up -d/$DOCKER_COMPOSE -p harbor up -d/' 2-4.install.sh
 

@@ -2,11 +2,13 @@
 
 TAG=v2.10.0
 HARBOR_HOST=192.168.1.10:8443
+HARBOR_FILE_DIR=/opt/harbor
+HARBOR_DATA_DIR=/harbor-data
 DOCKER_CERT_DIR=/etc/docker/certs.d/$HARBOR_HOST
 HOST_CERT_DIR=/usr/local/share/ca-certificates
 
 echo "[Step 1/6] Stopping Harbor"
-docker compose -f 2.harbor/docker-compose.yml down
+docker compose -f $HARBOR_FILE_DIR/docker-compose.yml down
 
 echo "[Step 2/6] Remove Harbor & files"
 # preserve initial scripts
@@ -18,7 +20,7 @@ mv 2-1.get_harbor.sh ./2.harbor
 mv 2-2.modify_config.sh ./2.harbor
 
 echo "[Step 3/6] Removing Harbor images"
-docker rmi goharbor/redis-photon:$TAG \
+docker rmi -f goharbor/redis-photon:$TAG \
 goharbor/harbor-registryctl:$TAG \
 goharbor/registry-photon:$TAG \
 goharbor/nginx-photon:$TAG \
@@ -44,8 +46,8 @@ for i in {1..3}
   done
 
 echo "[Step 5/6] Remove copied key and certificate from others components"
-rm -f ./1.harbor_pki/ca.crt ./1.harbor_pki/ca.key ./1.harbor_pki/server.csr
-rm -rf /harbor-data
+rm -rf $HARBOR_FILE_DIR
+rm -rf $HARBOR_DATA_DIR
 rm -rf $DOCKER_CERT_DIR
 rm -f $HOST_CERT_DIR/harbor_ca.crt
 

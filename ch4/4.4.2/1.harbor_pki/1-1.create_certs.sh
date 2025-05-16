@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 HARBOR_FILE_DIR=/opt/harbor
-echo "[Step 1/6] Create Harbor file directory"
+echo "[Step 1/6] Create Harbor file directory($HARBOR_FILE_DIR)"
 mkdir -p $HARBOR_FILE_DIR
 
 echo "[Step 2/6] Create CA key"

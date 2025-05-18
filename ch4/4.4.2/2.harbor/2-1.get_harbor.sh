@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 HARBOR_FILE_DIR=/opt/harbor
+echo "remove existing configuration files..."
+rm -f 2-3.prepare 2-4.install.sh commom.sh LICENSE
+
 
 echo "Download harbor-online-installer-v.2.10.0..."
 curl -LO https://github.com/goharbor/harbor/releases/download/v2.10.0/harbor-online-installer-v2.10.0.tgz
@@ -16,9 +19,13 @@ echo "install.sh >>> 2-4.install.sh"
 mv prepare 2-3.prepare
 mv install.sh 2-4.install.sh
 
+# modify 2-3.prepare.sh
+sed -i '3 i\\HARBOR_BUNDLE_DIR=/opt/harbor' 2-3.prepare
+
 # modify 2-4.install.sh
-sed -i 's/prepare $prepare_para/2-3.prepare $prepare_para/' 2-4.install.sh
-sed -i 's/$DOCKER_COMPOSE up -d/$DOCKER_COMPOSE -p harbor up -d/' 2-4.install.sh
+sed -i '/prepare $prepare_para/d' 2-4.install.sh
+sed -i 's/$DOCKER_COMPOSE/$DOCKER_COMPOSE -f \/opt\/harbor\/docker-compose.yml/' 2-4.install.sh
+sed -i 's/up -d/-p harbor up -d/' 2-4.install.sh
 
 # create systemd startup service for Harbor
 cat <<EOF > /usr/lib/systemd/system/harbor.service

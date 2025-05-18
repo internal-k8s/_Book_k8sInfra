@@ -27,8 +27,8 @@ for i in {1..3}
   done
 
 echo "[Step 4/5] Copy certificate to control plane"
-cp $HARBOR_FILE_DIR/ca.crt $DOCKER_CERT_DIR/ca.crt
-cp $HARBOR_FILE_DIR/ca.crt $HOST_CERT_DIR/harbor_ca.crt
+cp -f $HARBOR_FILE_DIR/ca.crt $DOCKER_CERT_DIR/ca.crt
+cp -f $HARBOR_FILE_DIR/ca.crt $HOST_CERT_DIR/harbor_ca.crt
 
 echo "[Step 5/5] Update certificate and restart containerd"
 update-ca-certificates 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 HARBOR_TEMPLATE=harbor.yml.tmpl
-HARBOR_PREPARE=harbor.yml 
+HARBOR_PREPARE=/opt/harbor/harbor.yml 
 
 echo "Modify $HARBOR_TEMPLATE to prepare the Harbor"
 sed -i 's/hostname: reg.mydomain.com/hostname: 192.168.1.10/' \

@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 HARBOR_FILE_DIR=/opt/harbor
-echo "remove existing configuration files..."
+HARBOR_DATA_DIR=/harbor-data
+echo "Remove existing configuration files..."
 rm -f 2-3.prepare 2-4.install.sh commom.sh LICENSE
 
+echo "Create Harbor data directory($HARBOR_DATA_DIR)"
+mkdir -p $HARBOR_DATA_DIR
 
 echo "Download harbor-online-installer-v.2.10.0..."
 curl -LO https://github.com/goharbor/harbor/releases/download/v2.10.0/harbor-online-installer-v2.10.0.tgz

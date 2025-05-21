@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 HARBOR_FILE_DIR=/opt/harbor
-HARBOR_DATA_DIR=/harbor-data
+HARBOR_DATA_DIR=/data/harbor
 echo "Remove existing configuration files..."
 rm -f 2-3.prepare 2-4.install.sh commom.sh LICENSE
 

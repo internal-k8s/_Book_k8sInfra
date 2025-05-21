@@ -3,7 +3,7 @@
 TAG=v2.10.0
 HARBOR_HOST=192.168.1.10:8443
 HARBOR_FILE_DIR=/opt/harbor
-HARBOR_DATA_DIR=/harbor-data
+HARBOR_DATA_DIR=/data/harbor
 DOCKER_CERT_DIR=/etc/docker/certs.d/$HARBOR_HOST
 HOST_CERT_DIR=/usr/local/share/ca-certificates
 

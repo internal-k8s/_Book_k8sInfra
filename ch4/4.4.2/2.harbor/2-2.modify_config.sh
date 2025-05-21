@@ -14,7 +14,7 @@ sed -i 's/private_key: \/your\/private\/key\/path/private_key: \/opt\/harbor\/se
        $HARBOR_TEMPLATE
 sed -i 's/harbor_admin_password: Harbor12345/harbor_admin_password: admin/' \
        $HARBOR_TEMPLATE
-sed -i 's/data_volume: \/data/data_volume: \/harbor-data/' \
+sed -i 's/data_volume: \/data/data_volume: \/data\/harbor/' \
        $HARBOR_TEMPLATE
 
 echo "Overwrite modified $HARBOR_TEMPLATE to $HARBOR_PREPARE"

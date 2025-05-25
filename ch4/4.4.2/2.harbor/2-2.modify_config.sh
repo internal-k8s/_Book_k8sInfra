@@ -12,7 +12,7 @@ sed -i 's,certificate: /your/certificate/path/certificate: /opt/harbor/server.cr
        $HARBOR_TEMPLATE
 sed -i 's,private_key: /your/private/key/path/private_key: /opt/harbor/server.key,' \
        $HARBOR_TEMPLATE
-sed -i 's,harbor_admin_password: Harbor12345,harbor_admin_password: admin,' \
+sed -i 's/harbor_admin_password: Harbor12345/harbor_admin_password: admin/' \
        $HARBOR_TEMPLATE
 sed -i 's,data_volume: /data,data_volume: /data/harbor,' \
        $HARBOR_TEMPLATE

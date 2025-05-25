@@ -27,7 +27,7 @@ sed -i '3 i\\HARBOR_BUNDLE_DIR=/opt/harbor' 2-3.prepare
 
 # modify 2-4.install.sh
 sed -i '/prepare $prepare_para/d' 2-4.install.sh
-sed -i 's/$DOCKER_COMPOSE/$DOCKER_COMPOSE -f \/opt\/harbor\/docker-compose.yml/' 2-4.install.sh
+sed -i 's,$DOCKER_COMPOSE,$DOCKER_COMPOSE -f /opt/harbor/docker-compose.yml,' 2-4.install.sh
 sed -i 's/up -d/-p harbor up -d/' 2-4.install.sh
 
 # create systemd startup service for Harbor

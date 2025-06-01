@@ -11,5 +11,5 @@ echo "[Step 3/4] Uninstalling Redis..."
 helm uninstall redis \
 --namespace colosseum > /dev/null 2>&1
 
-echo "[Step 4/4] Remove colosseum namespace."
+echo "[Step 4/4] Deleting colosseum namespace..."
 kubectl delete namespace colosseum

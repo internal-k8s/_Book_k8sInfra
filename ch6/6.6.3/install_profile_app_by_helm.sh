@@ -4,8 +4,8 @@ helm upgrade --install redis edu/redis \
 --namespace colosseum \
 --create-namespace > /dev/null 2>&1
 
-echo "Wait for Redis is ready."
-kubectl -n colosseum wait deployment/redis --for=condition=available
+kubectl -n colosseum wait deployment/redis --for=condition=available > /dev/null 2>&1
+echo "Done"
 
 echo "[Step 2/3] Deploying Colosseum apps..."
 helm upgrade --install colosseum edu/colosseum \

@@ -16,3 +16,5 @@ echo "[Step 3/3] Deploying Load-generator..."
 helm install load-generator edu/load-generator \
 --namespace colosseum \
 --create-namespace > /dev/null 2>&1
+
+echo "Done"

@@ -3,7 +3,7 @@ echo "[Step 1/4] Uninstalling Load-generator..."
 helm uninstall  load-generator \
 --namespace colosseum 
 
-echo "[Step 2/4] Uninstalling Colosseum apps..."
+echo "[Step 2/4] Uninstalling Colosseum app..."
 helm uninstall colosseum \
 --namespace colosseum 
 

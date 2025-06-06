@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ $# -eq 0 ]; then
-  echo "usage: copy_docker_2_docker.sh <node-name>"; exit 0
+  echo "Usage: copy_docker_2_docker.sh <node-name>"; exit 0
 fi
 
 DOCKER_NAMESPACE="moby"

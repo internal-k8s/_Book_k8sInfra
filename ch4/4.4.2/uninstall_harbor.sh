@@ -51,7 +51,7 @@ fi
 echo "[Step 4/6] Removing copied certificates"
 for i in {1..3}
   do
-    echo "remove certificate on w$i-k8s"
+    echo "Remove certificate on w$i-k8s"
     sshpass -p vagrant ssh -o StrictHostKeyChecking=no \
             root@192.168.1.10$i rm -rf $DOCKER_CERT_DIR
     sshpass -p vagrant ssh root@192.168.1.10$i \

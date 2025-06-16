@@ -14,7 +14,11 @@ kubectl annotate storageclass managed-nfs-storage storageclass.kubernetes.io/is-
 # it looks like Operator limitation
 # QA: 
 # - 300sec can deploy but safety range is from 540 - 600 
-(sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/cilium-l2-ippool.yaml)&
+
+# config cilium layer2 mode 
+(sleep 540 && kubectl apply -f $EXTRA_PKGS_ADDR/cilium-l2mode.yaml)&
+# config cilium ip range and it cannot deploy now due to CRD cannot create yet 
+(sleep 600 && kubectl apply -f $EXTRA_PKGS_ADDR/cilium-iprange.yaml)&
 
 # install helm & add repo 
 $HOME/_Book_k8sInfra/ch5/5.2.3/install_helm.sh

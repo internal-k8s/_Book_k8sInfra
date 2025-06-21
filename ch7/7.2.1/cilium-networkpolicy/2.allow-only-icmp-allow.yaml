@@ -1,25 +1,26 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: "allow-icmp-can-ping-policy"
+  name: "allow-icmp-ping-policy"
 spec:
-  endpointSelector: {} 
-  egress:
-    - toEndpoints:
-        - matchLabels:
-            icmp: allow
-      icmps:
-        - fields:
-          - type: 8 
-            family: IPv4
+  endpointSelector:
+    matchExpressions:
+      - key: "icmp"
+        operator: "Exists"
   ingress:
     - fromEndpoints:
         - matchLabels:
             icmp: allow
       icmps:
         - fields:
-          - type: 8 
+          - type: 8
             family: IPv4
-  enableDefaultDeny:
-    egress: true 
-    ingress: true
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            icmp: allow
+      icmps:
+        - fields:
+          - type: 8
+            family: IPv4
+

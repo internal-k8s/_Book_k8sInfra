@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: nginx-headlmap
-  name: nginx-headlmap
+    app: nginx-by-headlmap
+  name: nginx-by-headlmap
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: nginx-headlmap
+      app: nginx-by-headlmap
   template:
     metadata:
       labels:
-        app: nginx-headlmap
+        app: nginx-by-headlmap
     spec:
       containers:
       - image: nginx

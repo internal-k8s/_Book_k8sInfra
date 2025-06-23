@@ -23,8 +23,6 @@ kubectl annotate storageclass managed-nfs-storage storageclass.kubernetes.io/is-
 # install helm & add repo 
 $HOME/_Book_k8sInfra/ch5/5.2.3/install_helm.sh
 helm repo add edu https://k8s-edu.github.io/Bkv2_main/helm-charts/
-# add promethues repo for headlamp's catalog 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
 # helm completion on bash-completion dir & alias+
 helm completion bash > /etc/bash_completion.d/helm

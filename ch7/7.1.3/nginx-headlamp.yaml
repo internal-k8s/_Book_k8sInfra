@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-headlmap
+  name: nginx-headlmap
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-headlmap
+  template:
+    metadata:
+      labels:
+        app: nginx-headlmap
+    spec:
+      containers:
+      - image: nginx
+        name: nginx

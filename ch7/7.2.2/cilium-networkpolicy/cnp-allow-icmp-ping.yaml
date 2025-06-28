@@ -1,7 +1,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-icmp-ping-policy
+  name: cnp-allow-icmp-ping
 spec:
   endpointSelector:
     matchExpressions:

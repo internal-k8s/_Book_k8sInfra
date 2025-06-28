@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: net-conn-console
   labels:
+    app: net-conn-console
     icmp: allow
 spec:
   containers:
@@ -14,6 +15,7 @@ kind: Pod
 metadata:
   name: net-conn-allow
   labels:
+    app: net-conn-allow
     icmp: allow
 spec:
   containers:
@@ -25,6 +27,7 @@ kind: Pod
 metadata:
   name: net-conn-deny
   labels:
+    app: net-conn-deny
     icmp: deny
 spec:
   containers:

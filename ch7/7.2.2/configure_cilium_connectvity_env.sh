@@ -22,15 +22,15 @@ else
   echo "You may check 'kubectl get pods -n kube-system | grep cilium' command."
 fi
 
-echo "Second, Prepare the pods, for check cilium network connectivity and network policy."
+echo "Second, prepare the pods for check cilium network connectivity and network policy."
 kubectl apply -f net-conn-pods.yaml
 echo "Create the pod."
 
 echo "Check the pod is running."
 kubectl get pods -o wide
 
-echo "Yon can go to next step, joureny to cilium and hubble ui."
-echo "The hubble ui is available at http://$(kubectl -n kube-system get svc hubble-ui -o jsonpath='{.status.loadBalancer.ingress[0].ip})"
+echo "Yon can go to next step, journey to cilium and hubble ui."
+echo "The hubble ui is available at http://$(kubectl -n kube-system get svc hubble-ui -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 
 echo "You can check the network connectivity and network policy."
 echo "Let's check the network connectivity."

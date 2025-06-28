@@ -23,7 +23,7 @@ done
   echo "control plane rolled out successfully!"
 echo "===================================================="
 
-echo "Seconds, cleanup grafana, prometheus, kube-state-metrics, node-exporter via helm."
+echo "Seconds, cleanup prometheus-stack (including grafana, prometheus, kube-state-metrics, node-exporter) via helm."
 helm uninstall prometheus-stack \
 --namespace=monitoring \
 

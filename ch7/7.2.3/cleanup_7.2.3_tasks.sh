@@ -26,7 +26,6 @@ echo "===================================================="
 echo "Seconds, cleanup grafana, prometheus, kube-state-metrics, node-exporter via helm."
 helm uninstall prometheus-stack \
 --namespace=monitoring \
--f $HOME/_Book_k8sInfra/ch7/7.2.3/prometheus-operator-values.yaml
 
 echo "===================================================="
 echo "Prometheus-stack (including grafana, prometheus, kube-state-metrics, node-exporter) are now unavailable."

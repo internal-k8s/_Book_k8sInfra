@@ -22,7 +22,7 @@ else
   echo "You may check 'kubectl get pods -n kube-system | grep cilium' command."
 fi
 
-echo "Second, delete the pods, for cleanup and move forward to next task."
+echo "Second, delete the pods for cleanup and move forward to next task."
 kubectl delete -f net-conn-pods.yaml
 echo "Delete the pod."
 

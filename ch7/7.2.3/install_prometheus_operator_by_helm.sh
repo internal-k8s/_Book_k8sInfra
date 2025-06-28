@@ -26,7 +26,7 @@ done
   echo "control plane rolled out successfully!"
 echo "===================================================="
 
-echo "Seconds, deploy grafana, prometheus, kube-state-metrics, node-exporter via helm."
+echo "Seconds, deploy prometheus-stack (including grafana, prometheus, kube-state-metrics, node-exporter) via helm."
 helm install prometheus-stack edu/kube-prometheus-stack  \
 --namespace=monitoring \
 --create-namespace \

@@ -26,6 +26,7 @@ echo "===================================================="
 echo "Seconds, cleanup prometheus-stack (including grafana, prometheus, kube-state-metrics, node-exporter) via helm."
 helm uninstall prometheus-stack \
 --namespace=monitoring \
+--no-hooks
 
 echo "===================================================="
 echo "Prometheus-stack (including grafana, prometheus, kube-state-metrics, node-exporter) are now unavailable."

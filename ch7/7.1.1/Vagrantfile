@@ -5,7 +5,7 @@
 # max number of worker nodes
 N = 3
 # each of components to install
-k8s_V    = '1.33.1-1.1'                   # Kubernetes
+k8s_V    = '1.34.2-1.1'                   # Kubernetes
 ctrd_V   = '1.7.24-1'                    # Containerd
 ## /configuration variables ##
 
@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.provider "virtualbox" do |vb|
         vb.name = "cp-k8s-#{k8s_V[0..5]}(github_SysNet4Admin)"
         vb.cpus = 2
-        vb.memory = 2048
+        vb.memory = 2560
         vb.customize ["modifyvm", :id, "--groups", "/Book-k8s-ludus-U#{k8s_V[0..5]}-ctrd-#{ctrd_V[0..2]}(github_SysNet4Admin)"]
       end
       cfg.vm.host_name = "cp-k8s"
@@ -42,8 +42,8 @@ Vagrant.configure("2") do |config|
       cfg.vm.box = "sysnet4admin/Ubuntu-k8s"
       cfg.vm.provider "virtualbox" do |vb|
         vb.name = "w#{i}-k8s-#{k8s_V[0..5]}(github_SysNet4Admin)"
-        vb.cpus = 1
-        vb.memory = 3072
+        vb.cpus = 2
+        vb.memory = 3584
         vb.customize ["modifyvm", :id, "--groups", "/Book-k8s-ludus-U#{k8s_V[0..5]}-ctrd-#{ctrd_V[0..2]}(github_SysNet4Admin)"]
       end
       cfg.vm.host_name = "w#{i}-k8s"

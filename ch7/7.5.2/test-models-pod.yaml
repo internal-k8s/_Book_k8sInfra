@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-models-script
+data:
+  test-models.sh: |
+    #!/bin/sh
+    # 7.5.2 — sLLM 품질 비교 테스트 (Pod 내부에서 실행)
+
+    SERVICES="ollama-qwen35-0-8b ollama-gemma3-270m ollama-llama32-1b"
+    MODELS="qwen3.5:0.8b gemma3:270m llama3.2:1b"
+    NAMES="Qwen3.5-0.8B Gemma3-270M Llama3.2-1B"
+
+    echo "============================================"
+    echo " 7.5.2 sLLM 품질 비교 테스트"
+    echo "============================================"
+    echo ""
+
+    # Test 1: English
+    echo "# Test 1: What is Kubernetes?"
+    echo "---"
+    set -- $SERVICES
+    set_m="$MODELS"
+    set_n="$NAMES"
+
+    i=1
+    for svc in $SERVICES; do
+      model=$(echo $MODELS | cut -d' ' -f$i)
+      name=$(echo $NAMES | cut -d' ' -f$i)
+      echo ">> $name:"
+      curl -s "http://${svc}:11434/api/chat" \
+        -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"What is Kubernetes? Answer in 3 sentences.\"}],\"stream\":false}" \
+        | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/\n/g'
+      echo ""
+      echo ""
+      i=$((i+1))
+    done
+
+    # Test 2: Korean
+    echo "# Test 2: 파드(Pod)란? (한국어)"
+    echo "---"
+    i=1
+    for svc in $SERVICES; do
+      model=$(echo $MODELS | cut -d' ' -f$i)
+      name=$(echo $NAMES | cut -d' ' -f$i)
+      echo ">> $name:"
+      curl -s "http://${svc}:11434/api/chat" \
+        -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"쿠버네티스의 파드(Pod)란 무엇인지 2문장으로 설명해주세요.\"}],\"stream\":false}" \
+        | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/\n/g'
+      echo ""
+      echo ""
+      i=$((i+1))
+    done
+
+    echo "============================================"
+    echo " 결론: 작은 모델 하나로는 부족합니다."
+    echo " 7.5.3에서 MoA(다중 모델 협업)로 극복합니다."
+    echo "============================================"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-models
+spec:
+  restartPolicy: Never
+  containers:
+  - name: tester
+    image: curlimages/curl
+    command: ["/bin/sh", "/scripts/test-models.sh"]
+    volumeMounts:
+    - name: script
+      mountPath: /scripts
+  volumes:
+  - name: script
+    configMap:
+      name: test-models-script
+      defaultMode: 0755

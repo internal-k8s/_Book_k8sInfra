@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: moa-script
+data:
+  moa.sh: |
+    #!/bin/sh
+    # 7.5.3 — MoA (Mixture of Agents) 패턴
+    # 3개 모델에 동일 질문 → aggregator가 종합 → 더 나은 답변
+
+    QUESTION="${1:-What is Kubernetes and why is it important?}"
+    AGGREGATOR_SVC="${2:-ollama-llama32-1b}"
+    AGGREGATOR_MODEL="${3:-llama3.2:1b}"
+
+    echo "============================================"
+    echo " MoA (Mixture of Agents)"
+    echo "============================================"
+    echo ""
+    echo "질문: $QUESTION"
+    echo ""
+
+    # Step 1: 3개 모델에 개별 질의
+    echo "--- Step 1: 개별 모델 응답 수집 ---"
+    echo ""
+
+    echo ">> [w1] Qwen3.5-0.8B:"
+    R1=$(curl -s http://ollama-qwen35-0-8b:11434/api/chat \
+      -d "{\"model\":\"qwen3.5:0.8b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$R1"
+    echo ""
+
+    echo ">> [w2] Gemma3-270M:"
+    R2=$(curl -s http://ollama-gemma3-270m:11434/api/chat \
+      -d "{\"model\":\"gemma3:270m\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$R2"
+    echo ""
+
+    echo ">> [w3] Llama3.2-1B:"
+    R3=$(curl -s http://ollama-llama32-1b:11434/api/chat \
+      -d "{\"model\":\"llama3.2:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$R3"
+    echo ""
+
+    # Step 2: Aggregator가 종합
+    echo "--- Step 2: MoA 종합 (Aggregator: $AGGREGATOR_MODEL) ---"
+    echo ""
+
+    AGG_PROMPT="You are an expert aggregator. Three AI models answered the question: ${QUESTION}
+
+    Answer 1 (Qwen3.5): ${R1}
+    Answer 2 (Gemma3): ${R2}
+    Answer 3 (Llama3.2): ${R3}
+
+    Synthesize the best parts of all three answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
+
+    FINAL=$(curl -s "http://${AGGREGATOR_SVC}:11434/api/chat" \
+      -d "{\"model\":\"${AGGREGATOR_MODEL}\",\"messages\":[{\"role\":\"user\",\"content\":\"${AGG_PROMPT}\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+
+    echo ">> MoA 최종 답변:"
+    echo "$FINAL"
+    echo ""
+
+    echo "============================================"
+    echo " 개별 답변 vs MoA 종합 답변을 비교해보세요."
+    echo " MoA는 개별 모델의 오류를 보완하고"
+    echo " 더 정확한 답변을 만들어냅니다."
+    echo "============================================"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: moa-english
+spec:
+  restartPolicy: Never
+  containers:
+  - name: moa
+    image: curlimages/curl
+    command: ["/bin/sh", "/scripts/moa.sh"]
+    args: ["What is Kubernetes and why is it important?", "ollama-llama32-1b", "llama3.2:1b"]
+    volumeMounts:
+    - name: script
+      mountPath: /scripts
+  volumes:
+  - name: script
+    configMap:
+      name: moa-script
+      defaultMode: 0755

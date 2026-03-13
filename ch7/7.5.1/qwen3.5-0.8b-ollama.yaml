@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ollama-llama32-1b
+  name: ollama-qwen35-0-8b
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ollama-llama32-1b
+      app: ollama-qwen35-0-8b
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -15,26 +15,26 @@ spec:
   template:
     metadata:
       labels:
-        app: ollama-llama32-1b
+        app: ollama-qwen35-0-8b
     spec:
       containers:
-      - image: sysnet4admin/ollama-llama3.2:1b
+      - image: sysnet4admin/ollama-qwen3.5:0.8b
         imagePullPolicy: IfNotPresent
-        name: ollama-llama32-1b
+        name: ollama-qwen35-0-8b
         ports:
         - containerPort: 11434
           protocol: TCP
       nodeSelector:
-        kubernetes.io/hostname: w3-k8s
+        kubernetes.io/hostname: w1-k8s
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ollama-llama32-1b
+  name: ollama-qwen35-0-8b
 spec:
   ports:
   - port: 11434
     protocol: TCP
     targetPort: 11434
   selector:
-    app: ollama-llama32-1b
+    app: ollama-qwen35-0-8b

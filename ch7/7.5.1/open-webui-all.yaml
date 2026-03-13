@@ -21,7 +21,7 @@ metadata:
   name: open-webui
   labels:
     helm.sh/chart: open-webui-3.4.3
-    app.kubernetes.io/version: "0.3.35"
+    app.kubernetes.io/version: "0.8.10"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: open-webui
     app.kubernetes.io/component: open-webui
@@ -43,7 +43,7 @@ metadata:
   name: open-webui
   labels:
     helm.sh/chart: open-webui-3.4.3
-    app.kubernetes.io/version: "0.3.35"
+    app.kubernetes.io/version: "0.8.10"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: open-webui
     app.kubernetes.io/component: open-webui
@@ -58,14 +58,14 @@ spec:
     metadata:
       labels:
         helm.sh/chart: open-webui-3.4.3
-        app.kubernetes.io/version: "0.3.35"
+        app.kubernetes.io/version: "0.8.10"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/instance: open-webui
         app.kubernetes.io/component: open-webui
     spec:
       initContainers:
       - name: copy-app-data
-        image: ghcr.io/open-webui/open-webui:0.3.35
+        image: ghcr.io/open-webui/open-webui:0.8.10
         imagePullPolicy: IfNotPresent
         command: ['sh', '-c', 'cp -R -n /app/backend/data/* /tmp/app-data/']
         volumeMounts:
@@ -75,7 +75,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: open-webui
-        image: ghcr.io/open-webui/open-webui:0.3.35
+        image: ghcr.io/open-webui/open-webui:0.8.10
         imagePullPolicy: IfNotPresent
         ports:
         - name: http

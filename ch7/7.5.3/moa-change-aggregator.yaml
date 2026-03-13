@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: moa-qwen-agg
+spec:
+  restartPolicy: Never
+  containers:
+  - name: moa
+    image: curlimages/curl
+    command: ["/bin/sh", "/scripts/moa.sh"]
+    args: ["What is Kubernetes and why is it important?", "ollama-qwen35-0-8b", "qwen3.5:0.8b"]
+    volumeMounts:
+    - name: script
+      mountPath: /scripts
+  volumes:
+  - name: script
+    configMap:
+      name: moa-script
+      defaultMode: 0755
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: moa-gemma-agg
+spec:
+  restartPolicy: Never
+  containers:
+  - name: moa
+    image: curlimages/curl
+    command: ["/bin/sh", "/scripts/moa.sh"]
+    args: ["What is Kubernetes and why is it important?", "ollama-gemma3-270m", "gemma3:270m"]
+    volumeMounts:
+    - name: script
+      mountPath: /scripts
+  volumes:
+  - name: script
+    configMap:
+      name: moa-script
+      defaultMode: 0755

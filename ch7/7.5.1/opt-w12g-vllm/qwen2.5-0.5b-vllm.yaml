@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-serve-qwen25-0-5b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-serve-qwen25-0-5b
+  template:
+    metadata:
+      labels:
+        app: llm-serve-qwen25-0-5b
+    spec:
+      containers:
+      - image: public.ecr.aws/q9t5s3a7/vllm-arm64-cpu-release-repo:latest
+        name: vllm
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        env:
+        - name: VLLM_ENABLE_V1_MULTIPROCESSING
+          value: "0"
+        - name: VLLM_CPU_KVCACHE_SPACE
+          value: "1"
+        - name: VLLM_TARGET_DEVICE
+          value: "cpu"
+        command: ["vllm"]
+        args:
+        - "serve"
+        - "Qwen/Qwen2.5-0.5B-Instruct"
+        - "--dtype"
+        - "float32"
+        - "--max-model-len"
+        - "256"
+        - "--enforce-eager"
+        volumeMounts:
+        - name: shm
+          mountPath: /dev/shm
+      volumes:
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+      nodeSelector:
+        kubernetes.io/hostname: w1-k8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-serve-qwen25-0-5b
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: llm-serve-qwen25-0-5b

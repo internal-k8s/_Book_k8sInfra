@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: bluegreen-nginx
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: bluegreen-nginx
+  strategy:
+    blueGreen:
+      activeService: bluegreen-active
+      previewService: bluegreen-preview
+      # 수동 승격 (false = kubectl argo rollouts promote 필요)
+      autoPromotionEnabled: false
+  template:
+    metadata:
+      labels:
+        app: bluegreen-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25.5
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: 32Mi
+          limits:
+            memory: 64Mi
+---
+# Active Service — 현재 운영 중인 버전
+apiVersion: v1
+kind: Service
+metadata:
+  name: bluegreen-active
+spec:
+  selector:
+    app: bluegreen-nginx
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# Preview Service — 새 버전 미리보기
+apiVersion: v1
+kind: Service
+metadata:
+  name: bluegreen-preview
+spec:
+  selector:
+    app: bluegreen-nginx
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80

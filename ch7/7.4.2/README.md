@@ -1,14 +1,21 @@
-# 7.4.2 Argo Rollouts — 안전한 배포 전략
+# 7.4.2 Argo Rollouts — 블루그린(Blue-Green) 배포
 
 ## 목표
-- 기존 Deployment의 롤링 업데이트와 Argo Rollouts의 카나리/블루그린 배포 전략 비교
-- Rollout 리소스를 사용한 카나리 배포 실습
-- 배포 중 트래픽 비율 조절 및 단계별 승격(promote) 확인
+- Argo Rollouts 설치 및 블루그린 배포 전략 실습
+- Active/Preview 서비스를 통한 무중단 전환 확인
+- 기존 Deployment 롤링 업데이트와의 차이점 비교
 
 ## 사전 조건
 - 7.4.1 ArgoCD 설치 완료
 
-## TODO
-- [ ] Argo Rollouts 설치 스크립트
-- [ ] 카나리 배포 Rollout YAML
-- [ ] 블루그린 배포 Rollout YAML
+## 실습 파일
+- `install_argo_rollouts.sh` — Argo Rollouts 컨트롤러 설치 + 블루그린 배포
+- `bluegreen-rollout.yaml` — 블루그린 Rollout + Active/Preview Services
+- `explore_bluegreen.sh` — 블루그린 배포 실습 가이드
+- `cleanup_7.4.2_tasks.sh` — 리소스 정리
+
+## 실습 순서
+1. `install_argo_rollouts.sh`로 컨트롤러 설치 + 블루그린 배포
+2. 이미지 변경으로 배포 트리거 → Preview에서 새 버전 확인
+3. `kubectl argo rollouts promote`로 전환
+4. `explore_bluegreen.sh`로 전체 흐름 확인

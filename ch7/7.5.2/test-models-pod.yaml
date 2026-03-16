@@ -7,9 +7,9 @@ data:
     #!/bin/sh
     # 7.5.2 — sLLM 품질 비교 테스트 (Pod 내부에서 실행)
 
-    SERVICES="ollama-qwen35-0-8b ollama-gemma3-270m ollama-llama32-1b"
-    MODELS="qwen3.5:0.8b gemma3:270m llama3.2:1b"
-    NAMES="Qwen3.5-0.8B Gemma3-270M Llama3.2-1B"
+    SERVICES="ollama-gemma3-270m ollama-qwen35-0-8b ollama-llama32-1b"
+    MODELS="gemma3:270m qwen3.5:0.8b llama3.2:1b"
+    NAMES="Gemma3-270M Qwen3.5-0.8B Llama3.2-1B"
 
     echo "============================================"
     echo " 7.5.2 sLLM 품질 비교 테스트"
@@ -30,7 +30,7 @@ data:
       echo ">> $name:"
       curl -s "http://${svc}:11434/api/chat" \
         -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"What is Kubernetes? Answer in 3 sentences.\"}],\"stream\":false}" \
-        | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/\n/g'
+        | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/\n/g'
       echo ""
       echo ""
       i=$((i+1))
@@ -46,7 +46,7 @@ data:
       echo ">> $name:"
       curl -s "http://${svc}:11434/api/chat" \
         -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"쿠버네티스의 파드(Pod)란 무엇인지 2문장으로 설명해주세요.\"}],\"stream\":false}" \
-        | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/\n/g'
+        | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/\n/g'
       echo ""
       echo ""
       i=$((i+1))

@@ -23,42 +23,45 @@ data:
     echo "--- Step 1: 개별 모델 응답 수집 ---"
     echo ""
 
-    echo ">> [w1] Qwen3.5-0.8B:"
-    R1=$(curl -s http://ollama-qwen35-0-8b:11434/api/chat \
-      -d "{\"model\":\"qwen3.5:0.8b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
-      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo ">> [w1] Gemma3-270M:"
+    R1=$(curl -s http://ollama-gemma3-270m:11434/api/chat \
+      -d "{\"model\":\"gemma3:270m\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
     echo "$R1"
     echo ""
 
-    echo ">> [w2] Gemma3-270M:"
-    R2=$(curl -s http://ollama-gemma3-270m:11434/api/chat \
-      -d "{\"model\":\"gemma3:270m\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
-      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo ">> [w2] Qwen3.5-0.8B:"
+    R2=$(curl -s http://ollama-qwen35-0-8b:11434/api/chat \
+      -d "{\"model\":\"qwen3.5:0.8b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
     echo "$R2"
     echo ""
 
     echo ">> [w3] Llama3.2-1B:"
     R3=$(curl -s http://ollama-llama32-1b:11434/api/chat \
       -d "{\"model\":\"llama3.2:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
-      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
     echo "$R3"
     echo ""
+
+    # JSON 특수문자 이스케이프 함수
+    json_escape() {
+      printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g' | tr '\n' ' '
+    }
 
     # Step 2: Aggregator가 종합
     echo "--- Step 2: MoA 종합 (Aggregator: $AGGREGATOR_MODEL) ---"
     echo ""
 
-    AGG_PROMPT="You are an expert aggregator. Three AI models answered the question: ${QUESTION}
+    SAFE_R1=$(json_escape "$R1")
+    SAFE_R2=$(json_escape "$R2")
+    SAFE_R3=$(json_escape "$R3")
 
-    Answer 1 (Qwen3.5): ${R1}
-    Answer 2 (Gemma3): ${R2}
-    Answer 3 (Llama3.2): ${R3}
-
-    Synthesize the best parts of all three answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
+    AGG_PROMPT="You are an expert aggregator. Three AI models answered the question: ${QUESTION} Answer 1 (Gemma3): ${SAFE_R1} Answer 2 (Qwen3.5): ${SAFE_R2} Answer 3 (Llama3.2): ${SAFE_R3} Synthesize the best parts of all three answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
 
     FINAL=$(curl -s "http://${AGGREGATOR_SVC}:11434/api/chat" \
       -d "{\"model\":\"${AGGREGATOR_MODEL}\",\"messages\":[{\"role\":\"user\",\"content\":\"${AGG_PROMPT}\"}],\"stream\":false}" \
-      | sed 's/.*"content":"//;s/","thinking.*//' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
 
     echo ">> MoA 최종 답변:"
     echo "$FINAL"

@@ -12,21 +12,15 @@
 
 ## 7.3 OpenTelemetry로 알아보는 모니터링 구조
 - 7.3.1 OpenTelemetry란 — 모니터링의 새로운 표준
-  - 6장에서 사용한 OpenTelemetry가 무엇인지, 로그/메트릭/트레이스 통합
-  - 과거 방식과의 차이점, Collector로의 전환 필요성
 - 7.3.2 OpenTelemetry Collector를 통한 파이프라인 구축
-  - 앱 직접 연결(6장) → Collector 방식으로 변경
-  - (+) Collector 필터/변환 기능 소개
 - 7.3.3 OpenTelemetry의 유연성 — 도구 교체가 쉬운 이유
-  - Collector 뒷단 교체(예: Jaeger→Tempo) 시 앱 수정 없이 전환
 
 ## 7.4 Argo Projects
-- 7.4.1 Argo CD — GitOps로 배포 관리
-- 7.4.2 Argo Rollouts — 안전한 배포 전략 (카나리/블루그린)
-- 7.4.3 ArgoCD + Rollouts 통합 — GitOps 기반 점진적 배포
-  - Git push → ArgoCD 감지 → Rollouts 카나리 배포 → Grafana로 관찰
+- 7.4.1 Argo CD — GitOps로 배포 관리 (Jenkins → ArgoCD)
+- 7.4.2 Argo Rollouts — 블루그린(Blue-Green) 배포
+- 7.4.3 Argo Rollouts — 카나리(Canary) 배포
 
 ## 7.5 sLLM을 쿠버네티스에서 운영하기
-- 7.5.1 sLLM을 쿠버네티스에 올리기 (Qwen3.5 + Gemma3 + Llama3.2)
+- 7.5.1 sLLM을 쿠버네티스에 올리기 (Gemma3 + Qwen3.5 + Llama3.2)
 - 7.5.2 sLLM의 한계 확인하기
 - 7.5.3 MoA(Mixture of Agents)로 sLLM의 한계 극복하기

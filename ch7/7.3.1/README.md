@@ -10,6 +10,14 @@
 - 7.2.3 Prometheus + Grafana 설치 완료
 - 5장/6장 내용 이해
 
-## TODO
-- [ ] OTel 개념 설명 자료
-- [ ] 6장 앱의 OTel 연동 부분 분석 스크립트
+## 실습 파일
+- `jaeger-all-in-one.yaml` — Jaeger 트레이스 백엔드 (OTLP 수신)
+- `hotrod-direct.yaml` — HotROD 데모 앱 (Jaeger에 직접 연결)
+- `install_jaeger_and_hotrod.sh` — Jaeger + HotROD 배포 스크립트
+- `explore_otel_env.sh` — OTel 직접 연결 방식 분석 및 한계 설명
+
+## 실습 순서
+1. `install_jaeger_and_hotrod.sh` 실행
+2. HotROD UI에서 "Request Ride" 클릭 → 트레이스 생성
+3. Jaeger UI에서 트레이스 확인
+4. `explore_otel_env.sh`로 직접 연결의 한계 확인

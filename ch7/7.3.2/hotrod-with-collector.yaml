@@ -1,0 +1,33 @@
+# HotROD 데모 앱 — OTel Collector를 통해 트레이스 전송
+# 앱은 Collector 주소만 알면 됨 → 백엔드와 분리
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotrod
+  labels:
+    app: hotrod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotrod
+  template:
+    metadata:
+      labels:
+        app: hotrod
+    spec:
+      containers:
+      - name: hotrod
+        image: jaegertracing/example-hotrod:1.64.0
+        env:
+        # Collector 주소만 지정 — 백엔드(Jaeger/Tempo)를 몰라도 됨
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector.monitoring.svc.cluster.local:4318"
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: 64Mi
+          limits:
+            memory: 128Mi

@@ -87,7 +87,7 @@ spec:
         - name: WEBUI_AUTH
           value: "False"
         - name: "OLLAMA_BASE_URLS"
-          value: "http://ollama-qwen35-0-8b.default.svc.cluster.local:11434;http://ollama-gemma3-270m.default.svc.cluster.local:11434;http://ollama-llama32-1b.default.svc.cluster.local:11434"
+          value: "http://ollama-gemma3-270m.default.svc.cluster.local:11434;http://ollama-qwen35-0-8b.default.svc.cluster.local:11434;http://ollama-llama32-1b.default.svc.cluster.local:11434"
         tty: true
       volumes:
       - name: data

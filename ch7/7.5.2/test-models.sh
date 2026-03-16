@@ -2,9 +2,9 @@
 # 7.5.2 — sLLM의 한계 확인하기
 # 3개 모델에 동일한 질문을 던져 품질을 비교합니다.
 
-SERVICES=("ollama-qwen35-0-8b" "ollama-gemma3-270m" "ollama-llama32-1b")
-MODELS=("qwen3.5:0.8b" "gemma3:270m" "llama3.2:1b")
-NAMES=("Qwen3.5-0.8B" "Gemma3-270M" "Llama3.2-1B")
+SERVICES=("ollama-gemma3-270m" "ollama-qwen35-0-8b" "ollama-llama32-1b")
+MODELS=("gemma3:270m" "qwen3.5:0.8b" "llama3.2:1b")
+NAMES=("Gemma3-270M" "Qwen3.5-0.8B" "Llama3.2-1B")
 
 echo "============================================"
 echo " 7.5.2 sLLM 품질 비교 테스트"

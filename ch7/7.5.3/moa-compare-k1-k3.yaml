@@ -1,0 +1,153 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: moa-compare-script
+data:
+  compare.sh: |
+    #!/bin/sh
+    # 7.5.3 — MoA 효과 비교: K=1(단일 모델) vs K=3(3개 모델 협업)
+    #
+    # Council of K 연구(github.com/dryjins/council-of-k)에서는
+    # K=1, K=3, K=5로 에이전트 수를 변경하며 진단 정확도를 비교합니다.
+    # 이 실습에서는 sLLM 3개를 사용하여 K=1 vs K=3를 직접 비교합니다.
+    #
+    # [핵심 원리] MoA (Mixture of Agents)
+    # - 여러 sLLM이 동일 질문에 각자 답변 (다양한 관점 확보)
+    # - Aggregator가 답변들을 종합하여 오류를 걸러내고 정확도 향상
+    # - 단일 모델의 환각(hallucination)과 편향을 상호 보완
+
+    QUESTION="${1:-What is Kubernetes and why is it important?}"
+
+    echo "================================================================"
+    echo " MoA 효과 비교: K=1 (단일 모델) vs K=3 (3개 모델 협업)"
+    echo "================================================================"
+    echo ""
+    echo " 질문: $QUESTION"
+    echo ""
+
+    # JSON 특수문자 이스케이프
+    json_escape() {
+      printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g' | tr '\n' ' '
+    }
+
+    # ========================================
+    # Part A: K=1 (단일 모델만 사용)
+    # ========================================
+    echo "╔══════════════════════════════════════╗"
+    echo "║  Part A: K=1 — 단일 모델 응답       ║"
+    echo "╚══════════════════════════════════════╝"
+    echo ""
+    echo "  단일 sLLM(Llama3.2-1B)이 혼자 답변합니다."
+    echo "  Council of K에서 K=1은 '단일 에이전트 분석'에 해당합니다."
+    echo ""
+
+    echo ">> [K=1] Llama3.2-1B 단독 응답:"
+    K1_ANSWER=$(curl -s http://ollama-llama32-1b:11434/api/chat \
+      -d "{\"model\":\"llama3.2:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$K1_ANSWER"
+    echo ""
+
+    # ========================================
+    # Part B: K=3 (3개 모델 + Aggregator)
+    # ========================================
+    echo "╔══════════════════════════════════════╗"
+    echo "║  Part B: K=3 — 3개 모델 + Aggregator ║"
+    echo "╚══════════════════════════════════════╝"
+    echo ""
+    echo "  3개 sLLM이 각자 답변 → Aggregator가 종합합니다."
+    echo "  Council of K에서 K=3은 '다관점 분석'에 해당합니다."
+    echo ""
+
+    # Step 1: 3개 모델에 병렬 질의
+    echo "--- Step 1: 개별 모델 응답 수집 ---"
+    echo ""
+
+    echo ">> [w1] Gemma3-270M:"
+    R1=$(curl -s http://ollama-gemma3-270m:11434/api/chat \
+      -d "{\"model\":\"gemma3:270m\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$R1"
+    echo ""
+
+    echo ">> [w2] Qwen3.5-0.8B:"
+    R2=$(curl -s http://ollama-qwen35-0-8b:11434/api/chat \
+      -d "{\"model\":\"qwen3.5:0.8b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$R2"
+    echo ""
+
+    echo ">> [w3] Llama3.2-1B:"
+    R3=$(curl -s http://ollama-llama32-1b:11434/api/chat \
+      -d "{\"model\":\"llama3.2:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+    echo "$R3"
+    echo ""
+
+    # Step 2: Aggregator 종합
+    echo "--- Step 2: Aggregator 종합 (Llama3.2-1B) ---"
+    echo ""
+
+    SAFE_R1=$(json_escape "$R1")
+    SAFE_R2=$(json_escape "$R2")
+    SAFE_R3=$(json_escape "$R3")
+
+    AGG_PROMPT="You are an expert aggregator. Three AI models answered the question: ${QUESTION} Answer 1 (Gemma3): ${SAFE_R1} Answer 2 (Qwen3.5): ${SAFE_R2} Answer 3 (Llama3.2): ${SAFE_R3} Synthesize the best parts of all three answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
+
+    K3_ANSWER=$(curl -s http://ollama-llama32-1b:11434/api/chat \
+      -d "{\"model\":\"llama3.2:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"${AGG_PROMPT}\"}],\"stream\":false}" \
+      | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
+
+    echo ">> [K=3] MoA 종합 답변:"
+    echo "$K3_ANSWER"
+    echo ""
+
+    # ========================================
+    # 비교 결과
+    # ========================================
+    echo "╔══════════════════════════════════════════════════════════╗"
+    echo "║  비교 결과                                              ║"
+    echo "╠══════════════════════════════════════════════════════════╣"
+    echo "║                                                        ║"
+    echo "║  K=1: 단일 모델은 자신의 학습 데이터에만 의존합니다.   ║"
+    echo "║       → 환각(hallucination)이나 편향된 답변 가능성     ║"
+    echo "║                                                        ║"
+    echo "║  K=3: 3개 모델이 서로 다른 관점에서 답변하고,          ║"
+    echo "║       Aggregator가 교차 검증하여 오류를 필터링합니다.  ║"
+    echo "║       → 더 정확하고 균형 잡힌 답변                     ║"
+    echo "║                                                        ║"
+    echo "╠══════════════════════════════════════════════════════════╣"
+    echo "║  [Council of K 연구 참고]                               ║"
+    echo "║  github.com/dryjins/council-of-k                       ║"
+    echo "║                                                        ║"
+    echo "║  - K=1: 단일 에이전트가 장애를 진단                    ║"
+    echo "║    → 첫 번째 원인만 찾고 멈추는 경향                   ║"
+    echo "║                                                        ║"
+    echo "║  - K=3: 3개 전문 에이전트가 각자의 관점에서 분석       ║"
+    echo "║    → Minority Report로 소수 의견도 보존                ║"
+    echo "║    → 복합 장애(2개 이상 원인) 탐지율 향상              ║"
+    echo "║                                                        ║"
+    echo "║  이 원리가 sLLM에도 동일하게 적용됩니다:               ║"
+    echo "║  여러 모델의 다양한 답변을 종합하면                    ║"
+    echo "║  개별 모델의 한계를 극복할 수 있습니다.                ║"
+    echo "╚══════════════════════════════════════════════════════════╝"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: moa-compare
+spec:
+  restartPolicy: Never
+  containers:
+  - name: compare
+    image: curlimages/curl
+    command: ["/bin/sh", "/scripts/compare.sh"]
+    args: ["What is Kubernetes and why is it important?"]
+    volumeMounts:
+    - name: script
+      mountPath: /scripts
+  volumes:
+  - name: script
+    configMap:
+      name: moa-compare-script
+      defaultMode: 0755

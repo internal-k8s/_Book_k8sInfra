@@ -23,4 +23,4 @@
 ## 7.5 sLLM을 쿠버네티스에서 운영하기
 - 7.5.1 sLLM을 쿠버네티스에 올리기 (Gemma3 + Qwen3.5 + Llama3.2)
 - 7.5.2 sLLM의 한계 확인하기
-- 7.5.3 MoA(Mixture of Agents)로 sLLM의 한계 극복하기
+- 7.5.3 MoA(Mixture of Agents)로 sLLM의 한계 극복하기 — K=1 vs K=3 비교

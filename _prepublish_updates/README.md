@@ -11,7 +11,7 @@
 | [containerd](containerd.md) | 1.7.x → 2.2.2 | ✅ 완료 | 2026-04-04 |
 | [Calico](calico.md) | v3.30.1 → v3.31.2 | ✅ 완료 | 2026-04-04 |
 | [MetalLB](metallb.md) | v0.13.10 → v0.15.3 | ✅ 완료 | 2026-04-04 |
-| [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.13.1 | ⏳ 대기 | - |
+| [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.13.1 | ✅ 완료 | 2026-04-04 |
 | [Helm](helm.md) | v3 → v4.1.3 | ⏳ 대기 | - |
 | [Cilium](cilium.md) | v1.17.4 → v1.17.13 | ⏳ 대기 | - |
 | [Docker](docker.md) | 24 → 29.x | ⏳ 대기 | - |

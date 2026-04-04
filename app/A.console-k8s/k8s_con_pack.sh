@@ -31,8 +31,6 @@ echo "alias ka='kubectl apply -f'" >> ~/.bashrc
 echo "alias kd='kubectl delete -f'" >> ~/.bashrc
 echo 'complete -F __start_kubectl k' >> ~/.bashrc
 
-# install helm 
-DESIRED_VERSION=v3.12.0
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
+# install helm
+curl -fsSL https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/extra-pkgs/v1.35/get_helm_v4.0.4.sh \
+  | DESIRED_VERSION=v4.1.3 bash

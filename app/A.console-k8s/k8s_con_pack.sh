@@ -6,7 +6,7 @@ export DEBIAN_FRONTEND=noninteractive
 # install util packages 
 apt-get install sshpass
 
-# add kubernetes repo ONLY for 22.04
+# add kubernetes repo
 mkdir -p /etc/apt/keyrings
 curl -fsSL \
   https://packages.cloud.google.com/apt/doc/apt-key.gpg \

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # LoadBalancer 
-kubectl apply -f ~/_Book_k8sInfra/ch3/3.3.2/metallb-native-v0.13.10.yaml
+kubectl apply -f ~/_Book_k8sInfra/ch3/3.3.2/metallb-native-v0.15.3.yaml
 echo "Waiting 60secs for MetalLB CRD" ; sleep 60
 kubectl apply -f ~/_Book_k8sInfra/ch3/3.3.2/metallb-l2-iprange.yaml
 

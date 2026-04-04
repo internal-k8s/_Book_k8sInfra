@@ -2,8 +2,11 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: managed-nfs-storage
-provisioner: k8s-sigs.io/nfs-subdir-external-provisioner
+provisioner: nfs.csi.k8s.io
 parameters:
-  # default > pathPattern: "${.PVC.namespace}/${.PVC.annotations.nfs.io/storage-path}"
-  pathPattern: "${.PVC.namespace}-${.PVC.name}"
-  onDelete: delete
+  server: 192.168.1.10
+  share: /nfs_shared/dynamic-vol
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4.1

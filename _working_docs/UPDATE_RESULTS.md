@@ -9,7 +9,7 @@
 
 | 컴포넌트 | 상태 | 완료일 |
 |---|---|---|
-| containerd 1.7.x → 2.2.2 | ✅ 완료 | 2026-04-04 |
+| containerd 1.7.x → 2.2.2 | ✅ 완료 (종합 테스트 PASS 14/14) | 2026-04-04 |
 | Calico v3.30.1 → v3.31.4 | ⏳ 대기 | - |
 | MetalLB v0.13.10 → v0.15.3 | ⏳ 대기 | - |
 | CSI Driver NFS v4.13.1 전환 | ⏳ 대기 | - |
@@ -64,10 +64,51 @@ w2-k8s   Ready    <none>          v1.35.0   Ubuntu 24.04.4 LTS   6.8.0-107-gener
 w3-k8s   Ready    <none>          v1.35.0   Ubuntu 24.04.4 LTS   6.8.0-107-generic   containerd://2.2.2
 ```
 
-**Pod 배포 테스트**
-- nginx 3 replicas → 3개 워커 노드에 분산 배포, 전체 Running ✅
-- 시스템 Pod 전체 Running (calico, coredns, etcd, kube-apiserver 등) ✅
+**종합 테스트 결과 (2026-04-04)**
+
+테스트 스크립트: `ch3/3.1.3/comprehensive_test.sh`
+
+#### ch3/3.1.3 (k8s 1.35.0 + Calico + MetalLB v0.13.10)
+
+| # | 테스트 항목 | 결과 |
+|---|---|---|
+| 1 | Node Status (4/4 Ready) | ✅ PASS |
+| 2 | kube-system pods 전체 Running | ✅ PASS |
+| 3 | ClusterIP service 접근 (10.109.x.x) | ✅ PASS |
+| 4 | NodePort service 접근 (w1:3xxxx) | ✅ PASS |
+| 5 | LoadBalancer service (MetalLB → 192.168.1.11) | ✅ PASS |
+| 6 | DaemonSet (4/4, cp 포함 전 노드) | ✅ PASS |
+| 7 | Job 완료 (perl bpi 계산) | ✅ PASS |
+| 8 | DNS 내부 (kubernetes.default.svc.cluster.local → 10.96.0.1) | ✅ PASS |
+| 9 | DNS 외부 (google.com → Non-authoritative answer) | ✅ PASS |
+| 10 | Cross-node 분산 배포 (3개 노드에 각 1개) | ✅ PASS |
+| 11 | Cross-node pod-to-pod 통신 | ✅ PASS |
+| 12 | PVC Bound (hostPath) | ✅ PASS |
+| 13 | Pod with PVC Running | ✅ PASS |
+
+**PASS 14/14, FAIL 0**
+
+#### ch7/7.1.1 (k8s 1.34.2 + Cilium v1.17.4 + L2 모드)
+
+| # | 테스트 항목 | 결과 |
+|---|---|---|
+| 1 | Node Status (4/4 Ready) | ✅ PASS |
+| 2 | kube-system pods 전체 Running (cilium, hubble 포함) | ✅ PASS |
+| 3 | ClusterIP service 접근 | ✅ PASS |
+| 4 | NodePort service 접근 | ✅ PASS |
+| 5 | LoadBalancer service (Cilium L2 → 192.168.1.11) | ✅ PASS |
+| 6 | DaemonSet (4/4) | ✅ PASS |
+| 7 | Job 완료 | ✅ PASS |
+| 8 | DNS 내부 (kubernetes.default.svc.cluster.local → 10.96.0.1) | ✅ PASS |
+| 9 | DNS 외부 (google.com) | ✅ PASS |
+| 10 | Cross-node 분산 배포 (w1/w2/w3 각 1개) | ✅ PASS |
+| 11 | Cross-node pod-to-pod 통신 | ✅ PASS |
+| 12 | PVC Bound (hostPath) | ✅ PASS |
+| 13 | Pod with PVC Running | ✅ PASS |
+
+**PASS 14/14, FAIL 0**
 
 **특이사항**
 - `k8s_pkg_cfg.sh`의 `containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup = true/'` 패턴이 containerd 2.2.2에서도 정상 동작 확인
 - containerd 2.x config_version=3 포맷으로 변경됐으나 sed 패턴 동작에 영향 없음
+- ch7 Cilium L2 구성: `sleep 540/600` background 타이머로 배포 → vagrant up 완료 후 약 9-10분 대기 필요

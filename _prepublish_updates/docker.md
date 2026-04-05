@@ -1,45 +1,38 @@
 # Docker 24.0.6 → 29.3.1 ⏳
 
-## 변경 이유
+> **업데이트 결정 근거**: Docker 24.x 보안 패치 중단, 29.x가 최신 안정 버전. 책에서 Docker는 컨테이너 런타임이 아닌 이미지 빌드/푸시 전용으로만 사용하므로 대부분의 변경이 영향 없음. HIGH RISK 2항목은 테스트 후 최종 결정.
 
-### 1. Ubuntu 24.04 전환에 따른 필수 업데이트
+## 책에서 Docker 사용 범위
 
-Ubuntu 24.04(Noble)로 box가 전환되면서 APT 패키지 버전 문자열 형식이 변경됨:
-
-```bash
-# Ubuntu 22.04 Jammy
-docker_V='5:24.0.6-1~ubuntu.22.04~jammy'
-
-# Ubuntu 24.04 Noble
-docker_V='5:29.3.1-1~ubuntu.24.04~noble'
-```
-
-### 2. 책 용도에서의 영향 범위
-
-Docker는 책에서 컨테이너 런타임(k8s)이 아닌 **이미지 빌드/푸시 전용**으로만 사용:
-- `docker build` — Dockerfile 빌드
-- `docker push` — Harbor 레지스트리에 푸시
-- ch4 Dockerfile 예제 실습
+| 용도 | 파일 |
+|---|---|
+| Docker 설치 | `ch4/4.2.1/install_docker.sh` |
+| Dockerfile 빌드 | ch4/4.3.x, ch4/4.4.3, ch7/7.5.1 |
+| `docker save` → `docker load` | `ch4/4.4.1/copy_docker_2_docker.sh` |
+| `docker save` → `ctr import` | `ch4/4.4.1/copy_docker_2_containerd.sh` |
+| `docker push` → Harbor | ch4/4.4.3 |
+| Harbor 운영 (`docker compose`) | ch4/4.4.2 |
+| 전체 노드 Docker 설치 | `ch5/5.3.4/install_docker_on_all_nodes.sh` (install_docker.sh 재사용) |
 
 ---
 
-## 버전별 주요 변경 (24 → 29)
+## 버전별 영향도 분석
 
-| 버전 | 주요 변경 | 책 영향 |
+### HIGH RISK — 테스트 후 결정
+
+#### 1. containerd image store 기본값 변경 (Docker 29, 신규 설치)
+
+Docker 29부터 신규 설치 시 containerd image store가 기본값. 이에 따라 동작이 달라지는 부분:
+
+| 명령 | 변화 | 예상 동작 |
 |---|---|---|
-| 25.0 | classic/legacy builder 공식 deprecated (Linux), BuildKit 이미 기본값 | 없음 (BuildKit 이미 사용) |
-| 26.0 | API v1.24 미만 제거, deprecated image format 기본 비활성화 | 없음 |
-| 27.0 | GraphDriver plugin deprecated, 네트워킹 변경 | 없음 |
-| 28.0 | iptables SCTP 규칙 제거 | 없음 |
-| **29.0** | **containerd image store가 신규 설치 기본값으로 변경** | ⚠️ 테스트 필요 |
+| `docker push` → Harbor | OCI manifest list 형태로 전송 | Harbor v2.10은 OCI 지원하나 레지스트리 거부 사례 있음 (AWS ECR 등) → **테스트 필수** |
+| `docker save` → `ctr import` | tar가 OCI layout 형식으로 변경 | `ctr`은 양쪽 모두 읽으나 `--base-name` 동작이 미묘하게 다를 수 있음 → **테스트 필요** |
+| `docker save` → `docker load` | 동일 | `docker load`가 OCI layout tar 처리 가능 → 동작함 |
+| `docker image ls` | untagged 이미지 기본 숨김 | 빌드 중간 이미지가 보이지 않음 → **책 화면 설명과 달라질 수 있음** |
+| `docker build` | 변화 없음 | 동작함 |
 
-### ⚠️ containerd image store 기본값 변경 (29.0)
-
-Docker 29부터 신규 설치 시 containerd image store가 기본값. `docker push` 시 OCI manifest list 형태로 전송 → 일부 레지스트리가 거부할 수 있음.
-
-**Harbor push 테스트 필수.**
-
-문제 발생 시 workaround:
+**workaround (테스트 결과에 따라 적용 여부 결정)**:
 ```json
 // /etc/docker/daemon.json
 {
@@ -47,24 +40,60 @@ Docker 29부터 신규 설치 시 containerd image store가 기본값. `docker p
 }
 ```
 
-### Dockerfile 호환성
+참고 이슈: [moby#51532](https://github.com/moby/moby/issues/51532), [moby#51665](https://github.com/moby/moby/issues/51665), [moby#49473](https://github.com/moby/moby/issues/49473)
 
-책의 모든 Dockerfile(`FROM`, `COPY`, `RUN`, `WORKDIR`, `ENTRYPOINT`, `LABEL`, `EXPOSE`, multi-stage `AS`)은 v29에서 **변경 없이 동작**. 수정 불필요.
+#### 2. 파일 디스크립터 제한 변경 (Docker 29 + containerd 2.x)
+
+컨테이너 기본 ulimit `nofile`: 1,048,576 → 1,024 (systemd 기본값으로 변경)
+
+Harbor 컴포넌트(DB, Redis, core)가 영향받을 가능성 있음.
+
+**단, 단일 사용자 실습 환경에서는 사실상 영향 없을 것으로 판단** — 테스트로 확인.
+
+**workaround (필요 시 적용)**:
+```json
+// /etc/docker/daemon.json
+{
+  "default-ulimits": {
+    "nofile": { "Name": "nofile", "Soft": 1048576, "Hard": 1048576 }
+  }
+}
+```
 
 ---
 
-## 변경 파일
+### 영향 없음 — 적용 불필요
 
-| 파일 | 변경 내용 |
-|---|---|
-| `ch4/4.2.1/install_docker.sh` | `docker_V`, `buildx_V`, `compose_V` 버전 문자열 → noble 형식으로 변경 |
+| 변경 | 버전 | 근거 |
+|---|---|---|
+| classic builder deprecated | v25 | 이미 BuildKit이 기본값 (v23부터) |
+| 최소 API 버전 1.24 → 1.44 | v29 | CLI만 사용, 외부 툴 없음 |
+| manifest v2 schema 1 제거 | v28.2 | 책 base image 전부 현대 포맷 (zulu-openjdk, distroless, nginx, ollama) |
+| `docker stop --time` → `--timeout` | v28 | 책에서 미사용 |
+| Docker Content Trust CLI 제거 | v29 | 책에서 미사용 |
+| `docker commit --pause` deprecated | v29 | 책에서 미사용 |
+| `docker inspect` 일부 필드 제거 | v26 | 책에서 해당 필드 미사용 |
+| Compose `version` 키 무시 | v2 spec | Harbor compose는 이미 동작 중 |
 
-> `ch5/5.3.4/install_docker_on_all_nodes.sh`는 `install_docker.sh`를 scp로 전달하는 방식이므로 자동 반영.
+---
 
-### 버전 문자열 확인 필요
+## 설치 방식
+
+### APT 패키지명 — 변경 없음
+
+`docker-ce`, `docker-ce-cli`, `docker-ce-rootless-extras`, `docker-buildx-plugin`, `docker-compose-plugin`, `containerd.io`
+
+### 버전 문자열 형식 — Ubuntu에 따라 변경
+
+```bash
+# Ubuntu 22.04 Jammy (현재)
+docker_V='5:24.0.6-1~ubuntu.22.04~jammy'
+
+# Ubuntu 24.04 Noble (변경 후)
+docker_V='5:29.3.1-1~ubuntu.24.04~noble'
+```
 
 `buildx_V`, `compose_V`는 실제 APT 저장소에서 확인 후 결정:
-
 ```bash
 apt list --all-versions docker-buildx-plugin 2>/dev/null
 apt list --all-versions docker-compose-plugin 2>/dev/null
@@ -72,6 +101,23 @@ apt list --all-versions docker-compose-plugin 2>/dev/null
 
 ---
 
-## 테스트 결과
+## 변경 파일
 
--
+| 파일 | 변경 내용 |
+|---|---|
+| `ch4/4.2.1/install_docker.sh` | 버전 문자열 noble 형식으로 변경 + HIGH RISK 테스트 결과에 따라 `daemon.json` 추가 여부 결정 |
+
+> `ch5/5.3.4/install_docker_on_all_nodes.sh`는 `install_docker.sh` scp 방식이므로 자동 반영.
+
+---
+
+## 테스트 항목
+
+| # | 항목 | 결과 |
+|---|---|---|
+| 1 | `docker push` → Harbor v2.10 정상 동작 | - |
+| 2 | `docker save` → `ctr import` 체인 (`copy_docker_2_containerd.sh`) | - |
+| 3 | `docker save` → `docker load` 체인 (`copy_docker_2_docker.sh`) | - |
+| 4 | Dockerfile 빌드 (멀티스테이지 포함) | - |
+| 5 | Harbor startup (`docker compose up`) | - |
+| 6 | `docker image ls` 출력 — 책 설명과 일치 여부 | - |

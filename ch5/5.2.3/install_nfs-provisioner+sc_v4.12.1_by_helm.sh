@@ -3,6 +3,7 @@
 helm install csi-nfs-release edu/csi-driver-nfs \
 --namespace nfs-provisioner \
 --create-namespace \
+--set image.nfs.tag='v4.12.1' \
 --set storageClass.create=true \
 --set storageClass.name='managed-nfs-storage' \
 --set storageClass.parameters.server='192.168.1.10' \

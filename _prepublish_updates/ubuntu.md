@@ -90,6 +90,7 @@ Docker APT 저장소 패키지 버전이 Noble부터 distro suffix 포함:
 |---|---|---|
 | `ch3/3.1.3/Vagrantfile` | ✅ 완료 | box → `sysnet4admin/Ubuntu-k8s` v1.0.0 (24.04) |
 | `ch7/7.1.1/Vagrantfile` | ✅ 완료 | 동일 |
+| `ch7/7.1.1/opt-w12g/Vagrantfile` | ✅ 완료 | 동일 |
 | `ch3/3.1.3/Vagrantfile` (containerd 버전) | ✅ 완료 | Noble 형식 적용 |
 | `ch7/7.1.1/Vagrantfile` (containerd 버전) | ✅ 완료 | Noble 형식 적용 |
 | `ch4/4.2.1/install_docker.sh` | ⏳ Docker 업데이트 항목에서 처리 | jammy → noble 버전 문자열 변경 필요 |

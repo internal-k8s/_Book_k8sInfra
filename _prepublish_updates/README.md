@@ -11,7 +11,13 @@
 | [containerd](containerd.md) | 1.7.x → 2.2.2 | ✅ 완료 | 2026-04-04 |
 | [Calico](calico.md) | v3.30.1 → v3.31.2 | ✅ 완료 | 2026-04-04 |
 | [MetalLB](metallb.md) | v0.13.10 → v0.15.3 | ✅ 완료 | 2026-04-04 |
-| [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.13.1 | ✅ 완료 | 2026-04-04 |
+| [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.12.1 | ✅ 완료 | 2026-04-04 |
 | [Helm](helm.md) | v3 → v4.1.3 | ✅ 완료 | 2026-04-04 |
 | [Cilium](cilium.md) | v1.17.4 → v1.17.13 | ⏳ 대기 | - |
 | [Docker](docker.md) | 24 → 29.x | ⏳ 대기 | - |
+
+## 기타
+
+| 항목 | 내용 | 상태 |
+|---|---|---|
+| [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |

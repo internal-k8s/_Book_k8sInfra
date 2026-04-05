@@ -11,7 +11,7 @@ helm install <release-name> <repo-name>/<chart-name>
 ```
 For instance 
 ```bash 
-helm install nfs-prvs-release edu/nfs-subdir-external-provisioner
+helm install csi-nfs-release edu/csi-driver-nfs
 helm install jenkins edu/jenkins 
 ```
 

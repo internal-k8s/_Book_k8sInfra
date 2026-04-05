@@ -60,7 +60,66 @@ exec /usr/bin/python3: exec format error
 ### 공저자 논의 필요
 
 - arm64 독자에 대한 Harbor 챕터 대응 방안 결정 필요
-- 선택지: ① arm64 미지원 명시 (책에 note 추가) ② Harbor 버전 업그레이드 시점에 재검토
+- 선택지: ① arm64 미지원 명시 (책에 note 추가) ② arm64 이미지 직접 빌드 후 배포 (아래 참고)
+
+### arm64 이미지 직접 빌드 가능성 — 복잡도: MEDIUM
+
+**참고**: `_Lecture_prom_learning.kit`의 `harbor_config.sh`에서 동일 패턴 사용 중:
+```bash
+if [ "$(uname -m)" == "aarch64" ]; then
+  sed -i 's,goharbor/prepare:v2.4.3,seongjumoon/prepare:v2.4.3-arm64,gi' prepare
+  # docker-compose.yml도 동일하게 치환
+fi
+```
+→ `seongjumoon` 계정에 v2.4.3-arm64 이미지 존재. v2.10.0은 없음.
+
+**v2.10.0 arm64 빌드 방법**
+
+Harbor v2.10.0 Makefile에는 buildx/multi-arch 지원 없음. 소스 수정 최소화로 arm64 빌드 가능:
+
+1. **패치 1곳 (1줄)** — `make/photon/exporter/Dockerfile`
+   ```dockerfile
+   ENV GOARCH=amd64  # ← 이 줄 제거 (arm64에서도 amd64 바이너리 생성하는 원인)
+   ```
+
+2. **빌드 커맨드** (arm64 호스트에서 실행)
+   ```bash
+   make build \
+     -e DEVFLAG=false \
+     -e VERSIONTAG=v2.10.0 \
+     -e BASEIMAGETAG=v2.10.0 \
+     -e IMAGENAMESPACE=sysnet4admin \
+     -e BASEIMAGENAMESPACE=sysnet4admin \
+     -e BUILD_BASE=true \
+     -e PULL_BASE_FROM_DOCKERHUB=false \
+     -e BUILDBIN=true \
+     -e TRIVYFLAG=false
+   ```
+   - `BUILDBIN=true`: registry 바이너리를 amd64 prebuilt 다운로드 대신 소스 컴파일
+   - `PULL_BASE_FROM_DOCKERHUB=false`: 로컬 빌드한 base 이미지 사용
+
+3. **베이스 이미지 arm64 지원 여부 확인**
+
+   | 베이스 이미지 | arm64 지원 |
+   |---|---|
+   | `photon:5.0` | ✅ |
+   | `golang:1.21.4` | ✅ |
+   | `node:16.18.0` | ✅ |
+
+4. **결과물 푸시**: `sysnet4admin/harbor-core:v2.10.0`, `sysnet4admin/prepare:v2.10.0` 등 DockerHub 푸시
+
+5. **`2-1.get_harbor.sh`에 arch 분기 추가** (prom 패턴 적용)
+   ```bash
+   if [ "$(uname -m)" == "aarch64" ]; then
+     sed -i 's,goharbor/prepare:v2.10.0,sysnet4admin/prepare:v2.10.0,gi' 2-3.prepare
+     echo '
+   sed -i "s,goharbor/,sysnet4admin/,gi" /opt/harbor/docker-compose.yml
+   sed -i "s,:v2.10.0-dev-arm,:v2.10.0,gi" /opt/harbor/docker-compose.yml
+   ' >> 2-3.prepare
+   fi
+   ```
+
+**참고**: IabSDocker 커뮤니티가 v2.11+에서 동일 방식으로 arm64 빌드 성공 확인. v2.10.0 전례 없으나 blocker가 exporter 1줄뿐이므로 실현 가능성 높음.
 
 ---
 

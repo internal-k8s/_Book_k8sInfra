@@ -36,6 +36,18 @@ Docker 29부터 신규 설치 시 containerd image store가 기본값 (`driver-t
 
 **`--base-name` 실패 원인**: Docker archive 형식에서는 `manifest.json`의 `RepoTags`를 `--base-name`으로 재지정하는 방식이었으나, OCI layout 형식에서는 `index.json`의 `annotations`에 이미 image name이 내장됨 → `--base-name` 오버라이드가 동작하지 않음.
 
+**코드 변경 내용 (`copy_docker_2_containerd.sh` Step 3)**:
+```bash
+# 변경 전
+ctr --namespace $KUBERNETES_NAMESPACE image import --base-name multistage-img $TEMP_DOCKER_FILE_PATH
+#                                                  └── 플래그 ──┘ └── 플래그값 ──┘  └── tar 파일 경로
+
+# 변경 후 — --base-name과 그 값(multistage-img)을 함께 제거, $TEMP_DOCKER_FILE_PATH는 원래부터 있던 인자
+ctr --namespace $KUBERNETES_NAMESPACE image import $TEMP_DOCKER_FILE_PATH
+```
+
+OCI tar의 `index.json`에 `docker.io/library/multistage-img:latest`가 이미 기록되어 있어, `--base-name` 없이도 해당 이름으로 정상 import됨. k8s pod spec의 `image: multistage-img:latest`와 호환.
+
 **`workaround` 결정 보류**: `docker push` → Harbor 테스트 결과에 따라 `daemon.json`의 `containerd-snapshotter: false` 적용 여부 결정.
 
 참고 이슈: [moby#51532](https://github.com/moby/moby/issues/51532), [moby#51665](https://github.com/moby/moby/issues/51665), [moby#49473](https://github.com/moby/moby/issues/49473)

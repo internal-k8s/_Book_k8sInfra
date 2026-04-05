@@ -13,7 +13,7 @@
 | [MetalLB](metallb.md) | v0.13.10 → v0.15.3 | ✅ 완료 | 2026-04-04 |
 | [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.12.1 | ✅ 완료 | 2026-04-04 |
 | [Helm](helm.md) | v3 → v4.1.3 | ✅ 완료 | 2026-04-04 |
-| [Cilium](cilium.md) | v1.17.4 → v1.17.13 | ⏳ 대기 | - |
+| [Cilium](cilium.md) | v1.17.4 → v1.17.13 | ✅ 완료 | 2026-04-05 |
 | [Docker](docker.md) | 24 → 29.x | ⏳ 대기 | - |
 
 ## 기타

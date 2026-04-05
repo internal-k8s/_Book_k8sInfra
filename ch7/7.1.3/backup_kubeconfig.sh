@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh 
 
 # backup current context's config or create dummy
-if [ ! -f "$HOME/.kube/config" ]; then
+if [[ ! -f "$HOME/.kube/config" ]]; then
   :
 echo "호출안됨"
 else

@@ -6,6 +6,7 @@
 |---|---|---|
 | `ch3/3.1.3/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.2-1~ubuntu.24.04~noble'` |
 | `ch7/7.1.1/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.2-1~ubuntu.24.04~noble'` |
+| `ch7/7.1.1/opt-w12g/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.2-1~ubuntu.24.04~noble'` |
 
 수정하지 않은 파일: `k8s_pkg_cfg.sh` (ch3, ch7) — SSF와 완전 동일 코드, 변경 불필요
 

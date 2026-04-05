@@ -38,6 +38,7 @@ grafana:
     loadBalancerIP: 192.168.1.12
   persistence:
     enabled: true
+    storageClassName: "managed-nfs-storage"
   grafana.ini:
     server:
       root_url: "http://192.168.1.12"

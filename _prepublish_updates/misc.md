@@ -29,6 +29,41 @@
 
 ---
 
+## ⚠️ Harbor v2.10.0 arm64 미지원 — 공저자 확인 필요
+
+### 현상
+
+ch4/4.4.2 Harbor 설치 시 arm64 환경에서 다음 오류 발생:
+
+```
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8)
+exec /usr/bin/python3: exec format error
+```
+
+### 원인
+
+- Harbor v2.10.0의 모든 컴포넌트 이미지(`prepare`, `harbor-core`, `harbor-db` 등)가 **linux/amd64 단일 아키텍처**만 지원
+- Docker Hub 확인 결과 arm64 이미지 없음
+- `ch4/4.4.2/2.harbor/2-1.get_harbor.sh`에 arch 감지 로직 없음
+- QEMU 에뮬레이션도 동작하지 않음 (`exec format error`)
+
+### 공식 arm64 지원 시점
+
+- Harbor GitHub PR #22311 (Full Multi-Architecture Enablement) — v2.16 예정 기능으로 밀림 (2026년 기준 미병합)
+- v2.10.x ~ v2.15.x 전 버전 amd64 전용
+
+### 영향
+
+- 책이 arm64 환경(Apple Silicon Mac + VirtualBox)도 지원하도록 설계된 경우 ch4/4.4.2 Harbor 챕터는 동작하지 않음
+- x86_64 환경에서는 정상 동작
+
+### 공저자 논의 필요
+
+- arm64 독자에 대한 Harbor 챕터 대응 방안 결정 필요
+- 선택지: ① arm64 미지원 명시 (책에 note 추가) ② Harbor 버전 업그레이드 시점에 재검토
+
+---
+
 ## 구 yaml 파일 삭제
 
 | 삭제 파일 | 이유 |

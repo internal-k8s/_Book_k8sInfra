@@ -86,17 +86,15 @@ Harbor 컴포넌트(DB, Redis, core)가 영향받을 가능성 있음.
 ### 버전 문자열 형식 — Ubuntu에 따라 변경
 
 ```bash
-# Ubuntu 22.04 Jammy (현재)
+# Ubuntu 22.04 Jammy (이전)
 docker_V='5:24.0.6-1~ubuntu.22.04~jammy'
+buildx_V='0.23.0-1~ubuntu.22.04~jammy'
+compose_V='2.35.1-1~ubuntu.22.04~jammy'
 
-# Ubuntu 24.04 Noble (변경 후)
+# Ubuntu 24.04 Noble (변경 후) — APT 저장소 확인 완료 (2026-04-05)
 docker_V='5:29.3.1-1~ubuntu.24.04~noble'
-```
-
-`buildx_V`, `compose_V`는 실제 APT 저장소에서 확인 후 결정:
-```bash
-apt list --all-versions docker-buildx-plugin 2>/dev/null
-apt list --all-versions docker-compose-plugin 2>/dev/null
+buildx_V='0.33.0-1~ubuntu.24.04~noble'
+compose_V='5.1.1-1~ubuntu.24.04~noble'   # compose-plugin v5 GA (v2에서 versioning 변경, 하위호환)
 ```
 
 ---
@@ -105,7 +103,7 @@ apt list --all-versions docker-compose-plugin 2>/dev/null
 
 | 파일 | 변경 내용 |
 |---|---|
-| `ch4/4.2.1/install_docker.sh` | 버전 문자열 noble 형식으로 변경 + HIGH RISK 테스트 결과에 따라 `daemon.json` 추가 여부 결정 |
+| `ch4/4.2.1/install_docker.sh` | 버전 문자열 noble 형식으로 변경 ✅ + HIGH RISK 테스트 결과에 따라 `daemon.json` 추가 여부 결정 |
 
 > `ch5/5.3.4/install_docker_on_all_nodes.sh`는 `install_docker.sh` scp 방식이므로 자동 반영.
 

@@ -1,4 +1,4 @@
-# Cilium v1.17.4 → v1.17.13 ⏳
+# Cilium v1.17.4 → v1.17.13 ✅
 
 ## 변경 이유
 
@@ -54,4 +54,20 @@ IaC 저장소에 `cilium-v1.17.13-w-hubble.yaml`이 이미 존재 → 이 저장
 
 ## 테스트 결과
 
--
+**환경**: ch7/7.1 (4-node cluster) + ch7/7.2.2 (Hubble UI, CiliumNetworkPolicy)
+
+| # | 항목 | 결과 |
+|---|---|---|
+| 1 | Cilium 버전 확인 (`cilium version`) | ✅ v1.17.13 |
+| 2 | 노드 4/4 Ready | ✅ |
+| 3 | Cilium + Hubble 파드 Running | ✅ |
+| 4 | ClusterIP 서비스 통신 | ✅ |
+| 5 | NodePort 서비스 통신 | ✅ |
+| 6 | LoadBalancer (192.168.1.11) L2 Announcement | ✅ |
+| 7 | DaemonSet 4/4 정상 | ✅ |
+| 8 | CoreDNS 조회 | ✅ |
+| 9 | PVC 동적 프로비저닝 | ✅ |
+| 10 | Hubble UI LoadBalancer (192.168.1.12) | ✅ |
+| 11 | CiliumNetworkPolicy ICMP allow/deny | ✅ |
+
+**결과**: PASS 11/11 — ch7 전 시나리오 이상 없음

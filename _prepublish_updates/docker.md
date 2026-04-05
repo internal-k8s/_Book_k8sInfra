@@ -48,7 +48,7 @@ ctr --namespace $KUBERNETES_NAMESPACE image import $TEMP_DOCKER_FILE_PATH
 
 OCI tar의 `index.json`에 `docker.io/library/multistage-img:latest`가 이미 기록되어 있어, `--base-name` 없이도 해당 이름으로 정상 import됨. k8s pod spec의 `image: multistage-img:latest`와 호환.
 
-**`workaround` 결정 보류**: `docker push` → Harbor 테스트 결과에 따라 `daemon.json`의 `containerd-snapshotter: false` 적용 여부 결정.
+**`workaround` 결정 보류**: `docker push` → Harbor 테스트는 arm64 환경(Apple Silicon)에서 Harbor v2.10.0이 amd64 전용 이미지이므로 수행 불가. x86_64 환경에서 별도 확인 필요. 이전 테스트(T1~T3)에서 containerd image store 기본값 상태에서도 빌드/save/load/ctr import 모두 정상이므로, Harbor push도 문제없을 가능성이 높음. 단, OCI manifest list 거부 사례가 있으므로 확인 전까지 `daemon.json` 적용 여부는 미결.
 
 참고 이슈: [moby#51532](https://github.com/moby/moby/issues/51532), [moby#51665](https://github.com/moby/moby/issues/51665), [moby#49473](https://github.com/moby/moby/issues/49473)
 
@@ -126,6 +126,6 @@ compose_V='5.1.1-1~ubuntu.24.04~noble'   # compose-plugin v5 GA (v2에서 versio
 | 1 | Dockerfile 빌드 (멀티스테이지, ch4/4.3.4) | ✅ |
 | 2 | `docker save` → `docker load` (`copy_docker_2_docker.sh`) | ✅ |
 | 3 | `docker save` → `ctr import` (`copy_docker_2_containerd.sh`, `--base-name` 제거 후) | ✅ |
-| 4 | `docker push` → Harbor v2.10 | 테스트 예정 |
-| 5 | Harbor startup (`docker compose up`) | 테스트 예정 |
+| 4 | `docker push` → Harbor v2.10 | ⚠️ arm64 환경 한계로 미수행 (Harbor v2.10.0 amd64 전용 이미지) |
+| 5 | Harbor startup (`docker compose up`) | ⚠️ arm64 환경 한계로 미수행 (동일 원인) |
 | 6 | `docker image ls` 출력 | ✅ 영향 없음 |

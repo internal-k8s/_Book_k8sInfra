@@ -53,9 +53,7 @@ ctr --namespace $KUBERNETES_NAMESPACE image import $TEMP_DOCKER_FILE_PATH
 
 OCI tar의 `index.json`에 `docker.io/library/multistage-img:latest`가 이미 기록되어 있어, `--base-name` 없이도 해당 이름으로 정상 import됨. k8s pod spec의 `image: multistage-img:latest`와 호환.
 
-**`workaround` 결정 보류**: Harbor push 테스트는 arm64 환경에서 수행 불가 (Harbor v2.10.0 amd64 전용). x86_64 환경에서 별도 확인 필요. `daemon.json` 적용 여부는 그 결과 이후 결정.
-
-> ⚠️ **공저자 확인 필요**: Harbor v2.10.0의 모든 컴포넌트 이미지(`prepare`, `harbor-core` 등)가 linux/amd64 단일 아키텍처만 지원함. ch4/4.4.2 스크립트에 arch 감지 로직 없음. 책이 arm64 환경도 지원하도록 설계되었다면 Harbor 챕터는 arm64에서 동작하지 않는 gap 존재. → arm64 지원은 Harbor v2.16 예정 (PR #22311). 현재로서는 x86_64 환경에서만 Harbor 실습 가능.
+**`workaround` 결정 보류**: arm64에서 Harbor push ✅ 정상 동작 확인. x86_64에서도 동일한 결과 예상이나 미확인. `daemon.json` 적용 여부는 x86_64 Harbor push 테스트 후 최종 결정.
 
 참고 이슈: [moby#51532](https://github.com/moby/moby/issues/51532), [moby#51665](https://github.com/moby/moby/issues/51665), [moby#49473](https://github.com/moby/moby/issues/49473)
 
@@ -133,6 +131,8 @@ compose_V='5.1.1-1~ubuntu.24.04~noble'   # compose-plugin v5 GA (v2에서 versio
 | 1 | Dockerfile 빌드 (멀티스테이지, ch4/4.3.4) | ✅ |
 | 2 | `docker save` → `docker load` (`copy_docker_2_docker.sh`) | ✅ |
 | 3 | `docker save` → `ctr import` (`copy_docker_2_containerd.sh`, `--base-name` 제거 후) | ✅ |
-| 4 | `docker push` → Harbor v2.10 | ⚠️ Harbor v2.10.0 arm64 미지원으로 수행 불가 → x86_64 필요 |
-| 5 | Harbor startup (`docker compose up`) | ⚠️ Harbor v2.10.0 arm64 미지원으로 수행 불가 → x86_64 필요 |
+| 4 | `docker push` → Harbor v2.15.0 (arm64) | ✅ nginx:latest 푸시 성공 |
+| 5 | Harbor startup (`docker compose up`, arm64) | ✅ 9개 컨테이너 모두 healthy |
 | 6 | `docker image ls` 출력 | ✅ 영향 없음 |
+| 7 | `docker push` → Harbor (x86_64) | ⏳ x86_64 환경 필요 |
+| 8 | Harbor startup (x86_64) | ⏳ x86_64 환경 필요 |

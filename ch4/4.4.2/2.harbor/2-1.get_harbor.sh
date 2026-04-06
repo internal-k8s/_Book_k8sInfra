@@ -32,13 +32,11 @@ sed -i 's,$DOCKER_COMPOSE,$DOCKER_COMPOSE -f /opt/harbor/docker-compose.yml,' 2-
 sed -i 's/up -d/-p harbor up -d/' 2-4.install.sh
 
 # for arm64/aarch64 — use sysnet4admin arm64 images (built via _image-builder/build.sh)
+# Note: arm64 prepare image was built with IMAGENAMESPACE=sysnet4admin and VERSIONTAG=v2.15.0-arm64,
+# so it already generates docker-compose.yml with the correct image names — no post-sed needed.
 if [ "$(uname -m)" == "aarch64" ]; then
-  echo "arm64 detected — switching to sysnet4admin/${HARBOR_VERSION}-arm64 images"
+  echo "arm64 detected — switching to sysnet4admin/prepare:${HARBOR_VERSION}-arm64"
   sed -i "s,goharbor/prepare:${HARBOR_VERSION},sysnet4admin/prepare:${HARBOR_VERSION}-arm64,gi" 2-3.prepare
-  echo "
-sed -i \"s,goharbor/,sysnet4admin/,gi\" /opt/harbor/docker-compose.yml
-sed -i \"s,:${HARBOR_VERSION},:${HARBOR_VERSION}-arm64,gi\" /opt/harbor/docker-compose.yml
-" >> 2-3.prepare
 fi
 
 # create systemd startup service for Harbor

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TAG=v2.10.0
+TAG=v2.15.0
 HARBOR_HOST=192.168.1.10:8443
 HARBOR_FILE_DIR=/opt/harbor
 HARBOR_DATA_DIR=/data/harbor
@@ -33,17 +33,23 @@ mv 2-1.get_harbor.sh ./2.harbor
 mv 2-2.modify_config.sh ./2.harbor
 
 echo "[Step 3/6] Removing Harbor images"
-if [ "$IMAGE_PRESERVE_OPTION" = false ]; then 
-  docker rmi -f goharbor/redis-photon:$TAG \
-  goharbor/harbor-registryctl:$TAG \
-  goharbor/registry-photon:$TAG \
-  goharbor/nginx-photon:$TAG \
-  goharbor/harbor-log:$TAG \
-  goharbor/harbor-jobservice:$TAG \
-  goharbor/harbor-core:$TAG \
-  goharbor/harbor-portal:$TAG \
-  goharbor/harbor-db:$TAG \
-  goharbor/prepare:$TAG
+if [ "$IMAGE_PRESERVE_OPTION" = false ]; then
+  if [ "$(uname -m)" == "aarch64" ]; then
+    NS=sysnet4admin; TAG=${TAG}-arm64
+  else
+    NS=goharbor
+  fi
+  docker rmi -f $NS/redis-photon:$TAG \
+  $NS/harbor-registryctl:$TAG \
+  $NS/registry-photon:$TAG \
+  $NS/nginx-photon:$TAG \
+  $NS/harbor-log:$TAG \
+  $NS/harbor-jobservice:$TAG \
+  $NS/harbor-core:$TAG \
+  $NS/harbor-portal:$TAG \
+  $NS/harbor-db:$TAG \
+  $NS/prepare:$TAG
+  docker rmi -f $NS/harbor-exporter:$TAG 2>/dev/null || true
 else
   echo "--preserve-image option is present, skip removing images"
 fi

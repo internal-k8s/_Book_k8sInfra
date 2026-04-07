@@ -97,5 +97,19 @@ Docker APT 저장소 패키지 버전이 Noble부터 distro suffix 포함:
 
 ## 테스트 결과
 
+### arm64 (2026-04-04)
+
 Ubuntu 24.04 기반 클러스터 전체 테스트는 containerd/Calico/MetalLB 업데이트 항목에서 검증 완료.
 각 항목 PASS 14/14 확인.
+
+### x86_64 (2026-04-07)
+
+**환경**
+- box: `sysnet4admin/Ubuntu-k8s` v1.0.0 (Ubuntu 24.04.4 LTS, x86_64)
+- kernel: 6.8.0-107-generic
+
+**ch3/3.1.3** — k8s v1.35.0 + Calico v3.31.2 + MetalLB v0.15.3: **PASS 13/13**
+
+**ch7/7.1.1** — k8s v1.34.2 + Cilium v1.17.13 + Cilium L2 LB: **PASS 13/13**
+
+상세 결과는 calico.md, cilium.md 참고.

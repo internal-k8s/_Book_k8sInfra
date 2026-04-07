@@ -1,4 +1,4 @@
-# Docker 24.0.6 → 29.3.1 ⏳
+# Docker 24.0.6 → 29.3.1 ✅
 
 > **업데이트 결정 근거**: Docker 24.x 보안 패치 중단, 29.x가 최신 안정 버전. 책에서 Docker는 컨테이너 런타임이 아닌 이미지 빌드/푸시 전용으로만 사용하므로 대부분의 변경이 영향 없음. HIGH RISK 2항목은 테스트 후 최종 결정.
 
@@ -53,7 +53,7 @@ ctr --namespace $KUBERNETES_NAMESPACE image import $TEMP_DOCKER_FILE_PATH
 
 OCI tar의 `index.json`에 `docker.io/library/multistage-img:latest`가 이미 기록되어 있어, `--base-name` 없이도 해당 이름으로 정상 import됨. k8s pod spec의 `image: multistage-img:latest`와 호환.
 
-**`workaround` 결정 보류**: arm64에서 Harbor push ✅ 정상 동작 확인. x86_64에서도 동일한 결과 예상이나 미확인. `daemon.json` 적용 여부는 x86_64 Harbor push 테스트 후 최종 결정.
+**`workaround` 불필요**: arm64/x86_64 모두 Harbor push ✅ 정상 동작 확인. `daemon.json`의 `containerd-snapshotter: false` 적용 불필요.
 
 참고 이슈: [moby#51532](https://github.com/moby/moby/issues/51532), [moby#51665](https://github.com/moby/moby/issues/51665), [moby#49473](https://github.com/moby/moby/issues/49473)
 
@@ -134,5 +134,5 @@ compose_V='5.1.1-1~ubuntu.24.04~noble'   # compose-plugin v5 GA (v2에서 versio
 | 4 | `docker push` → Harbor v2.15.0 (arm64) | ✅ nginx:latest 푸시 성공 |
 | 5 | Harbor startup (`docker compose up`, arm64) | ✅ 9개 컨테이너 모두 healthy |
 | 6 | `docker image ls` 출력 | ✅ 영향 없음 |
-| 7 | `docker push` → Harbor (x86_64) | ⏳ x86_64 환경 필요 |
-| 8 | Harbor startup (x86_64) | ⏳ x86_64 환경 필요 |
+| 7 | `docker push` → Harbor (x86_64) | ✅ nginx:latest 푸시 성공, daemon.json workaround 불필요 |
+| 8 | Harbor startup (x86_64) | ✅ 9개 컨테이너 모두 healthy, fd 제한 문제 없음 |

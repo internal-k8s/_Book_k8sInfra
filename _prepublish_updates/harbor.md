@@ -50,11 +50,19 @@ fi
 
 ### UI/UX 변경 — docx 수정 필요
 
-| 변경 | 버전 | 내용 |
-|---|---|---|
-| "Copy docker pull" 버튼 위치 | v2.13+ | 툴바 버튼 → 이미지 목록 행별 인라인 아이콘으로 이동 |
+#### "Copy docker pull" 버튼 위치 변경 (v2.13+) — goharbor/harbor#21155
 
-→ **docx 해당 스크린샷/설명 업데이트 필요** (ch4/4.4.3 또는 Harbor 사용 설명 부분)
+| 항목 | v2.12 이하 (변경 전) | v2.13+ (변경 후) |
+|---|---|---|
+| **위치** | 이미지 목록 테이블 **상단 toolbar** 버튼 | 각 행(row)의 **인라인 아이콘** |
+| **활성화 조건** | 아티팩트 체크박스 선택 필수, 미선택 시 greyed-out | 선택 없이 즉시 클릭 가능 |
+| **외형** | 텍스트 기반 버튼 | 아이콘 버튼 (복사 완료 시 toast 메시지) |
+| **단계 수** | 체크박스 선택 → 버튼 클릭 (2~3 click) | 아이콘 클릭 1회 (1 click) |
+| **런타임 선택** | 없음 | navbar에서 docker/podman/nerdctl/ctr/crictl 선택 가능 |
+
+**docx 수정 범위:**
+- Harbor 이미지 상세 페이지 스크린샷: 상단 toolbar 버튼 → 행별 인라인 아이콘으로 교체
+- 설명 텍스트: "아티팩트 선택 후 클릭" 흐름 → "행의 아이콘 클릭" 으로 수정
 
 ### 기능 변경 — 책 영향 없음
 
@@ -74,8 +82,8 @@ fi
 |---|---|---|
 | `ch4/4.4.2/2.harbor/2-1.get_harbor.sh` | v2.10.0 → v2.15.0, arm64 arch 감지 추가 | ✅ |
 | `ch4/4.4.2/_image-builder/build.sh` | arm64 이미지 빌드 스크립트 (저자 전용) | ✅ (gitignore) |
-| `ch4/4.4.2/2.harbor/uninstall_harbor.sh` | TAG v2.10.0 → v2.15.0 업데이트 | ⏳ |
-| docx (ch4/4.4.3 또는 Harbor 사용 설명) | "Copy docker pull" 위치 변경 스크린샷 | ⏳ |
+| `ch4/4.4.2/2.harbor/uninstall_harbor.sh` | TAG v2.10.0 → v2.15.0 업데이트 | ✅ |
+| docx (ch4/4.4.3 또는 Harbor 사용 설명) | "Copy docker pull" 위치 변경 스크린샷 | ⏳ 공저자 작업 필요 |
 
 ---
 

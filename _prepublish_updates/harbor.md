@@ -82,7 +82,7 @@ fi
 |---|---|---|
 | `ch4/4.4.2/2.harbor/2-1.get_harbor.sh` | v2.10.0 → v2.15.0, arm64 arch 감지 추가 | ✅ |
 | `ch4/4.4.2/_image-builder/build.sh` | arm64 이미지 빌드 스크립트 (저자 전용) | ✅ (gitignore) |
-| `ch4/4.4.2/2.harbor/uninstall_harbor.sh` | TAG v2.10.0 → v2.15.0 업데이트 | ✅ |
+| `ch4/4.4.2/2.harbor/uninstall_harbor.sh` | TAG v2.10.0 → v2.15.0 + arm64 분기 추가 | ✅ |
 | docx (ch4/4.4.3 또는 Harbor 사용 설명) | "Copy docker pull" 위치 변경 스크린샷 | ⏳ 공저자 작업 필요 |
 
 ---

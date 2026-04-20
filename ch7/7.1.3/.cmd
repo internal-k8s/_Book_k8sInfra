@@ -1,12 +1,12 @@
 # headlamp
-## installation 
+## installation
 ### Windows
 ### https://winstall.app/apps/Headlamp.Headlamp
 ### winget install --id=Headlamp.Headlamp  -e
-winget install headlamp -v 0.40.1
+winget install headlamp -v 0.41.0
 
 ### MacOS
-### https://formulae.brew.sh/cask/headlamp
-### brew install --cask headlamp 
-### https://github.com/Homebrew/homebrew-cask/blob/master/Casks/h/headlamp.rb
-brew install --cask ./headlamp-v0.40.1/headlamp.rb
+### DMG 직접 설치 (Homebrew cask는 Gatekeeper 미통과로 deprecated)
+### https://github.com/kubernetes-sigs/headlamp/releases/tag/v0.41.0
+### arm64: Headlamp-0.41.0-mac-arm64.dmg
+### x64:   Headlamp-0.41.0-mac-x64.dmg

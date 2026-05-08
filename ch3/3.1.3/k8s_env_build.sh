@@ -28,27 +28,6 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
   | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# configure host-only interface (eth1) for Ubuntu 24.04
-# Vagrant private_network does not auto-apply netplan on Ubuntu 24.04
-HOSTNAME=$(hostname)
-if [ "$HOSTNAME" = "cp-k8s" ]; then
-  HOST_IP="192.168.1.10/24"
-else
-  NODE_NUM=$(echo "$HOSTNAME" | grep -o '[0-9]\+$')
-  HOST_IP="192.168.1.10${NODE_NUM}/24"
-fi
-cat <<EOF > /etc/netplan/99-k8s-host-only.yaml
-network:
-  version: 2
-  ethernets:
-    eth1:
-      addresses:
-        - ${HOST_IP}
-EOF
-chmod 600 /etc/netplan/99-k8s-host-only.yaml
-netplan apply
-sleep 2
-
 # packets traversing the bridge are processed by iptables for filtering
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # enable br_filter for iptables 

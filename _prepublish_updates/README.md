@@ -8,7 +8,8 @@
 | 컴포넌트 | 변경 | 상태 | 완료일 |
 |---|---|---|---|
 | [Ubuntu](ubuntu.md) | 22.04 → 24.04 | ✅ 완료 | 2026-04-04 |
-| [containerd](containerd.md) | 1.7.x → 2.2.2 | ✅ 완료 | 2026-04-04 |
+| [Kubernetes](kubernetes.md) | 1.35.0 → 1.36.0 | ✅ 완료 | 2026-05-08 |
+| [containerd](containerd.md) | 1.7.x → 2.2.3 | ✅ 완료 | 2026-05-08 |
 | [Calico](calico.md) | v3.30.1 → v3.31.2 | ✅ 완료 | 2026-04-04 |
 | [MetalLB](metallb.md) | v0.13.10 → v0.15.3 | ✅ 완료 | 2026-04-04 |
 | [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.12.1 | ✅ 완료 | 2026-04-04 |

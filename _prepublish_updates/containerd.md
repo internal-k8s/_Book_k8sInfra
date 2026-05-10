@@ -1,12 +1,12 @@
-# containerd 1.7.x → 2.2.2 ✅
+# containerd 1.7.x → 2.2.3 ✅
 
 ## 변경 파일
 
 | 파일 | 변경 전 | 변경 후 |
 |---|---|---|
-| `ch3/3.1.3/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.2-1~ubuntu.24.04~noble'` |
-| `ch7/7.1.1/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.2-1~ubuntu.24.04~noble'` |
-| `ch7/7.1.1/opt-w12g/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.2-1~ubuntu.24.04~noble'` |
+| `ch3/3.1.3/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.3-1~ubuntu.24.04~noble'` |
+| `ch7/7.1.1/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.3-1~ubuntu.24.04~noble'` |
+| `ch7/7.1.1/opt-w12g/Vagrantfile` | `ctrd_V = '1.7.24-1'` | `ctrd_V = '2.2.3-1~ubuntu.24.04~noble'` |
 
 수정하지 않은 파일: `k8s_pkg_cfg.sh` (ch3, ch7) — SSF와 완전 동일 코드, 변경 불필요
 
@@ -25,7 +25,8 @@ box가 Ubuntu 24.04(sysnet4admin/Ubuntu-k8s v1.0.0)로 전환되면서 Noble 형
 containerd.io 2.1.5-1~ubuntu.24.04~noble
 containerd.io 2.2.0-2~ubuntu.24.04~noble
 containerd.io 2.2.1-1~ubuntu.24.04~noble
-containerd.io 2.2.2-1~ubuntu.24.04~noble  ← 선택
+containerd.io 2.2.2-1~ubuntu.24.04~noble
+containerd.io 2.2.3-1~ubuntu.24.04~noble  ← 선택
 ```
 
 ## 테스트 결과 (2026-04-04)
@@ -90,6 +91,38 @@ w3-k8s   Ready    <none>          v1.34.2   containerd://2.2.2
 | 13 | Pod with PVC Running | ✅ PASS |
 
 **PASS 14/14, FAIL 0**
+
+### ch3/3.1.3 — k8s 1.36.0 + Calico + containerd 2.2.3 (2026-05-08)
+
+```
+NAME     STATUS   ROLES           VERSION   CONTAINER-RUNTIME
+cp-k8s   Ready    control-plane   v1.36.0   containerd://2.2.3
+w1-k8s   Ready    <none>          v1.36.0   containerd://2.2.3
+w2-k8s   Ready    <none>          v1.36.0   containerd://2.2.3
+w3-k8s   Ready    <none>          v1.36.0   containerd://2.2.3
+```
+
+| # | 테스트 항목 | 결과 |
+|---|---|---|
+| 1 | Node Status (4/4 Ready) | ✅ PASS |
+| 2 | kube-system pods 전체 Running (Calico 포함) | ✅ PASS |
+| 3 | NodePort service nginx 접근 (CP/w1/w2/w3) | ✅ PASS |
+
+### ch7/7.1.1 — k8s 1.36.0 + Cilium v1.17.13 + containerd 2.2.3 (2026-05-08)
+
+```
+NAME     STATUS   ROLES           VERSION   CONTAINER-RUNTIME
+cp-k8s   Ready    control-plane   v1.36.0   containerd://2.2.3
+w1-k8s   Ready    <none>          v1.36.0   containerd://2.2.3
+w2-k8s   Ready    <none>          v1.36.0   containerd://2.2.3
+w3-k8s   Ready    <none>          v1.36.0   containerd://2.2.3
+```
+
+| # | 테스트 항목 | 결과 |
+|---|---|---|
+| 1 | Node Status (4/4 Ready) | ✅ PASS |
+| 2 | kube-system pods 전체 Running (Cilium, Hubble, CSI NFS 포함) | ✅ PASS |
+| 3 | NodePort service nginx 접근 (CP/w1/w2/w3) | ✅ PASS |
 
 ## 특이사항
 

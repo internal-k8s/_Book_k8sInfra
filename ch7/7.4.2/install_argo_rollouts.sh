@@ -10,11 +10,13 @@ kubectl wait --for=condition=available deployment/argo-rollouts -n argo-rollouts
 echo ""
 echo "✅ Argo Rollouts controller installed."
 echo ""
-echo "📌 kubectl plugin 설치 (선택):"
-echo "   macOS:  brew install argoproj/tap/kubectl-argo-rollouts"
-echo "   Linux:  curl -LO https://github.com/argoproj/argo-rollouts/releases/download/v1.7.2/kubectl-argo-rollouts-linux-amd64"
-echo "           chmod +x kubectl-argo-rollouts-linux-amd64"
-echo "           sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts"
+echo "🔧 Install kubectl argo rollouts plugin."
+curl -sLo /usr/local/bin/kubectl-argo-rollouts \
+  https://github.com/argoproj/argo-rollouts/releases/download/v1.7.2/kubectl-argo-rollouts-linux-amd64
+chmod +x /usr/local/bin/kubectl-argo-rollouts
+
+PLUGIN_VER="$(kubectl argo rollouts version --short 2>/dev/null)"
+echo "✅ kubectl argo rollouts plugin installed: $PLUGIN_VER"
 
 echo ""
 echo "🚀 Deploy Blue-Green Rollout."

@@ -139,7 +139,8 @@ parameters:
 - `ch3/3.5.2/secretKeyRef.yaml` — `managed-nfs-storage`
 - `ch5/5.3.1/install_jenkins_by_helm.sh` — `--set persistence.storageClass=managed-nfs-storage`
 - `ch7/7.2.3/prometheus-operator-values.yaml` — `managed-nfs-storage`
-- `app/D.Operator/.../elasticsearch.yaml` — `managed-nfs-storage`
+<!-- app/D.Operator/2.elasticsearch 폐기로 elasticsearch.yaml 참조 제거 (2026-05). 자세한 사유는 _prepublish_updates/misc.md 참조 -->
+
 
 ### 수정 필요 파일
 | 파일 | 변경 내용 |
@@ -244,3 +245,11 @@ parameters:
 - [ ] Helm v4.1.3 전환 (ch5 + 전체 helm 스크립트 검증)
 - [ ] Cilium v1.17.13 업그레이드 (ch7)
 - [ ] Docker 29.x 업그레이드 (ch4) — Harbor 호환성 검증 선행 필요
+
+### 부록(app/) 재편 (2026-05 완료)
+- [x] 6개 부록(A/B/D/E/F) → 3개 체계(A/B/C)로 정리
+- [x] B.Dashboard → ch7/7.1.3 Headlamp로 흡수, D.Operator/cilium → ch7/7.2.2 흡수
+- [x] D.Operator/elasticsearch 폐기 (자원 한계), F.kubespray_kOps/kOps 폐기 (텍스트 설명만)
+- [x] app/A 버전 통일: k8s 1.36.0 + containerd 2.2.3
+- [x] app/B (kubespray) release-2.31 / k8s 1.35.x로 갱신
+- 자세한 사유: [`_prepublish_updates/misc.md`](_prepublish_updates/misc.md#부록app-재편-2026-05)

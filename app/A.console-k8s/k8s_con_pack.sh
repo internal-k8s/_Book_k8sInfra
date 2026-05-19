@@ -6,21 +6,21 @@ export DEBIAN_FRONTEND=noninteractive
 # install util packages 
 apt-get install sshpass
 
-# add kubernetes repo
+# add kubernetes repo (pkgs.k8s.io — apt.kubernetes.io was decommissioned 2024-03)
 mkdir -p /etc/apt/keyrings
-curl -fsSL \
-  https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-  | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
+curl \
+  -fsSL https://pkgs.k8s.io/core:/stable:/v$2/deb/Release.key \
+  | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo \
-  "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] \
-  https://apt.kubernetes.io/ kubernetes-xenial main" \
+  "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+  https://pkgs.k8s.io/core:/stable:/v$2/deb/ /" \
   | tee /etc/apt/sources.list.d/kubernetes.list
 
-# update repo info 
-apt-get update 
+# update repo info
+apt-get update
 
 # install kubectl
-apt-get install kubectl=$1 
+apt-get install -y kubectl=$1
 
 # kubectl completion on bash-completion dir
 kubectl completion bash >/etc/bash_completion.d/kubectl

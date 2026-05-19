@@ -6,9 +6,9 @@
 CP = 3
 # max number of worker nodes
 WK = 6
-# each of components to install
-#k8s_V    = '1.27.4-00'                   # Kubernetes
-#ctrd_V   = '1.6.21-1'                    # Containerd
+# Kubespray manages k8s/containerd versions internally.
+# Reference: kubespray release-2.31 → k8s v1.35.x (default), containerd 2.x
+# See pre-kubespray.sh for the release tag pin.
 ## /configuration variables ##
 
 Vagrant.configure("2") do |config|

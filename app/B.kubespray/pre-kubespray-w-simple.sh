@@ -7,8 +7,8 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get install python3-pip sshpass -y 
 
 # git clone https://github.com/kubernetes-sigs/kubespray.git
-# to avoid kubectl missing error and deploy v1.27.9 by release 2.23
-git clone -b release-2.23 https://github.com/kubernetes-sigs/kubespray.git
+# kubespray release-2.31 deploys k8s v1.35.x by default (2026-04 release).
+git clone -b release-2.31 https://github.com/kubernetes-sigs/kubespray.git
 sudo mv kubespray /root
 
 # other ansible, jinja2 netaddr will be installed by requirement.txt (2024.01.12)
@@ -25,7 +25,7 @@ sudo mv kubespray /root
 # WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. 
 # It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
 # so stderr(2) to /dev/null 
-pip3.10 install -r /root/kubespray/requirements.txt 2> /dev/null
+pip3 install --break-system-packages -r /root/kubespray/requirements.txt 2> /dev/null
 
 
 cat <<EOF >  /root/kubespray/ansible_hosts.ini

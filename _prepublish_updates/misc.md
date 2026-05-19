@@ -161,3 +161,30 @@ app/
 - `app/C.DeepDiveContainer/`에 실제 존재하는 파일명: `ns-remover.sh`
 - 1판 시점 본문 표기: `ns-remove.sh` (오타)
 - **MD 본문 재작성 시 `ns-remover.sh`로 통일**
+
+### 부록 B 호스트 자원 안내
+
+부록 B(kubespray)는 9개 VM 구성으로 **약 11.6GB 메모리**를 요구합니다.
+
+| 구분 | 메모리 | 비고 |
+|---|---|---|
+| CP × 3 | 1640MB × 3 = 4.9GB | kubespray preflight `minimal_master_memory_mb: 1500` 통과용 마진 |
+| Worker × 6 | 1152MB × 6 = 6.9GB | kubespray preflight `minimal_node_memory_mb: 1024` 통과용 마진 |
+| 합계 | **11.6GB** | — |
+
+**메모리를 더 줄일 수 없는 이유**: kubespray release-2.31의 `roles/kubernetes/preinstall/tasks/0040-verify-settings.yml`에 강제 assert가 있어 위 최저값 미달 시 `ansible-playbook cluster.yml` 실행이 즉시 실패합니다. 우회(`ignore_assert_errors=true`)는 OOM 리스크 큼.
+
+**MD 본문 재작성 시 추가할 안내**:
+
+```
+부록 B를 진행하기 전에 7장의 가상 머신은 vagrant halt로 종료하길 권장합니다.
+호스트 메모리 24GB(예: MacBook M2 24GB) 환경에서는 7장(약 13GB)과 부록 B
+(약 11.6GB)의 동시 운용이 어렵습니다.
+
+  $ cd ~/_Book_k8sInfra/ch7/7.1.1
+  $ vagrant halt
+  $ cd ~/_Book_k8sInfra/app/B.kubespray
+  $ vagrant up
+```
+
+호스트 메모리가 32GB 이상이면 동시 운용도 가능하지만, 본 부록은 단독 운영을 기준으로 합니다.

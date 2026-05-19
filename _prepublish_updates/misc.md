@@ -138,3 +138,26 @@ app/
 - 새 appC 도입부에 **docker 설치 안내 한 줄** 추가 (아래 참조)
 - PID/컨테이너 ID 직접 명시 → 7장 IP 처리와 동일한 "예: " 패턴 적용
 - 마크다운 변환 잔재(`\<절\>`, `\<중\>`, `[xxx]{.mark}`, 중첩 번호 등) 정리
+
+### appC docker 의존성 처리
+
+새 appC(컨테이너 깊이)는 `docker run`, `docker exec`, `docker inspect`, `docker export`를 사용하지만, ch7 클러스터(7.1.1 fresh `vagrant up`) 환경에는 **도커가 설치되어 있지 않음**. 도커 설치는 ch4(`ch4/4.2.1/install_docker.sh`)에서 이뤄지며 ch5/ch6의 `.init_infra.sh`도 동일 스크립트를 재사용함.
+
+**적용 방침**: 부록 C 본문 1단계 앞에 다음 안내 문구 + 명령 1줄 삽입.
+
+```
+이번 부록은 도커가 필요합니다. ch7 환경(또는 부록 A 이후)에서 진행한다면
+시작 전에 cp-k8s에서 다음 명령으로 도커를 설치합니다.
+
+  root@cp-k8s:~# bash ~/_Book_k8sInfra/ch4/4.2.1/install_docker.sh
+
+(4장을 이미 진행하여 도커가 설치된 환경이라면 이 단계를 건너뜁니다.)
+```
+
+이 패턴은 ch5/ch6 `.init_infra.sh:15`와 동일 — 코드 중복 없음, install_docker.sh 버전 갱신이 자동으로 부록 C에도 반영됨.
+
+### 추가: ns-remove.sh 파일명 정정
+
+- `app/C.DeepDiveContainer/`에 실제 존재하는 파일명: `ns-remover.sh`
+- 1판 시점 본문 표기: `ns-remove.sh` (오타)
+- **MD 본문 재작성 시 `ns-remover.sh`로 통일**

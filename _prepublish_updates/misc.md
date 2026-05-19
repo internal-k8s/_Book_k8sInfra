@@ -62,3 +62,79 @@ Ubuntu 24.04 전환에 따라 5개 강의 레포의 ch2/2.3, ch2/2.4 Vagrantfile
 ### docx 영향
 
 직접적인 내용 변경 없음. 불필요 파일 정리.
+
+---
+
+## 부록(app/) 재편 (2026-05)
+
+기존 6개 부록(A/B/D/E/F — C는 결번)을 **3개 체계(A/B/C)** 로 정리.
+일부 항목은 ch7 본문으로 흡수, 일부는 폐기, 일부는 위치 이동.
+
+### 변경 매핑
+
+| 이전 (부록) | 이후 | 처리 |
+|---|---|---|
+| `app/A.console-k8s` | `app/A.console-k8s` | 유지 (k8s 1.36 + containerd 2.2.3로 버전 통일) |
+| `app/B.Dashboard` | — | **ch7/7.1.3 Headlamp**가 대체 → 디렉토리 폐기 |
+| `app/D.Operator/1.cilium` | `ch7/7.2.2/cilium-networkpolicy` | 이미 ch7로 흡수 완료 |
+| `app/D.Operator/2.elasticsearch` | — | **폐기** (사유: 아래 참조) |
+| `app/D.Operator/0.vagrant` | — | ch7/7.1.1 클러스터로 대체 → 폐기 |
+| `app/E.DeepDiveContainer` | `app/C.DeepDiveContainer` | 위치 이동만 (내용 동일) |
+| `app/F.kubespray_kOps/kubespray` | `app/B.kubespray` | 상위로 승격 |
+| `app/F.kubespray_kOps/kOps` | — | **실습 폐기, 텍스트 설명만** (사유: 아래 참조) |
+
+### 최종 구조
+
+```
+app/
+├── A.console-k8s/        쿠버네티스 콘솔 노드
+├── B.kubespray/          멀티 컨트롤 플레인 (kubespray)
+└── C.DeepDiveContainer/  컨테이너 PID 1, runC 직접 사용
+```
+
+### 순서
+
+`A(콘솔) → B(kubespray) → C(컨테이너 깊이)` — 환경 확장 → 다른 클러스터 구성 → 컨테이너 내부 심화.
+
+### D.Operator/2.elasticsearch 폐기 사유
+
+- ch7 워커 노드 자원(3.5GB × 3) 한계로 elasticsearch operator + prometheus operator 동시 운용 불가
+- 책 전략: 오퍼레이터 패턴 학습은 ch7/7.2.3 Prometheus Operator로만 진행
+- 성주와 통화 확정 (2026-05-19)
+- `UPDATE_PLAN.md`에 남아 있던 elasticsearch.yaml 참조도 함께 정리
+
+### kOps 실습 폐기 사유
+
+- **1판에는 kOps 챕터 없음**
+- 2판을 준비하던 2024년에 부록 신설 검토 후 실습 원고까지 작성
+- 2026-05 재검토 결과 **실습 폐기, 텍스트 설명으로 대체** 결정
+- 근거:
+  - 관리형 K8s(EKS/GKE/AKS) 시장 점유율 합산 60% 이상 (2026 Northflank 보고서 기준)
+  - kOps는 활성 프로젝트지만 사용처가 협소 (AWS IaC + EKS 비사용 환경)
+  - AWS 비용·계정·IAM 의존성으로 책 부록에 적합하지 않음
+- kubespray는 온프레미스·베어메탈·규제 환경 용도로 가치가 있어 부록 B로 유지
+
+### 버전 통일 결과
+
+| 부록 | k8s | containerd | 비고 |
+|---|---|---|---|
+| A.console-k8s | **1.36.0-1.1** | **2.2.3-1~ubuntu.24.04~noble** | ch7과 동일 |
+| B.kubespray | 1.35.x (kubespray default) | 2.x (kubespray default) | kubespray release-2.31 pin — k8s 1.36 지원 시 v2.32+로 후속 갱신 예정 |
+| C.DeepDiveContainer | (Vagrantfile 없음) | — | ch7 클러스터 위에서 진행 |
+
+### `k8s_con_pack.sh` (부록 A) 추가 수정
+
+- 기존 `apt.kubernetes.io/kubernetes-xenial` 저장소 → `pkgs.k8s.io/core:/stable:/v$2/deb/` 로 교체
+- 이유: `apt.kubernetes.io` 저장소는 **2024-03에 폐기됨**. 1.36 이상 설치 불가
+
+### docx 영향
+
+**큼.** 부록 본문 전체 재작성 필요:
+
+- 절 번호 D.x / E.x / F.x → A.x / B.x / C.x로 통일
+- 본문 k8s 버전 출력 결과 (예: `v1.27.4` → `v1.36.0`, kubespray 본문은 `v1.27.9` → `v1.35.x`)
+- 경로 `app/E.DeepDiveContainer/` → `app/C.DeepDiveContainer/`, `app/F.kubespray_kOps/...` → `app/B.kubespray/`
+- 새 appB 끝부분에 **"왜 kOps와 다른 도구들을 다루지 않는가"** 텍스트 섹션 신설 (1판/2판 이력 + 시장 조사 근거 포함)
+- 새 appC 도입부에 **docker 설치 안내 한 줄** 추가 (아래 참조)
+- PID/컨테이너 ID 직접 명시 → 7장 IP 처리와 동일한 "예: " 패턴 적용
+- 마크다운 변환 잔재(`\<절\>`, `\<중\>`, `[xxx]{.mark}`, 중첩 번호 등) 정리

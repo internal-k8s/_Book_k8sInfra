@@ -38,6 +38,14 @@ nginx ingress controller(`kubernetes/ingress-nginx`)가 2026년 3월 deprecated 
 
 ## 테스트 현황
 
-| 환경 | 상태 |
-|---|---|
-| ch3 (Calico + MetalLB) | ⏳ 대기 |
+| 환경 | 상태 | 완료일 |
+|---|---|---|
+| ch3 (Calico + MetalLB) | ✅ PASS | 2026-05-21 |
+
+### 테스트 결과 (2026-05-21)
+
+- k8s v1.36.0 + containerd 2.2.3 + Calico + MetalLB v0.15.3
+- Gateway IP: 192.168.1.11 (MetalLB 할당)
+- `curl http://192.168.1.11/`   → nginx 기본 페이지 ✅
+- `curl http://192.168.1.11/hn` → hostname 응답 ✅
+- `curl http://192.168.1.11/ip` → IP 응답 ✅

@@ -23,4 +23,4 @@
 | 항목 | 내용 | 상태 |
 |---|---|---|
 | [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |
-| [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ⏳ 테스트 대기 |
+| [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ✅ 완료 |

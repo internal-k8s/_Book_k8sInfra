@@ -18,12 +18,17 @@
 | [Docker](docker.md) | 24 → 29.x | ✅ 완료 | 2026-04-08 |
 | [Harbor](harbor.md) | v2.10.0 → v2.15.0 | ✅ 완료 | 2026-04-08 |
 
+## 개발 도구
+
+| 컴포넌트 | 변경 | 상태 | 완료일 |
+|---|---|---|---|
+| [VirtualBox](virtualbox.md) | v7.1.10 → v7.2.8 | ✅ 완료 | 2026-05-21 |
+| [Vagrant](vagrant.md) | v2.4.7 → v2.4.9 | ✅ 완료 | 2026-05-21 |
+| [Tabby](tabby.md) | v1.0.196 → v1.0.234 | ✅ 완료 | 2026-05-21 |
+
 ## 기타
 
 | 항목 | 내용 | 상태 |
 |---|---|---|
-| [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |
 | [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ✅ 완료 |
-| [VirtualBox](virtualbox.md) | v7.1.10 → v7.2.8 (networks.conf 불필요 확인) | ✅ 완료 |
-| [Vagrant](vagrant.md) | v2.4.7 → v2.4.9 (VirtualBox 7.2 지원) | ✅ 완료 |
-| [Tabby](tabby.md) | v1.0.196 → v1.0.234 | ✅ 완료 |
+| [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |

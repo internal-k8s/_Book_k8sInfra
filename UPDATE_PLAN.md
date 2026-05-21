@@ -1,6 +1,6 @@
 # _Book_k8sInfra 버전 업데이트 계획
 
-> 최종 업데이트: 2026-03-29
+> 최종 업데이트: 2026-05-21
 > 비교 기준: [SSF valina 배포 구성](https://github.com/sysnet4admin/SSF) (최신)
 
 ---
@@ -34,6 +34,7 @@
 | NFS → CSI Driver NFS | **높음** | ch3/ch5/ch7 전반 (6개 이상) | **높음** |
 | Helm v3 → v4 | 중간~높음 | ch5 + 모든 helm 스크립트 (8개 이상) | 중간 |
 | Docker 24 → 29 | 낮음 | ch4 install_docker.sh (1개) | 낮음 |
+| **Ingress → Gateway API** | **높음** | ch3/3.3.3 파일 전체 교체 + docx 내용 전면 개정 | **높음** |
 
 ---
 
@@ -218,6 +219,68 @@ parameters:
 
 ### 영향도: 낮음
 - ch7/7.1.1 `controlplane_node.sh` URL 변경 및 Helm values 검증
+
+---
+
+---
+
+## Ingress → Gateway API (ch3/3.3.3) ✅ 2026-05-21 완료
+
+### 변경 배경
+
+`kubernetes/ingress-nginx` (nginx ingress controller)가 **2026년 3월 deprecated** 선언됨.
+책 출판 시점(2026년 말)에 독자가 deprecated된 컨트롤러를 배우게 되는 문제 → Gateway API로 전환.
+
+### 선택한 구현체: NGINX Gateway Fabric
+
+| 구현체 | 선택 이유 |
+|---|---|
+| **NGINX Gateway Fabric** | nginx 팀의 공식 Gateway API 구현체. 기존 nginx ingress에서 자연스러운 전환. `_Lecture_k8s_learning.kit/ch4/4.9/`에 동일 구현 존재 |
+| Envoy Gateway | CNCF reference impl이지만 ch3 입문 챕터에는 복잡도 높음 |
+| Cilium Gateway | ch7(Cilium 환경)에서는 적합하나 ch3(Calico)에는 추가 설치 필요 |
+
+### 적용 버전
+
+| 컴포넌트 | 버전 |
+|---|---|
+| NGINX Gateway Fabric | **v2.6.1** |
+| Gateway API CRDs (standard channel) | **v1.5.1** |
+
+### 개념 변화 (docx 개정 핵심)
+
+| 항목 | 기존 (Ingress) | 변경 후 (Gateway API) |
+|---|---|---|
+| 리소스 종류 | `Ingress` (단일) | `GatewayClass` + `Gateway` + `HTTPRoute` (3단계) |
+| 컨트롤러 설치 | `ingress_ctrl_nodeport.yaml` (NodePort) | `nginx_gw_fabric_deploy.yaml` (LoadBalancer — MetalLB 사용) |
+| 라우팅 정의 | `spec.rules[].http.paths[]` | `HTTPRoute.spec.rules[].matches[].path` |
+| API 그룹 | `networking.k8s.io/v1` | `gateway.networking.k8s.io/v1` |
+| 외부 노출 방식 | NodePort (30080) | MetalLB LoadBalancer IP (192.168.1.11) |
+
+### 수정 파일
+
+| 파일 | 변경 내용 |
+|---|---|
+| `ch3/3.3.3/ingress_ctrl_nodeport.yaml` | **삭제** |
+| `ch3/3.3.3/ingress-multipath.yaml` | **삭제** |
+| `ch3/3.3.3/nginx_gw_fabric_deploy.yaml` | **신규** — NGINX Gateway Fabric v2.6.1 |
+| `ch3/3.3.3/gateway.yaml` | **신규** — Gateway + HTTPRoute (/, /hn, /ip) |
+| `ch3/3.3.3/nginx_gw_fabric_installer.sh` | **신규** — CRD + Fabric 설치 스크립트 |
+
+### docx 개정 필요 범위 (ch3/3.3.3)
+
+- **설치 절차**: ingress-nginx controller YAML apply → `nginx_gw_fabric_installer.sh` 실행으로 교체
+- **개념 설명**: Ingress 리소스 설명 → GatewayClass / Gateway / HTTPRoute 3단계 구조 설명
+- **라우팅 확인 방법**: `kubectl get ingress` → `kubectl get gateway`, `kubectl get httproute`
+- **접속 URL**: `curl http://<NodeIP>:30080/hn` → `curl http://<MetalLB-IP>/hn`
+- **선수 조건 명시**: ch3/3.3.2 MetalLB 배포 완료 후 진행 (LoadBalancer IP 할당 필요)
+
+### 테스트 결과
+
+- VirtualBox 7.2.8 + Vagrant 2.4.9 + k8s 1.36.0 + Calico + MetalLB v0.15.3
+- Gateway IP: `192.168.1.11` (MetalLB 할당) ✅
+- `curl http://192.168.1.11/` → nginx 기본 페이지 ✅
+- `curl http://192.168.1.11/hn` → hostname 응답 ✅
+- `curl http://192.168.1.11/ip` → IP 응답 ✅
 
 ---
 

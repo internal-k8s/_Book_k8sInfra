@@ -5,9 +5,15 @@ cask "virtualbox" do
   sha256 arm:   "60d164cc5afc059e44591bcc70f63c7ad3378495f19564cecd1ad9a4461dd935",
          intel: "77a7deef70f4e68b261856eda43650335f4db5fbf7223320ebd1c78e5cddc473"
 
+  on_arm do
+    desc "Virtualiser for arm64 hardware"
+  end
+  on_intel do
+    desc "Virtualiser for x86 hardware"
+  end
+
   url "https://download.virtualbox.org/virtualbox/#{version.csv.first}/VirtualBox-#{version.csv.first}-#{version.csv.second}-#{arch}.dmg"
   name "Oracle VirtualBox"
-  desc "Virtualiser for x86 hardware"
   homepage "https://www.virtualbox.org/"
 
   livecheck do
@@ -25,15 +31,10 @@ cask "virtualbox" do
     "virtualbox@6",
     "virtualbox@beta",
   ]
-  depends_on macos: ">= :catalina"
+  depends_on :macos
 
   pkg "VirtualBox.pkg",
       choices: [
-        {
-          "choiceIdentifier" => "choiceVBoxKEXTs",
-          "choiceAttribute"  => "selected",
-          "attributeSetting" => 1,
-        },
         {
           "choiceIdentifier" => "choiceVBox",
           "choiceAttribute"  => "selected",
@@ -44,16 +45,11 @@ cask "virtualbox" do
           "choiceAttribute"  => "selected",
           "attributeSetting" => 1,
         },
-        {
-          "choiceIdentifier" => "choiceOSXFuseCore",
-          "choiceAttribute"  => "selected",
-          "attributeSetting" => 0,
-        },
       ]
 
   postflight do
-    # If VirtualBox is installed before `/usr/local/lib/pkgconfig` is created by Homebrew, it creates it itself
-    # with incorrect permissions that break other packages
+    # If VirtualBox is installed before `/usr/local/lib/pkgconfig` is created by Homebrew,
+    # it creates it itself with incorrect permissions that break other packages.
     # See https://github.com/Homebrew/homebrew-cask/issues/68730#issuecomment-534363026
     set_ownership "/usr/local/lib/pkgconfig"
   end

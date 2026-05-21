@@ -235,16 +235,34 @@ parameters:
 ## 진행 상태
 
 ### Vagrant Box
-- [ ] Ubuntu 24.04 Box 빌드 (IaC 저장소 — [상세 계획](https://github.com/sysnet4admin/IaC/blob/main/bento/BUILD_PLAN_24.04.md))
+- [x] Ubuntu 24.04 Box 빌드 — arm64 v1.0.0 완료, x86_64 완료
+
+### 개발 도구 (2026-05-21 완료)
+- [x] VirtualBox v7.1.10 → v7.2.8 (brew cask .rb 업데이트, pkg choices 7.2 기준 수정)
+- [x] Vagrant v2.4.7 → v2.4.9 (VirtualBox 7.2 지원)
+- [x] Tabby v1.0.196 → v1.0.234
+- [x] ch2/2.1.1/arm64/.cmd winget + brew 명령 정비
+- [x] ch2/2.3.1/.cmd 신규 생성 (Tabby winget + brew)
+- [x] networks.conf 불필요 확인 (macOS + VirtualBox 7.2.8)
+- 자세한 내용: [`_prepublish_updates/dev-tools.md`](_prepublish_updates/dev-tools.md)
+
+### Ingress → Gateway API (2026-05-21 완료)
+- [x] ch3/3.3.3: nginx ingress controller → NGINX Gateway Fabric v2.6.1
+- [x] Gateway API CRDs v1.5.1 (standard channel)
+- [x] ch3/3.3.3 테스트 PASS (VirtualBox 7.2.8 + Vagrant 2.4.9)
+- 자세한 내용: [`_prepublish_updates/gateway-api.md`](_prepublish_updates/gateway-api.md)
 
 ### 컴포넌트 업데이트
-- [ ] containerd 2.2.x 전환 (ch3/3.1.3, ch7/7.1.1)
-- [ ] Calico v3.31.4 업그레이드 (IaC YAML 신규 생성 + 패치 적용 선행 필요)
-- [ ] MetalLB v0.15.3 업그레이드 (ch3)
-- [ ] CSI Driver NFS v4.13.1 전환 (ch3, ch5, ch7)
-- [ ] Helm v4.1.3 전환 (ch5 + 전체 helm 스크립트 검증)
-- [ ] Cilium v1.17.13 업그레이드 (ch7)
-- [ ] Docker 29.x 업그레이드 (ch4) — Harbor 호환성 검증 선행 필요
+- [x] Ubuntu 22.04 → 24.04 전환
+- [x] Kubernetes 1.35.0 → 1.36.0
+- [x] containerd 1.7.x → 2.2.3
+- [x] Calico v3.30.1 → v3.31.2
+- [x] MetalLB v0.13.10 → v0.15.3
+- [x] CSI Driver NFS v4.0.0 → v4.12.1
+- [x] Helm v3 → v4.1.3
+- [x] Cilium v1.17.4 → v1.17.13
+- [x] Docker 24 → 29.x
+- [x] Harbor v2.10.0 → v2.15.0
 
 ### 부록(app/) 재편 (2026-05 완료)
 - [x] 6개 부록(A/B/D/E/F) → 3개 체계(A/B/C)로 정리

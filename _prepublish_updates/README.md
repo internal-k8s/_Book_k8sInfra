@@ -24,3 +24,4 @@
 |---|---|---|
 | [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |
 | [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ✅ 완료 |
+| [개발 도구](dev-tools.md) | VirtualBox v7.2.8 / Vagrant v2.4.9 / Tabby v1.0.234 | ✅ 완료 |

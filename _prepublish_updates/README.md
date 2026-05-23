@@ -31,4 +31,5 @@
 | 항목 | 내용 | 상태 |
 |---|---|---|
 | [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ✅ 완료 |
+| [kubespray](kubespray.md) | 1판→2판 변경 원인 분석 + 4개 파일 수정 (app/B.kubespray) | ✅ 완료 |
 | [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |

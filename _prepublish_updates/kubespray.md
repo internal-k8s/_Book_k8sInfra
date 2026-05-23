@@ -96,6 +96,36 @@ rate limit 정책이 없었거나, 필요 이미지 수가 적었습니다.
 | localhost있음 + 12m timeout | cp11 failed=0, 9노드 Ready | ✅ |
 | localhost있음 + 15m timeout (최종) | cp11 failed=0, 9노드 Ready | ✅ |
 
+## 실제 실행 결과 (2026-05-23, 다른 랩탑)
+
+### PLAY RECAP
+```
+cp11-k8s : ok=785  changed=193  unreachable=0  failed=0  skipped=683  rescued=0  ignored=4
+cp12-k8s : ok=573  changed=140  unreachable=0  failed=0  skipped=654  rescued=0  ignored=1
+cp13-k8s : ok=575  changed=141  unreachable=0  failed=0  skipped=652  rescued=0  ignored=1
+w101-k8s : ok=475  changed=108  unreachable=0  failed=0  skipped=388  rescued=0  ignored=0
+w102-k8s : ok=475  changed=108  unreachable=0  failed=0  skipped=388  rescued=0  ignored=0
+w103-k8s : ok=475  changed=108  unreachable=0  failed=0  skipped=388  rescued=0  ignored=0
+w104-k8s : ok=475  changed=108  unreachable=0  failed=0  skipped=388  rescued=0  ignored=0
+w105-k8s : ok=475  changed=108  unreachable=0  failed=0  skipped=388  rescued=0  ignored=0
+w106-k8s : ok=475  changed=108  unreachable=0  failed=0  skipped=388  rescued=0  ignored=0
+```
+총 소요시간: 0:13:16 | kubeadm init: 136.55s (약 2분 17초)
+
+### k get nodes
+```
+NAME       STATUS   ROLES           AGE     VERSION
+cp11-k8s   Ready    control-plane   4m26s   v1.35.4
+cp12-k8s   Ready    control-plane   2m7s    v1.35.4
+cp13-k8s   Ready    control-plane   2m2s    v1.35.4
+w101-k8s   Ready    <none>          113s    v1.35.4
+w102-k8s   Ready    <none>          113s    v1.35.4
+w103-k8s   Ready    <none>          113s    v1.35.4
+w104-k8s   Ready    <none>          113s    v1.35.4
+w105-k8s   Ready    <none>          113s    v1.35.4
+w106-k8s   Ready    <none>          112s    v1.35.4
+```
+
 ## 수정된 파일
 
 | 파일 | 변경 내용 |

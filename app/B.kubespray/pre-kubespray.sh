@@ -29,6 +29,15 @@ sudo mv kubespray /root
 # so stderr(2) to /dev/null 
 pip3 install --break-system-packages -r /root/kubespray/requirements.txt 2> /dev/null
 
+# Extend kubeadm controlPlane health check timeout (default 4m is too short for VirtualBox arm64)
+TMPL=/root/kubespray/roles/kubernetes/control-plane/templates/kubeadm-config.v1beta4.yaml.j2
+sed -i '/^kind: InitConfiguration/a timeouts:\n  controlPlaneComponentHealthCheck: "15m0s"' "$TMPL"
+
+# Set download_run_once and extend kubeadm_init_timeout to match the internal timeout
+mkdir -p /root/kubespray/group_vars/all
+echo "download_run_once: true" > /root/kubespray/group_vars/all/download-override.yml
+echo "kubeadm_init_timeout: 960" >> /root/kubespray/group_vars/all/download-override.yml
+
 
 cat <<EOF >  /root/kubespray/ansible_hosts.ini
 [all]

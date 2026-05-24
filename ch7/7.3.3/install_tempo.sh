@@ -9,8 +9,12 @@ helm upgrade --install tempo grafana/tempo \
   -f $HOME/_Book_k8sInfra/ch7/7.3.3/tempo-values.yaml
 
 echo "⏳ Wait for Tempo to be ready..."
-kubectl wait --for=condition=available deployment/tempo -n monitoring --timeout=180s
+kubectl rollout status \
+  statefulset/tempo \
+  -n monitoring \
+  --timeout=180s
 
 echo ""
 echo "✅ Tempo deployed in monitoring namespace."
 echo "📌 OTLP endpoint: tempo.monitoring.svc.cluster.local:4317"
+echo "📌 Grafana explore endpoint: tempo.monitoring.svc.cluster.local:3200"

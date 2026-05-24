@@ -23,7 +23,7 @@ else
 fi
 
 echo "Second, prepare the pods for check cilium network connectivity and network policy."
-kubectl apply -f net-conn-pods.yaml
+kubectl apply -f ~/_Book_k8sInfra/ch7/7.2.2/net-conn-pods.yaml
 echo "Create the pod."
 
 echo "Check the pod is running."

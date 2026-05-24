@@ -58,6 +58,13 @@ else
   echo "   ⚠️  CP 노드가 아닙니다. CP 노드에서 cleanup_7.2.3_tasks.sh를 별도로 실행하세요."
 fi
 
+# 7.2.2 net-console pod 정리 (이미 정리되었을 수 있음)
+echo "🧹 [7.2.2] 실리움 네트워크 테스트 관련 정리"
+kubectl delete pod net-conn-allow 2>/dev/null
+kubectl delete pod net-conn-console 2>/dev/null
+kubectl delete pod net-conn-deny 2>/dev/null
+kubectl delete ciliumnetworkpolicies.cilium.io cnp-allow-icmp-ping 2>/dev/null
+
 # 7.1 대시보드/헤드램프 관련 (이미 정리되었을 수 있음)
 echo "🧹 [7.1] 대시보드 관련 정리"
 kubectl delete deployment nginx-by-k8s-dash 2>/dev/null

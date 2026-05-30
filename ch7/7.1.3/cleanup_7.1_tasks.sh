@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "🧹 [7.1] 대시보드 / 헤드램프 실습 리소스 정리"
+echo "🧹 [7.1] 쿠버네티스 대시보드 / 헤드램프 실습 리소스 정리"
 
 # 7.1.3 RBAC viewer 리소스
 kubectl delete clusterrolebinding viewer-binding 2>/dev/null

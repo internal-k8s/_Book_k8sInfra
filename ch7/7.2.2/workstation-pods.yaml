@@ -1,35 +1,35 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: net-conn-console
+  name: workstation-internet
   labels:
-    app: net-conn-console
+    app: workstation-internet
     icmp: allow
 spec:
   containers:
   - image: sysnet4admin/net-tools-ifn
-    name: net
+    name: workstation
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: net-conn-allow
+  name: workstation-intranet
   labels:
-    app: net-conn-allow
+    app: workstation-intranet
     icmp: allow
 spec:
   containers:
   - image: sysnet4admin/net-tools-ifn
-    name: net
+    name: workstation
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: net-conn-deny
+  name: workstation-privacy
   labels:
-    app: net-conn-deny
+    app: workstation-privacy
     icmp: deny
 spec:
   containers:
   - image: sysnet4admin/net-tools-ifn
-    name: net
+    name: workstation

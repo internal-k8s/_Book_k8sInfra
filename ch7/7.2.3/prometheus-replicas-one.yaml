@@ -51,7 +51,7 @@ spec:
   probeSelector:
     matchLabels:
       release: prometheus-stack
-  replicas: 0
+  replicas: 1
   retention: 10d
   routePrefix: /
   ruleNamespaceSelector: {}

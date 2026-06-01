@@ -25,4 +25,3 @@ helm install prometheus-stack edu/kube-prometheus-stack \
 
 echo ""
 echo "Prometheus available at http://$(kubectl get svc -n monitoring -l app=kube-prometheus-stack-prometheus -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')"
-echo "Grafana    available at http://$(kubectl get svc -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')"

@@ -29,14 +29,7 @@ prometheus:
     evaluationInterval: "15s"
 
 grafana:
-  adminPassword: "admin"
-  image:
-    tag: "11.4.0"
-  service:
-    type: LoadBalancer
-  persistence:
-    enabled: true
-    storageClassName: "managed-nfs-storage"
+  enabled: false
 
 kubeProxy:
   enabled: false # cilium doesn't use kube-proxy, all trafic processd by eBPF/XDP.

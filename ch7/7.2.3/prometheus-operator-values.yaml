@@ -33,3 +33,22 @@ grafana:
 
 kubeProxy:
   enabled: false # cilium doesn't use kube-proxy, all trafic processd by eBPF/XDP.
+
+kubeApiServer:
+  enabled: false
+
+kubelet:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false
+
+coreDns:
+  enabled: false
+
+kubeEtcd:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+~

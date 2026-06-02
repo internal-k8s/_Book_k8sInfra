@@ -24,9 +24,8 @@ data:
           action: upsert
 
     exporters:
-      # Jaeger exporter 제거 → Tempo exporter로 교체
       otlp/tempo:
-        endpoint: tempo.monitoring.svc.cluster.local:4317
+        endpoint: grafana-stack-tempo.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
       debug:

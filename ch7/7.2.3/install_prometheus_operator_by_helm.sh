@@ -1,22 +1,5 @@
 #!/usr/bin/env bash
 
-echo "Configure control plane metrics to bind on all interfaces."
-sed s,"- --bind-address=127.0.0.1","- --bind-address=0.0.0.0",g \
-    -i /etc/kubernetes/manifests/kube-controller-manager.yaml
-sed s,"- --bind-address=127.0.0.1","- --bind-address=0.0.0.0",g \
-    -i /etc/kubernetes/manifests/kube-scheduler.yaml
-sed s,"- --listen-metrics-urls=http://127.0.0.1:2381","- --listen-metrics-urls=http://0.0.0.0:2381",g \
-    -i /etc/kubernetes/manifests/etcd.yaml
-
-echo "Wait for control plane to roll out..."; sleep 5
-while [ -z "$(crictl ps | grep etcd | grep Running)" ]
-do
-  echo "Control plane rollout in progress..."
-  sleep 3
-done
-echo "Control plane rolled out successfully!"
-echo ""
-
 echo "Deploy prometheus-stack to monitoring namespace."
 helm install prometheus-stack edu/kube-prometheus-stack \
   --namespace=monitoring \

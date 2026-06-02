@@ -4,13 +4,13 @@ echo "Deploy Jaeger all-in-one to monitoring namespace."
 kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.1/jaeger-all-in-one.yaml
 
 echo "Wait for Jaeger to be ready..."
-kubectl wait --for=condition=available deployment/jaeger -n monitoring --timeout=120s
+kubectl rollout status deployment/jaeger -n monitoring --timeout=120s
 
 echo "Deploy HotROD demo app."
 kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-direct.yaml
 
 echo "Wait for HotROD to be ready..."
-kubectl wait --for=condition=available deployment/hotrod --timeout=120s
+kubectl rollout status deployment/hotrod --timeout=120s
 
 JAEGER_IP="$(kubectl get svc jaeger -n monitoring -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 HOTROD_IP="$(kubectl get svc hotrod -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"

@@ -4,7 +4,7 @@ echo "Deploy OTel Collector to monitoring namespace."
 kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.2/otel-collector.yaml
 
 echo "Wait for OTel Collector to be ready..."
-kubectl wait --for=condition=available deployment/otel-collector -n monitoring --timeout=120s
+kubectl rollout status deployment/otel-collector -n monitoring --timeout=120s
 
 echo ""
 echo "OTel Collector deployed."

@@ -27,10 +27,11 @@ data:
     for svc in $SERVICES; do
       model=$(echo $MODELS | cut -d' ' -f$i)
       name=$(echo $NAMES | cut -d' ' -f$i)
+      case "$model" in qwen*) THINK='"think":false,' ;; *) THINK="" ;; esac
       echo ">> $name:"
       curl -s "http://${svc}:11434/api/chat" \
-        -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"What is Kubernetes? Answer in 3 sentences.\"}],\"stream\":false}" \
-        | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/\n/g'
+        -d "{\"model\":\"${model}\",${THINK}\"messages\":[{\"role\":\"user\",\"content\":\"What is Kubernetes? Answer in 3 sentences.\"}],\"stream\":false}" \
+        | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'
       echo ""
       echo ""
       i=$((i+1))
@@ -43,10 +44,11 @@ data:
     for svc in $SERVICES; do
       model=$(echo $MODELS | cut -d' ' -f$i)
       name=$(echo $NAMES | cut -d' ' -f$i)
+      case "$model" in qwen*) THINK='"think":false,' ;; *) THINK="" ;; esac
       echo ">> $name:"
       curl -s "http://${svc}:11434/api/chat" \
-        -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"쿠버네티스의 파드(Pod)란 무엇인지 2문장으로 설명해주세요.\"}],\"stream\":false}" \
-        | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/\n/g'
+        -d "{\"model\":\"${model}\",${THINK}\"messages\":[{\"role\":\"user\",\"content\":\"쿠버네티스의 파드(Pod)란 무엇인지 2문장으로 설명해주세요.\"}],\"stream\":false}" \
+        | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'
       echo ""
       echo ""
       i=$((i+1))

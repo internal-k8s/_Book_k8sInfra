@@ -7,7 +7,7 @@ helm repo update k8s-edu
 helm upgrade --install grafana-stack k8s-edu/grafana-stack \
   --namespace monitoring \
   --create-namespace \
-  -f $HOME/_Book_k8sInfra/ch7/7.3.3/grafana-stack-values.yaml
+  -f $HOME/_Book_k8sInfra/ch7/7.3.3/grafana-tempo-values.yaml
 
 echo "Wait for Grafana to be ready..."
 kubectl rollout status deployment/grafana-stack-grafana \

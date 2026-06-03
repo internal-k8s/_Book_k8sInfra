@@ -10,14 +10,14 @@ helm upgrade --install grafana-stack k8s-edu/grafana-stack \
   -f $HOME/_Book_k8sInfra/ch7/7.3.3/grafana-tempo-values.yaml
 
 echo "Wait for Grafana to be ready..."
-kubectl rollout status deployment/grafana-stack-grafana \
+kubectl rollout status deployment/grafana-stack \
   -n monitoring --timeout=180s
 
 echo "Wait for Tempo to be ready..."
 kubectl rollout status statefulset/grafana-stack-tempo \
   -n monitoring --timeout=180s
 
-GRAFANA_IP="$(kubectl get svc grafana-stack-grafana -n monitoring -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+GRAFANA_IP="$(kubectl get svc grafana-stack -n monitoring -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 
 echo ""
 echo "Grafana available at http://$GRAFANA_IP"

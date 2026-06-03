@@ -51,4 +51,4 @@ kubeEtcd:
 
 kubeScheduler:
   enabled: false
-~
+

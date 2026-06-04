@@ -25,7 +25,7 @@ data:
 
     exporters:
       otlp/tempo:
-        endpoint: grafana-stack-tempo.monitoring.svc.cluster.local:4317
+        endpoint: grafana-tempo.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
       debug:

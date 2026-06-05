@@ -2,6 +2,7 @@
 .DS_Store
 .git-cred/
 *VBoxHeadless*.log
+*.docx
 
 # ignore auto-generated files
 /ch4/4.4.2/1.harbor_pki/ca.crt

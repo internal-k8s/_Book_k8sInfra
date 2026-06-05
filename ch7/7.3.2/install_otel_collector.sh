@@ -8,4 +8,4 @@ kubectl rollout status deployment/otel-collector -n monitoring --timeout=120s
 
 echo ""
 echo "OTel Collector deployed."
-echo "Pipeline: HotROD -> OTel Collector -> Jaeger"
+

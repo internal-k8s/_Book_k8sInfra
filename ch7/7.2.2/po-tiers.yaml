@@ -1,35 +1,35 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: workstation-internet
+  name: tier-internet
   labels:
-    app: workstation-internet
+    app: tier-internet
     icmp: allow
 spec:
   containers:
   - image: sysnet4admin/net-tools-ifn
-    name: workstation
+    name: tier
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: workstation-intranet
+  name: tier-intranet
   labels:
-    app: workstation-intranet
+    app: tier-intranet
     icmp: allow
 spec:
   containers:
   - image: sysnet4admin/net-tools-ifn
-    name: workstation
+    name: tier
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: workstation-privacy
+  name: tier-privacy
   labels:
-    app: workstation-privacy
+    app: tier-privacy
     icmp: deny
 spec:
   containers:
   - image: sysnet4admin/net-tools-ifn
-    name: workstation
+    name: tier

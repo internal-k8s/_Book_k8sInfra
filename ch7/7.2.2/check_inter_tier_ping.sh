@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-PODS=(workstation-internet workstation-intranet workstation-privacy)
+PODS=(tier-internet tier-intranet tier-privacy)
 
 declare -A POD_IP
 for pod in "${PODS[@]}"; do
   POD_IP[$pod]=$(kubectl get pod "$pod" -o jsonpath='{.status.podIP}')
 done
 
-echo "Network Probe: ICMP (ping) reachability between workstation pods"
+echo "Network Probe: ICMP (ping) reachability between tier pods"
 echo "================================================================="
 printf "  %-28s %s\n" "Pod" "IP"
 echo "-----------------------------------------------------------------"

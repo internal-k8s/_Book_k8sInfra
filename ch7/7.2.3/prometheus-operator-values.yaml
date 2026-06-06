@@ -27,7 +27,6 @@ prometheus:
     version: v3.0.1
     scrapeInterval: "15s"
     evaluationInterval: "15s"
-    replicas: 2
 
 grafana:
   enabled: false

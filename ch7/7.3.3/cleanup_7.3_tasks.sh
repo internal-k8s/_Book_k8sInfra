@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+echo "🧹 [7.3] 예거 / OTel 컬렉터 / 그라파나 템포 실습 리소스 정리"
+
+# 7.3.3 그라파나 스택 helm release 삭제
+helm uninstall grafana --namespace=monitoring 2>/dev/null
+
+# 7.3.3 그라파나 PVC 삭제
+kubectl delete pvc -n monitoring -l app.kubernetes.io/name=grafana 2>/dev/null
+
+# 7.3.3 템포 PVC 삭제
+kubectl delete pvc -n monitoring -l app.kubernetes.io/name=tempo 2>/dev/null
+
+# 7.3.2 OTel 컬렉터 삭제
+kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.2/otel-collector.yaml 2>/dev/null
+
+# 7.3.1 핫로드 앱 삭제
+kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-direct.yaml 2>/dev/null
+
+# 7.3.1 예거 삭제
+kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.1/jaeger-all-in-one.yaml 2>/dev/null
+
+echo "✅ 7.3 cleanup done."

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Scale Prometheus replicas to 2."
+echo "Configure Prometheus HA with replicas=2."
 helm upgrade prometheus-stack edu/kube-prometheus-stack \
   --namespace=monitoring \
   -f $HOME/_Book_k8sInfra/ch7/7.2.3/prometheus-operator-values.yaml \

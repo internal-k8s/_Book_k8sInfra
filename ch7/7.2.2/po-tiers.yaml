@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: tier-internet
   labels:
+    app: tier-internet
     icmp: allow
 spec:
   containers:
@@ -14,6 +15,7 @@ kind: Pod
 metadata:
   name: tier-intranet
   labels:
+    app: tier-internet
     icmp: allow
 spec:
   containers:
@@ -25,6 +27,7 @@ kind: Pod
 metadata:
   name: tier-privacy
   labels:
+    app: tier-internet
     icmp: deny
 spec:
   containers:

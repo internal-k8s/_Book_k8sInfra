@@ -14,7 +14,7 @@ else
   echo "Deploy sLLM models."
 fi
 
-kubectl apply -f "$MODEL_DIR"/*.yaml
+kubectl apply -f "$MODEL_DIR/"
 
 echo "Wait for sLLM models to be ready..."
 for yaml_file in "$MODEL_DIR"/*.yaml; do

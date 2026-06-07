@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Deploy Grafana and Tempo to monitoring namespace."
-helm upgrade --install grafana k8s-edu/grafana-stack \
+helm install grafana k8s-edu/grafana-stack \
   --namespace monitoring \
   --create-namespace \
   -f $HOME/_Book_k8sInfra/ch7/7.3.3/grafana-tempo-values.yaml

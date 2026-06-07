@@ -17,12 +17,6 @@ data:
       batch:
         timeout: 5s
         send_batch_size: 1024
-      attributes:
-        actions:
-        - key: environment
-          value: "ch7-lab"
-          action: upsert
-
     exporters:
       otlp/jaeger:
         endpoint: jaeger.monitoring.svc.cluster.local:4317
@@ -35,7 +29,7 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [batch, attributes]
+          processors: [batch]
           exporters: [otlp/jaeger, debug]
 ---
 apiVersion: apps/v1

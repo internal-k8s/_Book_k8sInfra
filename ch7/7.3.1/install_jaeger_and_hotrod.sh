@@ -7,7 +7,7 @@ echo "Wait for Jaeger to be ready..."
 kubectl rollout status deployment/jaeger -n monitoring --timeout=120s
 
 echo "Deploy HotROD demo app."
-kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-direct.yaml
+kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-via-jaeger.yaml
 
 echo "Wait for HotROD to be ready..."
 kubectl rollout status deployment/hotrod --timeout=120s

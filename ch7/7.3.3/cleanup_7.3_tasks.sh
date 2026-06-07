@@ -15,7 +15,7 @@ kubectl delete pvc -n monitoring -l app.kubernetes.io/name=tempo 2>/dev/null
 kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.2/otel-collector.yaml 2>/dev/null
 
 # 7.3.1 핫로드 앱 삭제
-kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-direct.yaml 2>/dev/null
+kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-via-jaeger.yaml 2>/dev/null
 
 # 7.3.1 예거 삭제
 kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.1/jaeger-all-in-one.yaml 2>/dev/null

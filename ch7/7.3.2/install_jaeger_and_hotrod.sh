@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 echo "Deploy Jaeger all-in-one to monitoring namespace."
-kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.1/jaeger-all-in-one.yaml
+kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.2/jaeger-all-in-one.yaml
 
 echo "Wait for Jaeger to be ready..."
 kubectl rollout status deployment/jaeger -n monitoring --timeout=120s
 
 echo "Deploy HotROD demo app."
-kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.1/hotrod-via-jaeger.yaml
+kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.2/hotrod-via-otel-collector.yaml
 
 echo "Wait for HotROD to be ready..."
 kubectl rollout status deployment/hotrod --timeout=120s

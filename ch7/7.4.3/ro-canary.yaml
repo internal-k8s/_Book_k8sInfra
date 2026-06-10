@@ -11,17 +11,12 @@ spec:
   strategy:
     canary:
       steps:
-      # 1단계: 25% 트래픽을 새 버전으로
       - setWeight: 25
-      # 수동 승격 대기 (kubectl argo rollouts promote canary-nginx)
       - pause: {}
-      # 2단계: 50%로 확대
       - setWeight: 50
       - pause: {duration: 30s}
-      # 3단계: 75%로 확대
       - setWeight: 75
       - pause: {duration: 30s}
-      # 이후 자동으로 100% 전환
   template:
     metadata:
       labels:

@@ -29,9 +29,9 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.25.5
+        image: sysnet4admin/dashboard:blue
         ports:
-        - containerPort: 80
+        - containerPort: 3000
         resources:
           requests:
             memory: 32Mi
@@ -48,4 +48,4 @@ spec:
   type: LoadBalancer
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 3000

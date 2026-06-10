@@ -9,7 +9,7 @@
 - 7.4.2 Argo Rollouts 설치 완료
 
 ## 실습 파일
-- `canary-rollout.yaml` — 카나리 Rollout + Service (25→50→75→100%)
+- `ro-canary.yaml` — 카나리 Rollout + Service (25→50→75→100%)
 - `deploy_canary.sh` — 카나리 배포 + 실습 가이드
 - `cleanup_7.4.3_tasks.sh` — 리소스 정리
 

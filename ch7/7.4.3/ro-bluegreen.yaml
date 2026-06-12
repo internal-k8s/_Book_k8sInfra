@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: bluegreen-nginx
+  name: ro-bluegreen
 spec:
   replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: bluegreen-nginx
+      app: ro-bluegreen
   strategy:
     blueGreen:
       activeService: bluegreen-active
@@ -16,10 +16,10 @@ spec:
   template:
     metadata:
       labels:
-        app: bluegreen-nginx
+        app: ro-bluegreen
     spec:
       containers:
-      - name: nginx
+      - name: dashboard
         image: sysnet4admin/dashboard:blue
         ports:
         - containerPort: 3000
@@ -35,7 +35,7 @@ metadata:
   name: bluegreen-active
 spec:
   selector:
-    app: bluegreen-nginx
+    app: ro-bluegreen
   type: LoadBalancer
   ports:
   - port: 80
@@ -47,7 +47,7 @@ metadata:
   name: bluegreen-preview
 spec:
   selector:
-    app: bluegreen-nginx
+    app: ro-bluegreen
   type: LoadBalancer
   ports:
   - port: 80

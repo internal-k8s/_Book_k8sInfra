@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: canary-nginx
+  name: ro-canary
 spec:
   replicas: 4
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: canary-nginx
+      app: ro-canary
   strategy:
     canary:
       steps:
@@ -20,10 +20,10 @@ spec:
   template:
     metadata:
       labels:
-        app: canary-nginx
+        app: ro-canary
     spec:
       containers:
-      - name: nginx
+      - name: dashboard
         image: sysnet4admin/dashboard:blue
         ports:
         - containerPort: 3000
@@ -36,10 +36,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: canary-nginx
+  name: canary
 spec:
   selector:
-    app: canary-nginx
+    app: ro-canary
   type: LoadBalancer
   ports:
   - port: 80

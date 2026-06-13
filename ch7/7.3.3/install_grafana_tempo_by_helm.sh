@@ -16,6 +16,22 @@ kubectl rollout status statefulset/grafana-tempo \
 
 GRAFANA_IP="$(kubectl get svc grafana -n monitoring -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 
+GRAFANA_PASSWORD="$(kubectl get secret -n monitoring grafana \
+  -o jsonpath='{.data.admin-password}' | base64 -d)"
+
+echo "Provisioning Tempo datasource..."
+curl -s -X POST \
+  -H "Content-Type: application/json" \
+  -u "admin:$GRAFANA_PASSWORD" \
+  "http://$GRAFANA_IP/api/datasources" \
+  -d '{
+    "name": "Tempo",
+    "type": "tempo",
+    "url": "http://grafana-tempo.monitoring.svc.cluster.local:3200",
+    "access": "proxy",
+    "isDefault": false
+  }'
+
 echo ""
 echo "Grafana available at http://$GRAFANA_IP"
 echo "Tempo OTLP endpoint: grafana-tempo.monitoring.svc.cluster.local:4317"

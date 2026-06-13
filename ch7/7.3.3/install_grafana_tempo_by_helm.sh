@@ -17,7 +17,7 @@ kubectl rollout status statefulset/grafana-tempo \
 GRAFANA_IP="$(kubectl get svc grafana -n monitoring -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 
 echo "Provisioning Tempo datasource..."
-curl -s -o /dev/null -X POST \
+until curl -s -o /dev/null -w "%{http_code}" -X POST \
   -H "Content-Type: application/json" \
   "http://$GRAFANA_IP/api/datasources" \
   -d '{
@@ -26,7 +26,10 @@ curl -s -o /dev/null -X POST \
     "url": "http://grafana-tempo.monitoring.svc.cluster.local:3200",
     "access": "proxy",
     "isDefault": false
-  }'
+  }' | grep -q "^200$"; do
+  echo "Grafana not ready, retrying in 10s..."
+  sleep 10
+done
 
 echo ""
 echo "Grafana available at http://$GRAFANA_IP"

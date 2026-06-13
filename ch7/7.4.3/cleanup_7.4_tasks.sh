@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "🧹 [7.4] ArgoCD / Argo Rollouts 실습 리소스 정리"
+echo "🧹 [7.4] 아르고 CD / 아르고 롤아웃 실습 리소스 정리"
 
 # 7.4.3 카나리 Rollout 삭제
 kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.4.3/ro-canary.yaml 2>/dev/null

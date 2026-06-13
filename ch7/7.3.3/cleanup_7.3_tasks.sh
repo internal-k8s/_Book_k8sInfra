@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "🧹 [7.3] 예거 / OTel 컬렉터 / 그라파나 템포 실습 리소스 정리"
+echo "🧹 [7.3] 예거 / OTel 콜렉터 / HotROD / 그라파나 템포 실습 리소스 정리"
 
 # 7.3.3 그라파나 스택 helm release 삭제
 helm uninstall grafana --namespace=monitoring 2>/dev/null

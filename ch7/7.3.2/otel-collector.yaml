@@ -17,6 +17,7 @@ data:
       batch:
         timeout: 5s
         send_batch_size: 1024
+        
     exporters:
       otlp/jaeger:
         endpoint: jaeger.monitoring.svc.cluster.local:4317

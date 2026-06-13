@@ -1,6 +1,10 @@
 grafana:
   enabled: true
   adminPassword: "admin"
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+      org_role: Admin
   image:
     tag: "11.4.0"
   service:

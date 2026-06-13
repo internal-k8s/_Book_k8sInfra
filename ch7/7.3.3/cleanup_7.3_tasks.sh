@@ -20,4 +20,7 @@ kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.2/hotrod-via-otel-collector.yaml 
 # 7.3.2 예거 삭제
 kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.3.2/jaeger-all-in-one.yaml 2>/dev/null
 
+# monitoring 네임스페이스 삭제
+kubectl delete namespace monitoring 2>/dev/null
+
 echo "✅ 7.3 cleanup done."

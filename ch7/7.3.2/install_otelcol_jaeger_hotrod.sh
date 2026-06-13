@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-kubectl get namespace monitoring &>/dev/null || kubectl create namespace monitoring
+kubectl create ns monitoring
+echo "Deploy otel-collector to monitoring namespace."
+kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.2/otel-collector.yaml
 
 echo "Deploy Jaeger all-in-one to monitoring namespace."
 kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.2/jaeger-all-in-one.yaml

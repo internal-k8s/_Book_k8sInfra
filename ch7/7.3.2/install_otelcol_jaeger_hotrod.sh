@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-kubectl create ns monitoring
+kubectl create ns monitoring --save-config
 echo "Deploy otel-collector to monitoring namespace."
 kubectl apply -f $HOME/_Book_k8sInfra/ch7/7.3.2/otel-collector.yaml
 

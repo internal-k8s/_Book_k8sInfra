@@ -14,26 +14,25 @@ data:
             endpoint: 0.0.0.0:4318
 
     processors:
+      filter:
+        error_mode: ignore
+        traces:
+          span:
+          - 'attributes["http.route"] == "/"'
+          - 'attributes["http.route"] == "/config"'
       batch:
         timeout: 5s
         send_batch_size: 1024
-      attributes:
-        actions:
-        - key: environment
-          value: "ch7-lab"
-          action: upsert
 
     exporters:
       otlp/tempo:
         endpoint: grafana-tempo.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
-      debug:
-        verbosity: basic
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [batch, attributes]
-          exporters: [otlp/tempo, debug]
+          processors: [batch, filter]
+          exporters: [otlp/tempo]

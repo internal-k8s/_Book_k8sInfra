@@ -29,12 +29,10 @@ data:
         endpoint: jaeger.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
-      debug:
-        verbosity: basic
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: [batch, filter]
-          exporters: [otlp/jaeger, debug]
+          exporters: [otlp/jaeger]

@@ -18,7 +18,7 @@ data:
         error_mode: ignore
         traces:
           span:
-          - 'attributes["http.target"] == "/config"'
+          - 'attributes["http.route"] == "/"'
           - 'attributes["http.route"] == "/config"'
       batch:
         timeout: 5s

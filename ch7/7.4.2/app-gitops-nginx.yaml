@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: app-gitops-nginx
-  namespace: argocd
+  namespace: cicd
 spec:
   project: default
   source:

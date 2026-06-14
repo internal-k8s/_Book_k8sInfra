@@ -7,12 +7,11 @@ else
 fi
 
 echo "Install Argo Rollouts controller."
-kubectl create namespace argo-rollouts 2>/dev/null
-kubectl apply -n argo-rollouts \
+kubectl apply -n cicd \
   -f https://github.com/argoproj/argo-rollouts/releases/download/v1.7.2/install.yaml
 
 echo "Wait for Argo Rollouts controller to be ready..."
-kubectl rollout status deployment/argo-rollouts -n argo-rollouts --timeout=120s
+kubectl rollout status deployment/argo-rollouts -n cicd --timeout=120s
 
 echo "Install kubectl argo rollouts plugin."
 curl -sLo /usr/local/bin/kubectl-argo-rollouts \

@@ -12,5 +12,5 @@ PASSWORD="$(kubectl get secret -n cicd argocd-initial-admin-secret -o jsonpath='
 ENDPOINT="$(kubectl get service argocd-server -n cicd -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
 
 echo ""
-echo "ArgoCD UI:      http://$ENDPOINT"
+echo "ArgoCD UI:      https://$ENDPOINT"
 echo "Admin password: $PASSWORD"

@@ -3,18 +3,14 @@ kind: Application
 metadata:
   name: app-gitops-nginx
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/internal-k8s/_Book_k8sInfra
+    repoURL: 
     targetRevision: main
-    path: ch5/5.5.1
   destination:
     server: https://kubernetes.default.svc
     namespace: default
-
   syncPolicy:
     automated:
       prune: true

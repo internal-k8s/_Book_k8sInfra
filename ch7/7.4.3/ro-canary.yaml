@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: sysnet4admin/dashboard:blue
+        image: sysnet4admin/dashboard:canary-v1
         ports:
         - containerPort: 3000
         resources:

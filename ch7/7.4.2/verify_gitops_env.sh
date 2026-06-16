@@ -12,9 +12,14 @@ if ! git -C ~/gitops remote get-url origin &>/dev/null; then
   exit 1
 fi
 
-# 7.4.2 깃 원격 저장소 인증 여부 확인
-if ! git -C ~/gitops ls-remote --exit-code origin &>/dev/null; then
-  echo "Cannot access remote origin. Please check your credentials."
+# 7.4.2 깃 자격증명 설정 및 파일 존재 여부 확인
+if ! git config --global credential.helper | grep -q "store --file ~/.git-cred"; then
+  echo "Git credential helper is not configured. Please complete Chapter 5 labs first."
+  exit 1
+fi
+
+if [ ! -f ~/.git-cred ]; then
+  echo "~/.git-cred not found. Please complete Chapter 5 labs first."
   exit 1
 fi
 

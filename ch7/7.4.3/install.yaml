@@ -16675,7 +16675,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: argo-rollouts
-  namespace: argo-rollouts
+  namespace: cicd
 ---
 apiVersion: v1
 kind: ConfigMap

@@ -32801,13 +32801,6 @@ spec:
           name: tmp
         - mountPath: /home/argocd/params
           name: argocd-cmd-params-cm
-        - mountPath: /tmp/extensions/
-          name: extensions
-      - image: ghcr.io/argoproj-labs/argocd-extensions:v0.2.1
-        name: argocd-extensions
-        volumeMounts:
-        - mountPath: /tmp/extensions/
-          name: extensions
       nodeSelector:
         kubernetes.io/os: linux
       serviceAccountName: argocd-server
@@ -32849,8 +32842,6 @@ spec:
           name: argocd-cmd-params-cm
           optional: true
         name: argocd-cmd-params-cm
-      - emptyDir: {}
-        name: extensions
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -33383,122 +33374,3 @@ spec:
       app.kubernetes.io/name: argocd-server
   policyTypes:
   - Ingress
----
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.4.1
-  creationTimestamp: null
-  name: argocdextensions.argoproj.io
-spec:
-  group: argoproj.io
-  names:
-    kind: ArgoCDExtension
-    listKind: ArgoCDExtensionList
-    plural: argocdextensions
-    singular: argocdextension
-  scope: Namespaced
-  versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: ArgoCDExtension is the Schema for the argocdextensions API
-        properties:
-          apiVersion:
-            type: string
-          kind:
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: ArgoCDExtensionSpec defines the desired state of ArgoCDExtension
-            properties:
-              sources:
-                items:
-                  properties:
-                    git:
-                      properties:
-                        revision:
-                          type: string
-                        url:
-                          type: string
-                      type: object
-                    web:
-                      properties:
-                        url:
-                          type: string
-                      type: object
-                  type: object
-                type: array
-            required:
-            - sources
-            type: object
-          status:
-            properties:
-              conditions:
-                items:
-                  properties:
-                    message:
-                      type: string
-                    status:
-                      type: string
-                    type:
-                      type: string
-                  required:
-                  - message
-                  - status
-                  - type
-                  type: object
-                type: array
-            type: object
-        type: object
-    served: true
-    storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  labels:
-    app.kubernetes.io/name: argocd-server
-    app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/component: server
-  name: argocd-server-extensions
-  namespace: cicd
-rules:
-- apiGroups:
-  - argoproj.io
-  resources:
-  - argocdextensions
-  verbs:
-  - create
-  - get
-  - list
-  - watch
-  - update
-  - delete
-  - patch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/name: argocd-server
-    app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/component: server
-  name: argocd-server-extensions
-  namespace: cicd
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: argocd-server-extensions
-subjects:
-- kind: ServiceAccount
-  name: argocd-server
-  namespace: cicd

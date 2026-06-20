@@ -1,8 +1,0 @@
-apiVersion: argoproj.io/v1alpha1
-kind: ArgoCDExtension
-metadata:
-  name: argo-rollouts
-spec:
-  sources:
-  - web:
-      url: https://github.com/argoproj-labs/rollout-extension/releases/download/v0.3.5/extension.tar

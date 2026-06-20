@@ -8,6 +8,9 @@ kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.4.3/ro-canary.yaml 2>/dev/null
 # 7.4.3 블루그린 Rollout 삭제
 kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.4.3/ro-bluegreen.yaml 2>/dev/null
 
+# argocd-extensions CRD 삭제 (클러스터 스코프 — 네임스페이스 삭제로 정리되지 않음)
+kubectl delete crd argocdextensions.argoproj.io 2>/dev/null
+
 # 7.4.2 ArgoCD / 7.4.3 Argo Rollouts 삭제
 kubectl delete namespace cicd 2>/dev/null
 

@@ -24,13 +24,6 @@ chmod +x /usr/local/bin/kubectl-argo-rollouts
 echo "Install ArgoCD extension CRD and RBAC."
 kubectl apply -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-extensions-install.yaml
 
-echo "Apply argocd-server extensions sidecar."
-kubectl apply --server-side --force-conflicts -n cicd \
-  -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-server-extensions.yaml
-
-echo "Wait for argocd-server to be ready..."
-kubectl rollout status deployment/argocd-server -n cicd --timeout=120s
-
 echo "Apply Argo Rollouts UI extension."
 kubectl apply -n cicd \
   -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-rollouts-extension.yaml

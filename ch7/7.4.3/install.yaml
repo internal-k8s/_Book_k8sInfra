@@ -16779,3 +16779,50 @@ spec:
         name: plugin-bin
       - emptyDir: {}
         name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-rollouts-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: argo-rollouts-dashboard
+  template:
+    metadata:
+      labels:
+        app: argo-rollouts-dashboard
+    spec:
+      serviceAccountName: argo-rollouts
+      containers:
+      - name: dashboard
+        image: quay.io/argoproj/kubectl-argo-rollouts:v1.7.2
+        args: ["dashboard", "-n", "cicd", "--port", "3100"]
+        ports:
+        - containerPort: 3100
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argo-rollouts-dashboard
+spec:
+  selector:
+    app: argo-rollouts-dashboard
+  ports:
+  - port: 3100
+    targetPort: 3100
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  server.enable.proxy.extension: "true"
+  extension.config: |
+    extensions:
+    - name: rollout
+      backend:
+        connectionTimeout: 2s
+        services:
+        - url: http://argo-rollouts-dashboard.cicd:3100

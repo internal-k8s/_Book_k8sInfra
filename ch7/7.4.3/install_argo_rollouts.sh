@@ -25,7 +25,7 @@ echo "Install ArgoCD extension CRD and RBAC."
 kubectl apply -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-extensions-install.yaml
 
 echo "Apply argocd-server extensions sidecar."
-kubectl apply -n cicd \
+kubectl apply --server-side --force-conflicts -n cicd \
   -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-server-extensions.yaml
 
 echo "Wait for argocd-server to be ready..."

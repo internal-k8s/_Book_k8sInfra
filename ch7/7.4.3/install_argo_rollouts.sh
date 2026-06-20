@@ -21,9 +21,6 @@ curl -sLo /usr/local/bin/kubectl-argo-rollouts \
   https://github.com/argoproj/argo-rollouts/releases/download/v1.7.2/kubectl-argo-rollouts-linux-${ARCH}
 chmod +x /usr/local/bin/kubectl-argo-rollouts
 
-echo "Install ArgoCD extension CRD and RBAC."
-kubectl apply -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-extensions-install.yaml
-
 echo "Apply Argo Rollouts UI extension."
 kubectl apply -n cicd \
   -f ~/_Book_k8sInfra/ch7/7.4.3/argocd-rollouts-extension.yaml

@@ -8,7 +8,7 @@ fi
 
 echo "Install Argo Rollouts controller."
 kubectl apply -n cicd \
-  -f ~/_Book_k8sInfra/ch7/7.4.3/install.yaml
+  -f ~/_Book_k8sInfra/ch7/7.4.3/argo-rollout.yaml
 
 echo "Wait for Argo Rollouts controller to be ready..."
 kubectl rollout status deployment/argo-rollouts -n cicd --timeout=120s

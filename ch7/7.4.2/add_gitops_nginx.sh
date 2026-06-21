@@ -2,7 +2,7 @@
 
 REPO=~/gitops
 SRC=~/_Book_k8sInfra/ch5/5.5.1
-APP=~/_Book_k8sInfra/ch7/7.4.2/app-gitops-deployment.yaml
+APP=~/_Book_k8sInfra/ch7/7.4.2/app-gitops-nginx.yaml
 MSG="${1:-init commit}"
 
 echo "Copy manifests from $SRC into ~/gitops."

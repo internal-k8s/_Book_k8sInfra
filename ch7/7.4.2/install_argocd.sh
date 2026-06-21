@@ -3,7 +3,7 @@
 echo "Deploy ArgoCD to cicd namespace."
 kubectl create ns cicd --save-config
 kubectl apply --server-side --force-conflicts -n cicd \
-  -f $HOME/_Book_k8sInfra/ch7/7.4.2/install.yaml
+  -f $HOME/_Book_k8sInfra/ch7/7.4.2/argocd.yaml
 
 echo "Wait for ArgoCD to be ready..."
 kubectl rollout status deployment/argocd-server -n cicd --timeout=180s

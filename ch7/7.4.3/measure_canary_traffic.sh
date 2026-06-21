@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 DUR="${1:-30}"
-BOOK="$HOME/_Book_k8sInfra/ch7/7.4.3"
 
 # Deploy load generators if none are running.
 if [ -z "$(kubectl get pods -l app=web-client -o name 2>/dev/null)" ]; then
   echo "Deploy web-client load generators."
-  kubectl apply -f "$BOOK/po-web-clients.yaml"
+  kubectl apply -f "$HOME/_Book_k8sInfra/ch7/7.4.3/po-web-clients.yaml"
   kubectl wait --for=condition=Ready pod -l app=web-client --timeout=120s
 fi
 

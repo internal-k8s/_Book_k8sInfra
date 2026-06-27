@@ -15,7 +15,7 @@ else
   echo "Deploy sLLM models."
 fi
 
-# Deploy only model manifests (skip compare-*.yaml that shares this directory).
+# Deploy only model manifests (*-ollama.yaml / *-vllm.yaml).
 for yaml_file in "$MODEL_DIR"/*-ollama.yaml "$MODEL_DIR"/*-vllm.yaml; do
   kubectl apply -f "$yaml_file"
 done

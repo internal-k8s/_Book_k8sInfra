@@ -17,6 +17,8 @@ spec:
       - pause: {duration: 30s}
       - setWeight: 75
       - pause: {duration: 30s}
+      - setWeight: 100
+      - pause: {duration: 30s}
   template:
     metadata:
       labels:

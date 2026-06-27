@@ -37,7 +37,7 @@ data:
 
     echo ">> [w2] Qwen3.5-0.8B:"
     R2=$(curl -s http://ollama-qwen35-0-8b:11434/api/chat \
-      -d "{\"model\":\"qwen3.5:0.8b\",\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
+      -d "{\"model\":\"qwen3.5:0.8b\",\"think\":false,\"messages\":[{\"role\":\"user\",\"content\":\"${QUESTION} Answer in 3 sentences.\"}],\"stream\":false}" \
       | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/","thinking[^"]*":"[^"]*//g' | sed 's/\\n/ /g' | sed 's/\\"/"/g')
     echo "$R2"
     echo ""

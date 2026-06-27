@@ -15,34 +15,34 @@ step()      { printf '\n%s %s %s\n' "${INV}${BOLD}${YEL}" "$1" "${RST}"; }
 step_ok()   { printf '\n%s %s %s\n' "${INV}${BOLD}${GREEN}" "$1" "${RST}"; }
 step_warn() { printf '\n%s %s %s\n' "${INV}${BOLD}${RED}" "$1" "${RST}"; }
 note()      { printf '  %s%s%s\n' "${DIM}" "$1" "${RST}"; }
-# 명령 출력을 dim "│ " 블록으로 감싸 결과를 별도 블록으로 보여줌.
+# 명령 출력을 dim "| " 블록으로 감싸 결과를 별도 블록으로 보여줌.
 _emit() {
   printf '\n'
   eval "$1" 2>&1 | while IFS= read -r _line; do
-    printf '  %s│%s %s\n' "${DIM}" "${RST}" "$_line"
+    printf '  %s|%s %s\n' "${DIM}" "${RST}" "$_line"
   done
 }
-# show "<표시용 명령>" "<실제 실행 명령>" : 명령을 보여주고 → 바로 실행 → 결과 프레이밍 (Enter 대기 없음)
+# show "<표시용 명령>" "<실제 실행 명령>" : 명령을 보여주고 -> 바로 실행 -> 결과 프레이밍 (Enter 대기 없음)
 show() {
-  printf '\n  %s▶%s %s\n' "${BOLD}${GREEN}" "${RST}" "$1"
+  printf '\n  %s>%s %s\n' "${BOLD}${GREEN}" "${RST}" "$1"
   _emit "$2"
 }
-# run_action: 빨간 ▶ — Enter로 멈추는 유일한 단계(클러스터 상태를 바꾸는 promote).
+# run_action: 빨간 > - Enter로 멈추는 유일한 단계(클러스터 상태를 바꾸는 promote).
 run_action() {
-  printf '\n  %s▶%s %s\n' "${BOLD}${RED}" "${RST}" "$1"
-  printf '    %s↵ Enter 를 눌러 카나리 배포 재개 / press Enter to resume the canary rollout%s ' "${DIM}" "${RST}"
+  printf '\n  %s>%s %s\n' "${BOLD}${RED}" "${RST}" "$1"
+  printf '    %sEnter 를 눌러 카나리 배포 재개 / press Enter to resume the canary rollout%s ' "${DIM}" "${RST}"
   IFS= read -r _
   _emit "$2"
 }
 
 # 트래픽이 어디서 어디로 가는지 먼저 안내 (항상 출력).
-step "[flow] 트래픽 흐름 — 어디서 어디로 가나"
-note "web-client ×10  ──curl :80──▶  Service 'canary'  ──:3000──▶  Pod ro-canary"
-note "                                                             ├─ stable  (dashboard:canary-v1)"
-note "                                                             └─ canary  (dashboard:canary-v2)"
+step "[flow] 트래픽 흐름 구성도"
+note "web-client x10  --curl:80-->  Service 'canary'  --:3000-->  Pod ro-canary"
+note "                                                            |- stable (dashboard:canary-v1)"
+note "                                                            \- canary (dashboard:canary-v2)"
 note "web-client 가 매초 'curl http://canary' 호출(--no-keepalive: 요청 1건 = 연결 1건 = SYN 1개)."
-note "서비스 뒤에 stable·canary 두 버전이 공존하고, 가중치는 파드 개수 비율로 근사됩니다."
-note "아래 측정은 위 흐름의 최종 도착지인 카나리 대상 파드가 수신하는 패킷(SYN)을 버전(stable·canary)별로 세어 카나리 트래픽 비율을 보여줍니다."
+note "서비스 뒤에 stable/canary 두 버전이 공존하고, 가중치는 파드 개수 비율로 근사됩니다."
+note "아래 측정은 위 흐름의 최종 도착지인 카나리 대상 파드가 수신하는 패킷(SYN)을 버전(stable/canary)별로 세어 카나리 트래픽 비율을 보여줍니다."
 
 # 부하 생성기가 없으면 배포.
 if [ -z "$(kubectl get pods -l app=web-client -o name 2>/dev/null)" ]; then
@@ -87,7 +87,7 @@ measure() {
 
 if [ "$CANARY_HASH" = "$STABLE_HASH" ]; then
   step_warn "[idle] 진행 중인 카나리가 없습니다"
-  note "먼저 카나리를 트리거하세요:"
+  note "카나리 배포를 실행하기 위해 아래 명령을 수행해주세요:"
   note "  kubectl argo rollouts set image ro-canary dashboard=sysnet4admin/dashboard:canary-v2"
   exit 0
 fi
@@ -111,7 +111,7 @@ while true; do
         *)
           W="$(step_weight "$STEP")"
           PAUSE_DUR="$(kubectl get rollout ro-canary -o jsonpath="{.spec.strategy.canary.steps[$STEP].pause.duration}" 2>/dev/null)"
-          step "[measure] setWeight ${W:-?}% (paused) — ${DUR}s 측정"
+          step "[measure] setWeight ${W:-?}% (paused) - ${DUR}s 측정"
           show "hubble observe --to-label app=ro-canary --tcp-flags SYN   ${GREEN}# 카나리 vs 안정 연결 수 집계${RST}" \
                "measure"
           measured="$measured$STEP "

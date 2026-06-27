@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Live demo RUNNER — 각 단계의 명령을 먼저 보여주고, Enter를 누르면 실제로 실행해
-# 카나리 단계마다 '측정된' 트래픽 비율을 청중이 직접 보게 합니다.
-# set -e 는 의도적으로 끔: 데모 중 한 단계가 삐끗해도 전체가 중단되면 안 됨.
 set -uo pipefail
 
 DUR="${1:-30}"

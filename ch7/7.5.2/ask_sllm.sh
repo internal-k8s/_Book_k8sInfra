@@ -3,7 +3,11 @@
 set -uo pipefail
 
 echo "================================================"
-echo " 7.5.2 대화형 sLLM 질의: 모델 선택 -> 프롬프트 -> 결과"
+echo " sLLM 질의 대화형 콘솔"
+echo "------------------------------------------------"
+echo " 배포된 sLLM 하나를 골라 질문을 던지고,"
+echo " 그 모델의 응답을 그대로 확인합니다."
+echo " (여러 모델을 함께 종합하려면 MoA 콘솔을 사용하세요)"
 echo "================================================"
 
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
@@ -47,11 +51,12 @@ CONTENT="$(printf '%s' "$PROMPT" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' ')"
 PAYLOAD="{\"model\":\"$MODEL\",${THINK}\"messages\":[{\"role\":\"user\",\"content\":\"$CONTENT\"}],\"stream\":false}"
 
 echo ""
-echo "== 모델: $MODEL  (svc: $SVC) =="
-echo "== 프롬프트: $PROMPT =="
+echo "모델: $MODEL"
+echo "프롬프트: $PROMPT"
 echo ""
 
 # 4) ClusterIP 서비스에 질의 - 일회용 curl 파드로 호출 후 자동 정리
+echo "답변:"
 kubectl run "sllm-query-$$" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \
   curl -s "http://$SVC:11434/api/chat" -d "$PAYLOAD" -w '\n' \
   | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'

@@ -3,7 +3,11 @@
 set -uo pipefail
 
 echo "================================================"
-echo " 7.5.3 대화형 MoA: 여러 sLLM 응답 -> aggregator 종합"
+echo " MoA(Mixture of Agents) 대화형 콘솔"
+echo "------------------------------------------------"
+echo " 배포된 여러 sLLM에 같은 질문을 던진 뒤,"
+echo " 선택한 aggregator 가 그 답변들을 하나로 종합합니다."
+echo " 개별 응답 -> 종합(MoA) 응답을 단계별로 비교하세요."
 echo "================================================"
 
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
@@ -51,6 +55,10 @@ case "$QUESTION" in
 esac
 [ -z "$QUESTION" ] && { echo "질문이 비었습니다."; exit 1; }
 
+echo ""
+echo "프롬프트: $QUESTION"
+echo "aggregator: $AGG_MODEL"
+
 # --- 공용 헬퍼 ---
 # JSON 문자열 이스케이프 (역슬래시/따옴표/개행 처리)
 json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' '; }
@@ -73,7 +81,8 @@ ANSWERS=""
 while IFS='|' read -r name svc tag; do
   [ -z "$name" ] && continue
   echo ""
-  echo ">> $name:"
+  echo "모델: $name"
+  echo "답변:"
   ans="$(ask_one "$svc" "$tag" "$QUESTION Answer in 3 sentences.")"
   echo "$ans"
   ANSWERS="${ANSWERS}Answer ($name): ${ans} "
@@ -86,5 +95,5 @@ echo ""
 echo "========== 단계 2: MoA 종합 (aggregator: $AGG_MODEL) =========="
 AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
 echo ""
-echo ">> MoA 최종 답변:"
+echo "답변:"
 ask_one "$AGG_SVC" "$AGG_MODEL" "$AGG_PROMPT"

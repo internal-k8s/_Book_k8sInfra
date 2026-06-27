@@ -2,6 +2,10 @@
 # 7.5.3 - 대화형 MoA: 배포된 모델 전체에 질의 -> 선택한 aggregator 가 종합 -> 결과 출력
 set -uo pipefail
 
+echo "================================================"
+echo " 7.5.3 대화형 MoA: 여러 sLLM 응답 -> aggregator 종합"
+echo "================================================"
+
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
 if ! command -v fzf >/dev/null 2>&1; then
   sudo apt-get update -qq >/dev/null 2>&1
@@ -62,9 +66,9 @@ ask_one() {
     | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/ /g'
 }
 
-# 4) Step 1 - 배포된 모든 모델에 동일 질문
+# 4) 단계 1 - 배포된 모든 모델에 동일 질문
 echo ""
-echo "================= Step 1: 개별 모델 응답 ================="
+echo "================= 단계 1: 개별 모델 응답 ================="
 ANSWERS=""
 while IFS='|' read -r name svc tag; do
   [ -z "$name" ] && continue
@@ -77,9 +81,9 @@ done <<EOF
 $DEPLOYED
 EOF
 
-# 5) Step 2 - aggregator 가 종합
+# 5) 단계 2 - aggregator 가 종합
 echo ""
-echo "========== Step 2: MoA 종합 (aggregator: $AGG_MODEL) =========="
+echo "========== 단계 2: MoA 종합 (aggregator: $AGG_MODEL) =========="
 AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
 echo ""
 echo ">> MoA 최종 답변:"

@@ -2,6 +2,10 @@
 # 7.5.2 - 대화형 단일 sLLM 질의: 모델 선택(fzf) → 프롬프트 선택/입력(fzf) → 결과 출력
 set -uo pipefail
 
+echo "================================================"
+echo " 7.5.2 대화형 sLLM 질의: 모델 선택 -> 프롬프트 -> 결과"
+echo "================================================"
+
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
 if ! command -v fzf >/dev/null 2>&1; then
   sudo apt-get update -qq >/dev/null 2>&1

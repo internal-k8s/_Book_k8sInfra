@@ -1,12 +1,57 @@
 #!/usr/bin/env bash
+# Live demo RUNNER — 각 단계의 명령을 먼저 보여주고, Enter를 누르면 실제로 실행해
+# 카나리 단계마다 '측정된' 트래픽 비율을 청중이 직접 보게 합니다.
+# set -e 는 의도적으로 끔: 데모 중 한 단계가 삐끗해도 전체가 중단되면 안 됨.
+set -uo pipefail
 
 DUR="${1:-30}"
 
-# Deploy load generators if none are running.
+# Colors (파이프/NO_COLOR 시 자동 비활성화).
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+  BOLD=$'\033[1m'; DIM=$'\033[2m'; RST=$'\033[0m'
+  GREEN=$'\033[32m'; YEL=$'\033[33m'; RED=$'\033[31m'; INV=$'\033[7m'
+else
+  BOLD=; DIM=; RST=; GREEN=; YEL=; RED=; INV=
+fi
+
+step()      { printf '\n%s %s %s\n' "${INV}${BOLD}${YEL}" "$1" "${RST}"; }
+step_ok()   { printf '\n%s %s %s\n' "${INV}${BOLD}${GREEN}" "$1" "${RST}"; }
+step_warn() { printf '\n%s %s %s\n' "${INV}${BOLD}${RED}" "$1" "${RST}"; }
+note()      { printf '  %s%s%s\n' "${DIM}" "$1" "${RST}"; }
+# 명령 출력을 dim "│ " 블록으로 감싸 결과를 별도 블록으로 보여줌.
+_emit() {
+  printf '\n'
+  eval "$1" 2>&1 | while IFS= read -r _line; do
+    printf '  %s│%s %s\n' "${DIM}" "${RST}" "$_line"
+  done
+}
+# show "<표시용 명령>" "<실제 실행 명령>" : 명령을 보여주고 → 바로 실행 → 결과 프레이밍 (Enter 대기 없음)
+show() {
+  printf '\n  %s▶%s %s\n' "${BOLD}${GREEN}" "${RST}" "$1"
+  _emit "$2"
+}
+# run_action: 빨간 ▶ — Enter로 멈추는 유일한 단계(클러스터 상태를 바꾸는 promote).
+run_action() {
+  printf '\n  %s▶%s %s\n' "${BOLD}${RED}" "${RST}" "$1"
+  printf '    %s↵ Enter 를 눌러 카나리 배포 재개 / press Enter to resume the canary rollout%s ' "${DIM}" "${RST}"
+  IFS= read -r _
+  _emit "$2"
+}
+
+# 트래픽이 어디서 어디로 가는지 먼저 안내 (항상 출력).
+step "[flow] 트래픽 흐름 — 어디서 어디로 가나"
+note "web-client ×10  ──curl :80──▶  Service 'canary'  ──:3000──▶  Pod ro-canary"
+note "                                                             ├─ stable  (dashboard:canary-v1)"
+note "                                                             └─ canary  (dashboard:canary-v2)"
+note "web-client 가 매초 'curl http://canary' 호출(--no-keepalive: 요청 1건 = 연결 1건 = SYN 1개)."
+note "서비스 뒤에 stable·canary 두 버전이 공존하고, 가중치는 파드 개수 비율로 근사됩니다."
+note "아래 측정은 위 흐름의 최종 도착지인 카나리 대상 파드가 수신하는 패킷(SYN)을 버전(stable·canary)별로 세어 카나리 트래픽 비율을 보여줍니다."
+
+# 부하 생성기가 없으면 배포.
 if [ -z "$(kubectl get pods -l app=web-client -o name 2>/dev/null)" ]; then
-  echo "Deploy web-client load generators."
-  kubectl apply -f "$HOME/_Book_k8sInfra/ch7/7.4.3/po-web-clients.yaml"
-  kubectl wait --for=condition=Ready pod -l app=web-client --timeout=120s
+  step "[setup] 부하 생성기(web-client) 배포"
+  show "kubectl apply -f po-web-clients.yaml  (+ Ready 대기)" \
+       "kubectl apply -f \"\$HOME/_Book_k8sInfra/ch7/7.4.3/po-web-clients.yaml\" && kubectl wait --for=condition=Ready pod -l app=web-client --timeout=120s"
 fi
 
 CIL="$(kubectl get pod -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}')"
@@ -14,7 +59,7 @@ RELAY="$(kubectl get svc -n kube-system hubble-relay -o jsonpath='{.spec.cluster
 CANARY_HASH="$(kubectl get rollout ro-canary -o jsonpath='{.status.currentPodHash}')"
 STABLE_HASH="$(kubectl get rollout ro-canary -o jsonpath='{.status.stableRS}')"
 
-# Last setWeight at or before step index $1.
+# step index $1 시점의 마지막 setWeight.
 step_weight() {
   local cur="$1" i=0 w="" v
   while [ "$i" -le "$cur" ]; do
@@ -25,7 +70,7 @@ step_weight() {
   echo "$w"
 }
 
-# Count to-endpoint SYN only (one per connection) via live follow, grouped by ReplicaSet.
+# 연결당 1개인 to-endpoint SYN만 집계, ReplicaSet 별로 그룹화.
 measure() {
   kubectl exec -n kube-system "$CIL" -c cilium-agent -- \
     timeout "$DUR" hubble observe -f --server "$RELAY":80 \
@@ -44,12 +89,14 @@ measure() {
 }
 
 if [ "$CANARY_HASH" = "$STABLE_HASH" ]; then
-  echo "No canary in progress. Trigger one with:"
-  echo "  k argo rollouts set image ro-canary dashboard=sysnet4admin/dashboard:canary-v2"
+  step_warn "[idle] 진행 중인 카나리가 없습니다"
+  note "먼저 카나리를 트리거하세요:"
+  note "  kubectl argo rollouts set image ro-canary dashboard=sysnet4admin/dashboard:canary-v2"
   exit 0
 fi
 
-echo "canary replicaset=$CANARY_HASH  stable replicaset=$STABLE_HASH"
+step "[start] 카나리 진행 감지"
+note "canary replicaset=$CANARY_HASH  stable replicaset=$STABLE_HASH"
 
 measured=" "
 while true; do
@@ -58,7 +105,7 @@ while true; do
 
   case "$PHASE" in
     Healthy|Degraded)
-      echo "Rollout $PHASE. Done."
+      step_ok "[done] Rollout $PHASE."
       break
       ;;
     Paused)
@@ -67,14 +114,14 @@ while true; do
         *)
           W="$(step_weight "$STEP")"
           PAUSE_DUR="$(kubectl get rollout ro-canary -o jsonpath="{.spec.strategy.canary.steps[$STEP].pause.duration}" 2>/dev/null)"
-          echo ""
-          echo "setWeight ${W:-?}% (paused) - measuring ${DUR}s..."
-          measure
+          step "[measure] setWeight ${W:-?}% (paused) — ${DUR}s 측정"
+          show "hubble observe --to-label app=ro-canary --tcp-flags SYN   ${GREEN}# 카나리 vs 안정 연결 수 집계${RST}" \
+               "measure"
           measured="$measured$STEP "
-          # Indefinite pause waits for a manual promote; duration pause advances on its own.
+          # 무기한 pause만 수동 promote 대기; duration pause는 자동 진행.
           if [ -z "$PAUSE_DUR" ]; then
-            echo "  promote to next step with:"
-            echo "    k argo rollouts promote ro-canary"
+            run_action "kubectl argo rollouts promote ro-canary   ${GREEN}# 카나리 배포 재개${RST}" \
+                       "kubectl argo rollouts promote ro-canary"
           fi
           ;;
       esac

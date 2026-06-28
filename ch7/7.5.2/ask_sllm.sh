@@ -54,7 +54,10 @@ echo "질문: $PROMPT"
 echo ""
 
 # 4) ClusterIP 서비스에 질의 - 일회용 curl 파드로 호출 후 자동 정리
-echo "답변:"
-kubectl run "sllm-query-$$-$RANDOM" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \
-  curl -s "http://$SVC:11434/api/chat" -d "$PAYLOAD" -w '\n' </dev/null \
-  | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'
+RAW="$(kubectl run "sllm-query-$$-$RANDOM" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \
+  curl -s "http://$SVC:11434/api/chat" -d "$PAYLOAD" </dev/null 2>/dev/null)"
+ANS="$(printf '%s' "$RAW" | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g')"
+# ollama 가 응답에 보고한 추론 시간(total_duration, 나노초) -> 초. 파드/네트워크 오버헤드 제외.
+DUR_NS="$(printf '%s' "$RAW" | grep -o '"total_duration":[0-9]*' | head -1 | sed 's/.*://')"
+echo "답변 ($(awk -v n="${DUR_NS:-0}" 'BEGIN{printf "%.1f", n/1e9}')s):"
+echo "$ANS"

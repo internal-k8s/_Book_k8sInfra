@@ -49,15 +49,18 @@ echo "정제 모델: $AGG_MODEL"
 # JSON 문자열 이스케이프 (역슬래시/따옴표/개행 처리)
 json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' '; }
 
-# 단일 모델 질의: $1 서비스  $2 모델태그  $3 원문 프롬프트 (ClusterIP -> 일회용 curl 파드)
+# 단일 모델 질의: $1 서비스  $2 모델태그  $3 원문 질문 (ClusterIP -> 일회용 curl 파드).
+# 출력 1행 = 추론 시간(초, ollama total_duration), 2행~ = 답변.
 ask_one() {
-  local think="" content payload
+  local think="" content payload raw durns
   case "$2" in qwen*) think='"think":false,' ;; esac   # qwen 은 think=false 로 동등 비교 (추론 노출 방지)
   content="$(json_escape "$3")"
   payload="{\"model\":\"$2\",${think}\"messages\":[{\"role\":\"user\",\"content\":\"$content\"}],\"stream\":false}"
-  kubectl run "moa-$$-$RANDOM" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \
-    curl -s "http://$1:11434/api/chat" -d "$payload" -w '\n' </dev/null \
-    | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'
+  raw="$(kubectl run "moa-$$-$RANDOM" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \
+    curl -s "http://$1:11434/api/chat" -d "$payload" </dev/null 2>/dev/null)"
+  durns="$(printf '%s' "$raw" | grep -o '"total_duration":[0-9]*' | head -1 | sed 's/.*://')"
+  awk -v n="${durns:-0}" 'BEGIN{printf "%.1f\n", n/1e9}'
+  printf '%s' "$raw" | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'
 }
 
 # 3) 단계 1 - 배포된 모든 모델에 동일 질문
@@ -68,8 +71,10 @@ while IFS='|' read -r name svc tag; do
   [ -z "$name" ] && continue
   echo ""
   echo "모델: $name"
-  echo "답변:"
-  ans="$(ask_one "$svc" "$tag" "$QUESTION")"
+  out="$(ask_one "$svc" "$tag" "$QUESTION")"
+  dur="$(printf '%s\n' "$out" | head -1)"
+  ans="$(printf '%s\n' "$out" | tail -n +2)"
+  echo "답변 (${dur}s):"
   echo "$ans"
   ANSWERS="${ANSWERS}Answer ($name): ${ans} "
 done <<EOF
@@ -81,5 +86,8 @@ echo ""
 echo "========== 단계 2: 에이전트 혼합 기법 적용 (정제 모델: $AGG_MODEL) =========="
 AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer, following the length and language requested in the question. Remove any incorrect information."
 echo ""
-echo "답변:"
-ask_one "$AGG_SVC" "$AGG_MODEL" "$AGG_PROMPT"
+out="$(ask_one "$AGG_SVC" "$AGG_MODEL" "$AGG_PROMPT")"
+dur="$(printf '%s\n' "$out" | head -1)"
+ans="$(printf '%s\n' "$out" | tail -n +2)"
+echo "답변 (${dur}s):"
+echo "$ans"

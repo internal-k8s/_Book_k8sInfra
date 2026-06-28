@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ollama-qwen35-2b
+  name: ollama-gemma4-e2b
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ollama-qwen35-2b
+      app: ollama-gemma4-e2b
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -15,26 +15,26 @@ spec:
   template:
     metadata:
       labels:
-        app: ollama-qwen35-2b
+        app: ollama-gemma4-e2b
     spec:
       containers:
-      - image: sysnet4admin/ollama-qwen3.5:2b
+      - image: sysnet4admin/ollama-gemma4:e2b-it-qat
         imagePullPolicy: IfNotPresent
-        name: ollama-qwen35-2b
+        name: ollama-gemma4-e2b
         ports:
         - containerPort: 11434
           protocol: TCP
       nodeSelector:
-        kubernetes.io/hostname: w3-k8s
+        kubernetes.io/hostname: w2-k8s
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ollama-qwen35-2b
+  name: ollama-gemma4-e2b
 spec:
   ports:
   - port: 11434
     protocol: TCP
     targetPort: 11434
   selector:
-    app: ollama-qwen35-2b
+    app: ollama-gemma4-e2b

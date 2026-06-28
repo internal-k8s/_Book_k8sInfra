@@ -25,7 +25,7 @@ spec:
         - containerPort: 11434
           protocol: TCP
       nodeSelector:
-        kubernetes.io/hostname: w1-k8s
+        kubernetes.io/hostname: w3-k8s
 ---
 apiVersion: v1
 kind: Service

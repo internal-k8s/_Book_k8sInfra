@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-# 7.5.3 - 대화형 MoA: 배포된 모델 전체에 질의 -> 선택한 aggregator 가 종합 -> 결과 출력
+# 7.5.3 - 대화형 에이전트 혼합 기법(MoA): 배포된 모델 전체에 질의 -> 집계 모델이 종합 -> 결과 출력
 set -uo pipefail
 
 echo "================================================"
-echo " MoA(Mixture of Agents) 대화형 콘솔"
-echo "------------------------------------------------"
-echo " 배포된 여러 sLLM에 같은 질문을 던진 뒤,"
-echo " 선택한 aggregator 가 그 답변들을 하나로 종합합니다."
-echo " 개별 응답 -> 종합(MoA) 응답을 단계별로 비교하세요."
+echo " 에이전트 혼합 기법(MoA) 대화형 콘솔"
+echo " 배포된 sLLM 여러 개에 질문을 보내고 집계 모델이 답변을 종합합니다."
 echo "================================================"
 
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
@@ -37,8 +34,8 @@ EOF
 )"
 [ -z "$DEPLOYED" ] && { echo "배포된 ollama 모델 서비스가 없습니다 - 먼저 모델을 배포하세요."; exit 1; }
 
-# 2) aggregator 선택 (배포된 모델 중 fzf 로)
-AGG_NAME="$(printf '%s\n' "$DEPLOYED" | cut -d'|' -f1 | fzf --height=40% --reverse --prompt='aggregator 선택> ')"
+# 2) 집계 모델 선택 (배포된 모델 중 fzf 로)
+AGG_NAME="$(printf '%s\n' "$DEPLOYED" | cut -d'|' -f1 | fzf --height=40% --reverse --prompt='집계 모델 선택> ')"
 [ -z "$AGG_NAME" ] && { echo "취소됨."; exit 0; }
 AGG_SVC="$(awk -F'|' -v n="$AGG_NAME" '$1==n{print $2; exit}' <<<"$DEPLOYED")"
 AGG_MODEL="$(awk -F'|' -v n="$AGG_NAME" '$1==n{print $3; exit}' <<<"$DEPLOYED")"
@@ -58,7 +55,7 @@ esac
 
 echo ""
 echo "프롬프트: $QUESTION"
-echo "aggregator: $AGG_MODEL"
+echo "집계 모델: $AGG_MODEL"
 
 # --- 공용 헬퍼 ---
 # JSON 문자열 이스케이프 (역슬래시/따옴표/개행 처리)
@@ -91,9 +88,9 @@ done <<EOF
 $DEPLOYED
 EOF
 
-# 5) 단계 2 - aggregator 가 종합
+# 5) 단계 2 - 집계 모델이 종합
 echo ""
-echo "========== 단계 2: MoA 종합 (aggregator: $AGG_MODEL) =========="
+echo "========== 단계 2: 에이전트 혼합 기법 적용 (집계 모델: $AGG_MODEL) =========="
 AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer, following the length and language requested in the question. Remove any incorrect information."
 echo ""
 echo "답변:"

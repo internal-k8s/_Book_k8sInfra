@@ -43,8 +43,8 @@ case "$PROMPT" in
 esac
 [ -z "$PROMPT" ] && { echo "직접 입력한 질문이 비어 있어 종료합니다."; exit 1; }
 
-# 3) JSON 페이로드 (qwen 은 think=false 로 동등 비교; 질문은 JSON 이스케이프)
-THINK=""; case "$MODEL" in qwen*) THINK='"think":false,' ;; esac
+# 3) JSON 페이로드 (추론 모델 qwen/gemma4 는 think=false 로 추론 노출 방지; 질문은 JSON 이스케이프)
+THINK=""; case "$MODEL" in qwen*|gemma4*) THINK='"think":false,' ;; esac
 CONTENT="$(printf '%s' "$PROMPT" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' ')"
 PAYLOAD="{\"model\":\"$MODEL\",${THINK}\"messages\":[{\"role\":\"user\",\"content\":\"$CONTENT\"}],\"stream\":false}"
 

@@ -53,7 +53,7 @@ json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' '; }
 # 출력 1행 = 추론 시간(초, ollama total_duration), 2행~ = 답변.
 ask_one() {
   local think="" content payload raw durns
-  case "$2" in qwen*) think='"think":false,' ;; esac   # qwen 은 think=false 로 동등 비교 (추론 노출 방지)
+  case "$2" in qwen*|gemma4*) think='"think":false,' ;; esac   # 추론 모델(qwen/gemma4)은 think=false 로 추론 노출 방지
   content="$(json_escape "$3")"
   payload="{\"model\":\"$2\",${think}\"messages\":[{\"role\":\"user\",\"content\":\"$content\"}],\"stream\":false}"
   raw="$(kubectl run "moa-$$-$RANDOM" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \

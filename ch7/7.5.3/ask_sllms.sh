@@ -84,7 +84,7 @@ while IFS='|' read -r name svc tag; do
   echo ""
   echo "모델: $name"
   echo "답변:"
-  ans="$(ask_one "$svc" "$tag" "$QUESTION Answer in 3 sentences.")"
+  ans="$(ask_one "$svc" "$tag" "$QUESTION")"
   echo "$ans"
   ANSWERS="${ANSWERS}Answer ($name): ${ans} "
 done <<EOF
@@ -94,7 +94,7 @@ EOF
 # 5) 단계 2 - aggregator 가 종합
 echo ""
 echo "========== 단계 2: MoA 종합 (aggregator: $AGG_MODEL) =========="
-AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer in 3 sentences. Remove any incorrect information."
+AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer, following the length and language requested in the question. Remove any incorrect information."
 echo ""
 echo "답변:"
 ask_one "$AGG_SVC" "$AGG_MODEL" "$AGG_PROMPT"

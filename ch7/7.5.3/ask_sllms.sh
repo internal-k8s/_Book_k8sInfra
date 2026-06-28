@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# 7.5.3 - 대화형 에이전트 혼합 기법(MoA): 배포된 모델 전체에 질의 -> 집계 모델이 종합 -> 결과 출력
+# 7.5.3 - 대화형 에이전트 혼합 기법(MoA): 배포된 모델 전체에 질의 -> 정제 모델이 답변 정제 -> 결과 출력
 set -uo pipefail
 
+echo "에이전트 혼합 기법(MoA) 대화형 콘솔"
 echo "================================================"
-echo " 에이전트 혼합 기법(MoA) 대화형 콘솔"
-echo " 배포된 sLLM 여러 개에 질문을 보내고 집계 모델이 답변을 종합합니다."
-echo "================================================"
+echo "배포된 sLLM 여러 개에 질문을 보내고 정제 모델이 답변을 정제합니다."
 
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
 if ! command -v fzf >/dev/null 2>&1; then
@@ -23,9 +22,9 @@ DEPLOYED="$(kubectl run "disc-$$-$RANDOM" --rm -i --restart=Never --quiet --imag
   sh -c 'sleep 2; for s in '"$SVCS"'; do t=$(curl -s --max-time 15 "http://$s:11434/api/tags" | grep -o "\"name\":\"[^\"]*\"" | head -1 | sed "s/.*:\"//;s/\"//"); [ -n "$t" ] && printf "%s|%s|%s\n" "$t" "$s" "$t"; done' </dev/null 2>/dev/null)"
 [ -z "$DEPLOYED" ] && { echo "ollama 서비스에서 모델 정보를 읽지 못했습니다. 잠시 후 다시 실행하세요."; exit 1; }
 
-# 1) 집계 모델 선택 (배포된 모델 중 fzf 로)
-AGG_NAME="$(printf '%s\n' "$DEPLOYED" | cut -d'|' -f1 | fzf --height=40% --reverse --prompt='집계 모델 선택> ')"
-[ -z "$AGG_NAME" ] && { echo "집계 모델을 선택하지 않아 종료합니다."; exit 0; }
+# 1) 정제 모델 선택 (배포된 모델 중 fzf 로)
+AGG_NAME="$(printf '%s\n' "$DEPLOYED" | cut -d'|' -f1 | fzf --height=40% --reverse --prompt='정제 모델 선택> ')"
+[ -z "$AGG_NAME" ] && { echo "정제 모델을 선택하지 않아 종료합니다."; exit 0; }
 AGG_SVC="$(awk -F'|' -v n="$AGG_NAME" '$1==n{print $2; exit}' <<<"$DEPLOYED")"
 AGG_MODEL="$(awk -F'|' -v n="$AGG_NAME" '$1==n{print $3; exit}' <<<"$DEPLOYED")"
 
@@ -44,7 +43,7 @@ esac
 
 echo ""
 echo "질문: $QUESTION"
-echo "집계 모델: $AGG_MODEL"
+echo "정제 모델: $AGG_MODEL"
 
 # --- 공용 헬퍼 ---
 # JSON 문자열 이스케이프 (역슬래시/따옴표/개행 처리)
@@ -77,9 +76,9 @@ done <<EOF
 $DEPLOYED
 EOF
 
-# 4) 단계 2 - 집계 모델이 종합
+# 4) 단계 2 - 정제 모델이 답변 정제
 echo ""
-echo "========== 단계 2: 에이전트 혼합 기법 적용 (집계 모델: $AGG_MODEL) =========="
+echo "========== 단계 2: 에이전트 혼합 기법 적용 (정제 모델: $AGG_MODEL) =========="
 AGG_PROMPT="You are an expert aggregator. Several AI models answered the question: ${QUESTION} ${ANSWERS}Synthesize the best parts of all answers into one clear, accurate answer, following the length and language requested in the question. Remove any incorrect information."
 echo ""
 echo "답변:"

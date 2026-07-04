@@ -5,7 +5,7 @@
 | 항목 | 이전 | 이후 |
 |---|---|---|
 | 버전 | v7.1.10 | **v7.2.8** |
-| 위치 | `ch2/2.1.1/arm64/virtualbox-v7.1.10/` | `ch2/2.1.1/arm64/virtualbox-v7.2.8/` |
+| 위치 | `ch2/2.1.1/virtualbox-v7.1.10/` | `ch2/2.1.1/virtualbox-v7.2.8/` |
 
 ## brew cask .rb 변경 사항 (7.1 → 7.2)
 
@@ -17,7 +17,7 @@
 
 | 파일 | 변경 내용 |
 |---|---|
-| `ch2/2.1.1/arm64/.cmd` | virtualbox-v7.2.8 참조 + winget 명령 추가 |
+| `ch2/2.1.1/.cmd` | virtualbox-v7.2.8 참조 + winget 명령 추가 |
 
 ## networks.conf 불필요 확인 (2026-05-21)
 

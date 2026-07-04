@@ -304,7 +304,7 @@ parameters:
 - [x] VirtualBox v7.1.10 → v7.2.8 (brew cask .rb 업데이트, pkg choices 7.2 기준 수정)
 - [x] Vagrant v2.4.7 → v2.4.9 (VirtualBox 7.2 지원)
 - [x] Tabby v1.0.196 → v1.0.234
-- [x] ch2/2.1.1/arm64/.cmd winget + brew 명령 정비
+- [x] ch2/2.1.1/.cmd winget + brew 명령 정비
 - [x] ch2/2.3.1/.cmd 신규 생성 (Tabby winget + brew)
 - [x] networks.conf 불필요 확인 (macOS + VirtualBox 7.2.8)
 - 자세한 내용: [`_prepublish_updates/dev-tools.md`](_prepublish_updates/dev-tools.md)

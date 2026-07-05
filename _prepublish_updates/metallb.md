@@ -33,3 +33,8 @@
 | 13 | Pod with PVC Running | ✅ PASS |
 
 **PASS 14/14, FAIL 0**
+
+## 구버전 파일 삭제 (2026-07-05)
+
+`ch3/3.3.2/metallb-native-v0.13.10.yaml`이 위 교체 작업(2026-04-04) 당시 삭제되지 않고 저장소에 남아있던 것을 확인 후 삭제.
+`.init_infra.sh` 등 어디에서도 참조되지 않는 죽은 파일이었음 — 실제 사용 파일은 처음부터 `metallb-native-v0.15.3.yaml`.

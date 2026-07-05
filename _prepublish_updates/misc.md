@@ -83,18 +83,24 @@ Ubuntu 24.04 전환에 따라 5개 강의 레포의 ch2/2.3, ch2/2.4 Vagrantfile
 | `app/F.kubespray_kOps/kubespray` | `app/B.kubespray` | 상위로 승격 |
 | `app/F.kubespray_kOps/kOps` | — | **실습 폐기, 텍스트 설명만** (사유: 아래 참조) |
 
-### 최종 구조
+### 최종 구조 (2026-05-25 B/C 스왑 반영)
 
 ```
 app/
 ├── A.console-k8s/        쿠버네티스 콘솔 노드
-├── B.kubespray/          멀티 컨트롤 플레인 (kubespray)
-└── C.DeepDiveContainer/  컨테이너 PID 1, runC 직접 사용
+├── B.DeepDiveContainer/  컨테이너 PID 1, runC 직접 사용
+└── C.kubespray/          멀티 컨트롤 플레인 (kubespray)
 ```
+
+> 위 표(변경 매핑)의 `app/E.DeepDiveContainer → app/C.DeepDiveContainer`,
+> `app/F.kubespray_kOps/kubespray → app/B.kubespray`는 2026-05 재편 **1차** 결과입니다.
+> 이후 커밋 `78f65c6`("app: swap B(kubespray)→C and C(DeepDiveContainer)→B for
+> better learning flow", 2026-05-25)에서 학습 흐름상 순서를 다시 바꿔
+> DeepDiveContainer가 B, kubespray가 C로 최종 확정됐습니다. 아래 "순서"도 이에 맞게 갱신.
 
 ### 순서
 
-`A(콘솔) → B(kubespray) → C(컨테이너 깊이)` — 환경 확장 → 다른 클러스터 구성 → 컨테이너 내부 심화.
+`A(콘솔) → B(컨테이너 깊이) → C(kubespray)` — 환경 확장 → 컨테이너 내부 심화 → 다른 클러스터 구성.
 
 ### D.Operator/2.elasticsearch 폐기 사유
 
@@ -119,8 +125,8 @@ app/
 | 부록 | k8s | containerd | 비고 |
 |---|---|---|---|
 | A.console-k8s | **1.36.0-1.1** | **2.2.3-1~ubuntu.24.04~noble** | ch7과 동일 |
-| B.kubespray | 1.35.x (kubespray default) | 2.x (kubespray default) | kubespray release-2.31 pin — k8s 1.36 지원 시 v2.32+로 후속 갱신 예정 |
-| C.DeepDiveContainer | (Vagrantfile 없음) | — | ch7 클러스터 위에서 진행 |
+| B.DeepDiveContainer | (Vagrantfile 없음) | — | ch7 클러스터 위에서 진행 |
+| C.kubespray | 1.35.x (kubespray default) | 2.x (kubespray default) | kubespray release-2.31 pin — k8s 1.36 지원 시 v2.32+로 후속 갱신 예정 |
 
 ### `k8s_con_pack.sh` (부록 A) 추가 수정
 
@@ -133,17 +139,17 @@ app/
 
 - 절 번호 D.x / E.x / F.x → A.x / B.x / C.x로 통일
 - 본문 k8s 버전 출력 결과 (예: `v1.27.4` → `v1.36.0`, kubespray 본문은 `v1.27.9` → `v1.35.x`)
-- 경로 `app/E.DeepDiveContainer/` → `app/C.DeepDiveContainer/`, `app/F.kubespray_kOps/...` → `app/B.kubespray/`
-- 새 appB 끝부분에 **"왜 kOps와 다른 도구들을 다루지 않는가"** 텍스트 섹션 신설 (1판/2판 이력 + 시장 조사 근거 포함)
-- 새 appC 도입부에 **docker 설치 안내 한 줄** 추가 (아래 참조)
+- 경로 `app/E.DeepDiveContainer/` → `app/B.DeepDiveContainer/`, `app/F.kubespray_kOps/...` → `app/C.kubespray/` (2026-05-25 B/C 스왑 반영)
+- 새 appC 끝부분에 **"왜 kOps와 다른 도구들을 다루지 않는가"** 텍스트 섹션 신설 (1판/2판 이력 + 시장 조사 근거 포함)
+- 새 appB 도입부에 **docker 설치 안내 한 줄** 추가 (아래 참조)
 - PID/컨테이너 ID 직접 명시 → 7장 IP 처리와 동일한 "예: " 패턴 적용
 - 마크다운 변환 잔재(`\<절\>`, `\<중\>`, `[xxx]{.mark}`, 중첩 번호 등) 정리
 
-### appC docker 의존성 처리
+### appB docker 의존성 처리
 
-새 appC(컨테이너 깊이)는 `docker run`, `docker exec`, `docker inspect`, `docker export`를 사용하지만, ch7 클러스터(7.1.1 fresh `vagrant up`) 환경에는 **도커가 설치되어 있지 않음**. 도커 설치는 ch4(`ch4/4.2.1/install_docker.sh`)에서 이뤄지며 ch5/ch6의 `.init_infra.sh`도 동일 스크립트를 재사용함.
+새 appB(컨테이너 깊이)는 `docker run`, `docker exec`, `docker inspect`, `docker export`를 사용하지만, ch7 클러스터(7.1.1 fresh `vagrant up`) 환경에는 **도커가 설치되어 있지 않음**. 도커 설치는 ch4(`ch4/4.2.1/install_docker.sh`)에서 이뤄지며 ch5/ch6의 `.init_infra.sh`도 동일 스크립트를 재사용함.
 
-**적용 방침**: 부록 C 본문 1단계 앞에 다음 안내 문구 + 명령 1줄 삽입.
+**적용 방침**: 부록 B 본문 1단계 앞에 다음 안내 문구 + 명령 1줄 삽입.
 
 ```
 이번 부록은 도커가 필요합니다. ch7 환경(또는 부록 A 이후)에서 진행한다면
@@ -154,17 +160,17 @@ app/
 (4장을 이미 진행하여 도커가 설치된 환경이라면 이 단계를 건너뜁니다.)
 ```
 
-이 패턴은 ch5/ch6 `.init_infra.sh:15`와 동일 — 코드 중복 없음, install_docker.sh 버전 갱신이 자동으로 부록 C에도 반영됨.
+이 패턴은 ch5/ch6 `.init_infra.sh:15`와 동일 — 코드 중복 없음, install_docker.sh 버전 갱신이 자동으로 부록 B에도 반영됨.
 
 ### 추가: ns-remove.sh 파일명 정정
 
-- `app/C.DeepDiveContainer/`에 실제 존재하는 파일명: `ns-remover.sh`
+- `app/B.DeepDiveContainer/`에 실제 존재하는 파일명: `ns-remover.sh`
 - 1판 시점 본문 표기: `ns-remove.sh` (오타)
 - **MD 본문 재작성 시 `ns-remover.sh`로 통일**
 
-### 부록 B 호스트 자원 안내
+### 부록 C 호스트 자원 안내
 
-부록 B(kubespray)는 9개 VM 구성으로 **약 11.6GB 메모리**를 요구합니다.
+부록 C(kubespray)는 9개 VM 구성으로 **약 11.6GB 메모리**를 요구합니다.
 
 | 구분 | 메모리 | 비고 |
 |---|---|---|
@@ -177,13 +183,13 @@ app/
 **MD 본문 재작성 시 추가할 안내**:
 
 ```
-부록 B를 진행하기 전에 7장의 가상 머신은 vagrant halt로 종료하길 권장합니다.
-호스트 메모리 24GB(예: MacBook M2 24GB) 환경에서는 7장(약 13GB)과 부록 B
+부록 C를 진행하기 전에 7장의 가상 머신은 vagrant halt로 종료하길 권장합니다.
+호스트 메모리 24GB(예: MacBook M2 24GB) 환경에서는 7장(약 13GB)과 부록 C
 (약 11.6GB)의 동시 운용이 어렵습니다.
 
   $ cd ~/_Book_k8sInfra/ch7/7.1.1
   $ vagrant halt
-  $ cd ~/_Book_k8sInfra/app/B.kubespray
+  $ cd ~/_Book_k8sInfra/app/C.kubespray
   $ vagrant up
 ```
 

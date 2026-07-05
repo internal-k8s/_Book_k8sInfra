@@ -1,4 +1,8 @@
-# kubespray (app/B.kubespray)
+# kubespray (app/C.kubespray)
+
+> 2판 경로는 2026-05-25 `app/` B/C 스왑 이후 기준(`app/C.kubespray`)으로 표기합니다.
+> 스왑 이전 작성 당시에는 `app/B.kubespray`였습니다. 1판의 `app/C.kubespray` 표기는
+> 완전히 별개인 1판 저장소 자체의 경로이며 이번 스왑과 무관합니다.
 
 ## 변경 배경
 
@@ -7,7 +11,7 @@
 
 ## 1판 → 2판 변경 요약
 
-| 항목 | 1판 (C.kubespray) | 2판 (B.kubespray) | 근본 원인 |
+| 항목 | 1판 (C.kubespray) | 2판 (app/C.kubespray) | 근본 원인 |
 |---|---|---|---|
 | OS | CentOS (x86_64) | Ubuntu 24.04 (arm64) | 환경 전환 |
 | kubespray | release-2.17 (k8s ~1.20) | release-2.31 (k8s v1.35.4) | 버전 업 |
@@ -130,7 +134,7 @@ w106-k8s   Ready    <none>          112s    v1.35.4
 
 | 파일 | 변경 내용 |
 |---|---|
-| `app/B.kubespray/Vagrantfile` | CP 4vCPU/2048MB, Worker 1280MB |
-| `app/B.kubespray/config.sh` | /etc/hosts에 127.0.0.1 localhost 추가 |
-| `app/B.kubespray/auto_pass.sh` | loopback 항목 SSH 대상 제외 |
-| `app/B.kubespray/pre-kubespray.sh` | kubeadm timeout 15m, shell timeout 960s, download_run_once: true |
+| `app/C.kubespray/Vagrantfile` | CP 4vCPU/2048MB, Worker 1280MB |
+| `app/C.kubespray/config.sh` | /etc/hosts에 127.0.0.1 localhost 추가 |
+| `app/C.kubespray/auto_pass.sh` | loopback 항목 SSH 대상 제외 |
+| `app/C.kubespray/pre-kubespray.sh` | kubeadm timeout 15m, shell timeout 960s, download_run_once: true |

@@ -29,8 +29,8 @@ DEPLOYED="$(printf '%s\n' "$DEPLOYED" | sort)"
 # 질문 템플릿 (마지막은 직접 입력)
 PROMPTS='What is Kubernetes? Answer in 3 sentences.
 What are the differences between Docker and Kubernetes? Answer in 2 sentences.
-쿠버네티스의 파드(Pod)란 무엇인지 2문장으로 설명해주세요.
-Docker와 Kubernetes의 차이를 3문장으로 설명해주세요.
+쿠버네티스란 무엇인가요? 3문장으로 답해주세요.
+Docker와 Kubernetes의 차이점은 무엇인가요? 2문장으로 답해주세요.
 Other (직접 입력)'
 
 # 1) 모델 선택 - 배포된 모델만 fzf 에 표시명(1열)으로, 선택값으로 서비스/태그 역참조

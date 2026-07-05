@@ -35,8 +35,8 @@ AGG_MODEL="$(awk -F'|' -v n="$AGG_NAME" '$1==n{print $3; exit}' <<<"$DEPLOYED")"
 # 2) 질문 선택 (프리셋) 또는 직접 입력
 PROMPTS='What is Kubernetes? Answer in 3 sentences.
 What are the differences between Docker and Kubernetes? Answer in 2 sentences.
-쿠버네티스의 파드(Pod)란 무엇인지 2문장으로 설명해주세요.
-Docker와 Kubernetes의 차이를 3문장으로 설명해주세요.
+쿠버네티스란 무엇인가요? 3문장으로 답해주세요.
+Docker와 Kubernetes의 차이점은 무엇인가요? 2문장으로 답해주세요.
 Other (직접 입력)'
 QUESTION="$(printf '%s\n' "$PROMPTS" | fzf --height=40% --reverse --prompt='질문 선택> ')"
 [ -z "$QUESTION" ] && { echo "질문을 선택하지 않아 종료합니다."; exit 0; }

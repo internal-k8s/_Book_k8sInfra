@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: nginx
+  name: external
 spec:
   gatewayClassName: nginx
   listeners:
@@ -15,7 +15,7 @@ metadata:
   name: nginx-multipath
 spec:
   parentRefs:
-  - name: nginx
+  - name: external
   rules:
   - matches:
     - path:

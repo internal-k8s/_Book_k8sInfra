@@ -75,6 +75,47 @@ LoadBalancer 컨트롤러 역할을 한다. 이 책은 이미 `ch3/3.3.2`에서 
 - [MetalLB + Ingress Nginx migration to Nginx Fabric Gateway API (Medium)](https://medium.com/@techpaul/metallb-ingress-nginx-migration-to-nginx-fabric-gateway-api-f57ff1fcfa20)
 - [Understanding Kubernetes Gateway API: A Modern Approach to Traffic Management (CNCF)](https://www.cncf.io/blog/2025/05/02/understanding-kubernetes-gateway-api-a-modern-approach-to-traffic-management/)
 
+## Gateway 리소스 이름 변경: `nginx` → `external` (2026-07-05)
+
+### 문제
+
+`ch3/3.3.3/gateway.yaml`의 `Gateway` 리소스 이름이 `nginx`로 돼 있어, NGINX Gateway Fabric이
+자동 생성하는 데이터플레인 Service 이름이 **`nginx-nginx`**가 됨.
+
+### 원인
+
+NGINX Gateway Fabric은 `Gateway` 리소스가 생성하는 Service 이름을 `<Gateway 리소스 이름>-nginx`
+패턴으로 만든다 (공식 예제: Gateway 이름이 `cafe`면 Service는 `cafe-nginx`). `gatewayClassName`도
+`nginx`이고 `Gateway` 이름도 `nginx`라서 `nginx-nginx`가 된 것.
+
+### 기존 Ingress와의 이름 비교
+
+| | 네임스페이스 | 트래픽 담당 리소스 이름 |
+|---|---|---|
+| 옛 Ingress | `ingress-nginx` | `ingress-nginx-controller` (namespace + 역할 접미사) |
+| Gateway 컨트롤플레인 (변경 없음) | `nginx-gateway` | `nginx-gateway` (ClusterIP, 내부용) |
+| Gateway 데이터플레인 LB (변경 전) | — | `nginx-nginx` |
+| Gateway 데이터플레인 LB (변경 후) | — | **`external-nginx`** |
+
+옛 Ingress는 `-controller` 접미사로 "네임스페이스 자체"와 "트래픽 처리 리소스"를 구분했다.
+지금은 `nginx-gateway`라는 이름이 이미 컨트롤플레인 내부 ClusterIP Service에 쓰이고 있어,
+데이터플레인 LB에 같은 이름 계열(`nginx-nginx`)을 또 쓰면 두 서비스가 헷갈린다.
+
+### 결정
+
+`Gateway` 리소스 이름을 `nginx` → **`external`**로 변경. `egress`는 Kubernetes에서 클러스터
+내부→외부 트래픽(예: NetworkPolicy egress 규칙)을 가리키는 반대 방향 용어라 제외.
+`external`은 방향과 무관하게 "외부에서 접근 가능"이라는 의미만 담고 있어 정확하고,
+`external-dns` 등 커뮤니티에서도 흔히 쓰는 관용적 표현이라 채택.
+
+결과: `ch3/3.3.3/gateway.yaml`의 `Gateway.metadata.name`과 `HTTPRoute.spec.parentRefs[].name`을
+`external`로 변경 → 데이터플레인 Service 이름이 `external-nginx`로 바뀜.
+
+### docx 영향
+
+`kubectl get gateway`, `kubectl describe gateway`, 생성된 Service 이름을 확인하는 명령/출력 예시가
+있다면 `nginx` → `external`, `nginx-nginx` → `external-nginx`로 갱신 필요.
+
 ## 테스트 현황
 
 | 환경 | 상태 | 완료일 |

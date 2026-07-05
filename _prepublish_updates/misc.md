@@ -239,6 +239,15 @@ app/
 - `app/A.console-k8s/grap_kubeconfig.sh` → `app/A.console-k8s/grab_kubeconfig.sh`로 변경, `Vagrantfile`의 `file`/`shell` 프로비저닝 참조도 함께 수정
 - ns-remove.sh(위 항목)와 동일한 유형의 오타 정정
 
+### 주석 표현 정정 (같은 파일, 2026-07-05)
+
+파일명 오타와 별개로, 실제 동작과 다른 주석 2곳도 함께 수정:
+
+| 위치 | 이전 | 이후 | 사유 |
+|---|---|---|---|
+| `grab_kubeconfig.sh:3` | `# create .kube_config directory` | `# create .kube directory` | 실제 생성 디렉터리는 `~/.kube`, `.kube_config`가 아님 |
+| `grab_kubeconfig.sh:9,14` | `Book-k8sInfra` (하이픈) | `_Book_k8sInfra` (언더스코어) | 실제 저장소/생성 스크립트명과 표기 통일 |
+
 ### docx 영향
 
 부록 A 본문에서 `grap_kubeconfig.sh`를 언급하는 부분이 있다면 `grab_kubeconfig.sh`로 갱신 필요.

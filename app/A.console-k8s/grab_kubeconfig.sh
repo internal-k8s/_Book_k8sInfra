@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-# create .kube_config directory 
+# create .kube directory
 mkdir ~/.kube
 
 # copy kubeconfig by sshpass
-sshpass -p 'vagrant' scp -o StrictHostKeyChecking=no root@192.168.1.10:/etc/kubernetes/admin.conf ~/.kube/config 
+sshpass -p 'vagrant' scp -o StrictHostKeyChecking=no root@192.168.1.10:/etc/kubernetes/admin.conf ~/.kube/config
 
-# git clone Book-k8sInfra code 
+# git clone _Book_k8sInfra code
 git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 
-# make rerepo-Book-k8sInfra and input proper permission
+# make rerepo-Book_k8sInfra and input proper permission
 cat <<EOF > /usr/local/bin/rerepo-Book_k8sInfra
 #!/usr/bin/env bash
 rm -rf $HOME/_Book_k8sInfra

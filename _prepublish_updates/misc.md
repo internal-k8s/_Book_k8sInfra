@@ -229,3 +229,16 @@ app/
 ### docx 영향
 
 **있음.** 위 7개 파일이 언급되는 모든 본문 명령·경로 예시(`bash ~/_Book_k8sInfra/...`, `vagrant provision` 대상 스크립트명 등)를 새 파일명으로 갱신 필요. 특히 `curl-get.sh`, `nfs-exporter.sh`, `curl-cpu.sh`, `curl-memory.sh`, `build-in-host.sh`, `add-viewer-context.sh`가 등장하는 절을 확인할 것.
+
+---
+
+## 부록 A: grap_kubeconfig.sh → grab_kubeconfig.sh 오타 정정 (2026-07-05)
+
+- `app/A.console-k8s/grap_kubeconfig.sh`는 "grab(가져오다) kubeconfig"의 오타로 확인 — `grap`은 존재하지 않는 단어
+- 부록은 파일명 규칙(`_`/`-`) 정리 대상에서는 예외로 뒀으나, 이건 규칙 문제가 아니라 순수 오타라 별도로 수정
+- `app/A.console-k8s/grap_kubeconfig.sh` → `app/A.console-k8s/grab_kubeconfig.sh`로 변경, `Vagrantfile`의 `file`/`shell` 프로비저닝 참조도 함께 수정
+- ns-remove.sh(위 항목)와 동일한 유형의 오타 정정
+
+### docx 영향
+
+부록 A 본문에서 `grap_kubeconfig.sh`를 언급하는 부분이 있다면 `grab_kubeconfig.sh`로 갱신 필요.

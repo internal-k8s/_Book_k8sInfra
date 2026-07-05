@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# 7.5.2 - 대화형 단일 sLLM 질의: 모델 선택(fzf) -> 프롬프트 선택/입력(fzf) -> 결과 출력
+# 7.5.2 - 대화형 단일 소형 LLM 질의: 모델 선택(fzf) -> 프롬프트 선택/입력(fzf) -> 결과 출력
 set -uo pipefail
 
-echo "sLLM 질문 대화형 콘솔"
+echo "소형 LLM 질문 대화형 콘솔"
 echo "================================================"
-echo "배포된 sLLM 하나를 골라 질문을 보내고 응답을 확인합니다."
+echo "배포된 소형 LLM 하나를 골라 질문을 보내고 응답을 확인합니다."
 
 # fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
 if ! command -v fzf >/dev/null 2>&1; then

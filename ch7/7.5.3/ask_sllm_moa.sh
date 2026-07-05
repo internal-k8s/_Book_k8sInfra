@@ -6,11 +6,13 @@ echo "에이전트 혼합 기법 대화형 콘솔"
 echo "================================================"
 echo "배포된 소형 LLM 여러 개에 질문을 보내고 정제 모델이 답변을 정제합니다."
 
-# fzf 가 없으면 조용히 설치 (클러스터 노드 = 고정 Ubuntu/apt).
+# fzf 가 없으면 설치 (클러스터 노드 = 고정 Ubuntu/apt). 설치 진행 여부를 사용자에게 안내한다.
 if ! command -v fzf >/dev/null 2>&1; then
+  echo "메뉴 선택 도구 fzf가 설치되어 있지 않아 설치합니다. 잠시 기다려 주세요..."
   sudo apt-get update -qq >/dev/null 2>&1
   sudo apt-get install -y -qq fzf >/dev/null 2>&1
   command -v fzf >/dev/null 2>&1 || { echo "fzf 설치에 실패했습니다. 수동으로 설치한 뒤 다시 실행하세요."; exit 1; }
+  echo "fzf 설치를 완료했습니다."
 fi
 
 # 배포된 ollama 서비스를 자동 발견하고, 각 서비스의 /api/tags 로 '실제 로드된 모델 태그'를 읽는다.
@@ -21,6 +23,8 @@ SVCS="$(kubectl get svc -o name 2>/dev/null | sed 's#.*/##' | grep '^ollama-' | 
 DEPLOYED="$(kubectl run "disc-$$-$RANDOM" --rm -i --restart=Never --quiet --image=curlimages/curl --command -- \
   sh -c 'sleep 2; for s in '"$SVCS"'; do t=$(curl -s --max-time 15 "http://$s:11434/api/tags" | grep -o "\"name\":\"[^\"]*\"" | head -1 | sed "s/.*:\"//;s/\"//"); [ -n "$t" ] && printf "%s|%s|%s\n" "$t" "$s" "$t"; done' </dev/null 2>/dev/null)"
 [ -z "$DEPLOYED" ] && { echo "ollama 서비스에서 모델 정보를 읽지 못했습니다. 잠시 후 다시 실행하세요."; exit 1; }
+# 모델 순서를 고정한다: 배포/발견 순서와 무관하게 항상 오름차순으로 정렬(선택 목록·1단계 출력 공통).
+DEPLOYED="$(printf '%s\n' "$DEPLOYED" | sort)"
 
 # 1) 정제 모델 선택 (배포된 모델 중 fzf 로)
 AGG_NAME="$(printf '%s\n' "$DEPLOYED" | cut -d'|' -f1 | fzf --height=40% --reverse --prompt='정제 모델 선택> ')"

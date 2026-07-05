@@ -10,9 +10,9 @@ else
   echo "This system is not CentOS as well as Ubuntu"
 fi 
 
-# main nfs-exporter
+# main nfs_exporter
 if [ $# -eq 0 ]; then
-  echo "usage: nfs-exporter.sh <name>"; exit 0
+  echo "usage: nfs_exporter.sh <name>"; exit 0
 fi
 
 if [[ ! -d /nfs_shared ]]; then

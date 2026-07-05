@@ -188,3 +188,38 @@ app/
 ```
 
 호스트 메모리가 32GB 이상이면 동시 운용도 가능하지만, 본 부록은 단독 운영을 기준으로 합니다.
+
+---
+
+## 파일명 규칙: `.sh`는 `_`, `.yaml`은 `-` (2026-07-05)
+
+### 규칙
+
+| 확장자 | 구분자 | 예 |
+|---|---|---|
+| `*.sh` | 언더스코어(`_`) | `install_helm.sh`, `k8s_pkg_cfg.sh` |
+| `*.yaml` | 하이픈(`-`) | `rollout-nginx.yaml`, `nginx-gw-fabric-deploy.yaml` |
+
+### 적용 범위
+
+- **부록(`app/`)은 예외** — 기존 명명 방식을 그대로 유지, 이번 정리 대상에서 제외
+- **정렬 목적의 앞자리 번호**(`1-1.create_certs.sh`, `2-1.get_harbor.sh` 등)의 하이픈은 규칙 대상이 아님 — 순서 표기이지 단어 구분자가 아니므로 유지
+- 이미 언더스코어와 하이픈이 섞여 쓰이고 있으나 문맥상 고유명사/합성어에 가까운 경우(`nfs-provisioner`, `grafana-stack`)는 이번 일괄 변경에서 제외
+
+### 이번에 변경한 파일
+
+| 이전 | 이후 |
+|---|---|
+| `ch3/3.3.1/curl-get.sh` | `ch3/3.3.1/curl_get.sh` |
+| `ch3/3.3.2/curl-get.sh` | `ch3/3.3.2/curl_get.sh` |
+| `ch3/3.4.2/nfs-exporter.sh` | `ch3/3.4.2/nfs_exporter.sh` |
+| `ch3/3.6.2/curl-cpu.sh` | `ch3/3.6.2/curl_cpu.sh` |
+| `ch3/3.6.2/curl-memory.sh` | `ch3/3.6.2/curl_memory.sh` |
+| `ch4/4.3.2/build-in-host.sh` | `ch4/4.3.2/build_in_host.sh` |
+| `ch7/7.1.3/add-viewer-context.sh` | `ch7/7.1.3/add_viewer_context.sh` |
+
+파일명 변경과 함께, `nfs_exporter.sh`(ch3/3.4.2, ch3/3.4.3 양쪽) 내부의 `usage: nfs-exporter.sh <name>` 안내 문구도 `usage: nfs_exporter.sh <name>`로 함께 수정.
+
+### docx 영향
+
+**있음.** 위 7개 파일이 언급되는 모든 본문 명령·경로 예시(`bash ~/_Book_k8sInfra/...`, `vagrant provision` 대상 스크립트명 등)를 새 파일명으로 갱신 필요. 특히 `curl-get.sh`, `nfs-exporter.sh`, `curl-cpu.sh`, `curl-memory.sh`, `build-in-host.sh`, `add-viewer-context.sh`가 등장하는 절을 확인할 것.

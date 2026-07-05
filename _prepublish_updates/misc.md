@@ -251,3 +251,14 @@ app/
 ### docx 영향
 
 부록 A 본문에서 `grap_kubeconfig.sh`를 언급하는 부분이 있다면 `grab_kubeconfig.sh`로 갱신 필요.
+
+### 동일 오타, 다른 저장소에서도 발견 및 수정 (2026-07-05)
+
+GitHub 코드 검색으로 같은 오타(`grap_kubeconfig`)를 쓰는 다른 저장소를 확인, 소유/쓰기 권한이 있는 2곳을 동일하게 수정:
+
+| 저장소 | 경로 | 상태(수정 전) | 조치 |
+|---|---|---|---|
+| `sysnet4admin/IaC` | `k8s/clusters/consoles/k8s-console/` | Vagrantfile 참조가 주석 처리되어 비활성 | 파일명 + `.kube_config dir` 주석 수정, push 완료 (`c9a7ea3..21b1d5a`) |
+| `sysnet4admin/_Lecture_k8s_learning.kit` | `A/A.021/1.Console-k8s/` | Vagrantfile에서 활성 참조 (실제 강의 수강생에게 영향) | 동일 수정, push 완료 (`876c55b..e05cfad`) |
+
+타인이 포크한 저장소(`Eunryong/_Lecture_k8s_learning.kit`, `jonsoku-dev/k8s_learning`, `jamin12/programing_practice` 등)에도 같은 오타가 있으나, 소유 저장소가 아니라 수정하지 않음.

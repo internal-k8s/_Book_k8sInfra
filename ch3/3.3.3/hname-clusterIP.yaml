@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ing-cl-hname
+  name: gtw-cl-hname
   labels:
-    app: ing-cl-hname
+    app: gtw-cl-hname
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ing-cl-hname
+      app: gtw-cl-hname
   template:
     metadata:
       labels:
-        app: ing-cl-hname
+        app: gtw-cl-hname
     spec:
       containers:
       - name: echo-hname
@@ -21,10 +21,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ing-cl-hname-svc 
+  name: gtw-cl-hname-svc 
 spec:
   selector:
-    app: ing-cl-hname   
+    app: gtw-cl-hname   
   ports:
     - name: http
       port: 80

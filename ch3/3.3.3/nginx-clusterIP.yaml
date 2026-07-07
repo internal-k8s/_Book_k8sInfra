@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ing-cl-default
+  name: gtw-cl-default
   labels:
-    app: ing-cl-default
+    app: gtw-cl-default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ing-cl-default
+      app: gtw-cl-default
   template:
     metadata:
       labels:
-        app: ing-cl-default
+        app: gtw-cl-default
     spec:
       containers:
       - name: nginx
@@ -21,10 +21,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ing-cl-default-svc 
+  name: gtw-cl-default-svc 
 spec:
   selector:
-    app: ing-cl-default   
+    app: gtw-cl-default   
   ports:
     - name: http
       port: 80

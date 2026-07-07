@@ -22,19 +22,19 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: ing-cl-default-svc
+    - name: gtw-cl-default-svc
       port: 80
   - matches:
     - path:
         type: PathPrefix
         value: /hn
     backendRefs:
-    - name: ing-cl-hname-svc
+    - name: gtw-cl-hname-svc
       port: 80
   - matches:
     - path:
         type: PathPrefix
         value: /ip
     backendRefs:
-    - name: ing-cl-ip-svc
+    - name: gtw-cl-ip-svc
       port: 80

@@ -46,8 +46,8 @@ esac
 [ -z "$QUESTION" ] && { echo "직접 입력한 질문이 비어 있어 종료합니다."; exit 1; }
 
 echo ""
-echo "질문: $QUESTION"
 echo "정제 모델: $AGG_MODEL"
+echo "질문: $QUESTION"
 
 # --- 공용 헬퍼 ---
 # JSON 문자열 이스케이프 (역슬래시/따옴표/개행 처리)

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# 7.5.3 - 대화형 에이전트 혼합 기법(MoA): 배포된 모델 전체에 질의 -> 정제 모델이 답변 정제 -> 결과 출력
+# 7.5.3 - 대화형 에이전트 혼합 기법(MoA): 제안자 모델들에 질의 -> 정제 모델이 답변 정제 -> 결과 출력
+#   정제 전용 모델(서비스명 ollama-agg-*)은 1단계 제안에서 제외되고 정제 모델 선택지에만 오른다.
 set -uo pipefail
 
 echo "에이전트 혼합 기법 대화형 콘솔"
@@ -25,6 +26,9 @@ DEPLOYED="$(kubectl run "disc-$$-$RANDOM" --rm -i --restart=Never --quiet --imag
 [ -z "$DEPLOYED" ] && { echo "ollama 서비스에서 모델 정보를 읽지 못했습니다. 잠시 후 다시 실행하세요."; exit 1; }
 # 모델 순서를 고정한다: 배포/발견 순서와 무관하게 항상 오름차순으로 정렬(선택 목록·1단계 출력 공통).
 DEPLOYED="$(printf '%s\n' "$DEPLOYED" | sort)"
+# 1단계 제안자 = 정제 전용(ollama-agg-*) 서비스를 제외한 모델들. 정제 선택지에는 전체가 오른다.
+PROPOSERS="$(printf '%s\n' "$DEPLOYED" | awk -F'|' '$2 !~ /^ollama-agg-/')"
+[ -z "$PROPOSERS" ] && { echo "제안자 모델이 없습니다. 먼저 bash 7.5.2/install_sllm_models.sh 로 기본 모델을 배포하세요."; exit 1; }
 
 # 1) 정제 모델 선택 (배포된 모델 중 fzf 로)
 AGG_NAME="$(printf '%s\n' "$DEPLOYED" | cut -d'|' -f1 | fzf --height=40% --reverse --prompt='정제 모델 선택> ')"
@@ -67,7 +71,7 @@ ask_one() {
   printf '%s' "$raw" | sed 's/.*"content":"//;s/"\},"done.*//' | sed 's/\\n/\n/g'
 }
 
-# 3) 단계 1 - 배포된 모든 모델에 동일 질문
+# 3) 단계 1 - 제안자 모델들에 동일 질문 (정제 전용 ollama-agg-* 제외)
 echo ""
 echo "================= 단계 1: 개별 모델 응답 ================="
 ANSWERS=""
@@ -82,7 +86,7 @@ while IFS='|' read -r name svc tag; do
   echo "$ans"
   ANSWERS="${ANSWERS}Answer ($name): ${ans} "
 done <<EOF
-$DEPLOYED
+$PROPOSERS
 EOF
 
 # 4) 단계 2 - 정제 모델이 답변 정제

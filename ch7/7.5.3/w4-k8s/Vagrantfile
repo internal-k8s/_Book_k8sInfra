@@ -61,6 +61,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "private_network", ip: "192.168.1.10#{i}"
       cfg.vm.network "forwarded_port", guest: 22, host: "6010#{i}", auto_correct: true, id: "ssh"
       cfg.vm.synced_folder "../../data", "/vagrant", disabled: true
+      if i == 4   # 정제 모델 이미지(약 9.5GB)는 압축 해제분까지 30GB 루트로는 부족해 디스크 압박
+                  # 축출이 발생한다. 박스 VG 에 남아 있는 여유 30GB 로 루트 볼륨을 확장한다.
+        cfg.vm.provision "shell", inline: "lvextend -r -l +100%FREE /dev/ubuntu-vg/ubuntu-lv || true"
+      end
       cfg.vm.provision "shell", path: "../../7.1.1/k8s_env_build.sh", args: [ N, k8s_V[0..3] ]
       cfg.vm.provision "shell", path: "../../7.1.1/k8s_pkg_cfg.sh", args: [ k8s_V, ctrd_V, "W" ]
       cfg.vm.provision "shell", path: "../../7.1.1/worker_nodes.sh"

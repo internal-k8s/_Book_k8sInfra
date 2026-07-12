@@ -21,7 +21,7 @@ for yaml_file in "$CH7"/7.5.3/models/*-ollama.yaml; do
 done
 # w4-k8s 노드(VM) 제거는 게스트에서 호스트로 명령을 보낼 수 없어 호스트에서 별도로 실행한다
 if kubectl get node w4-k8s >/dev/null 2>&1; then
-  echo "w4-k8s 노드(VM) 제거는 호스트 터미널에서 bash ch7/7.5.3/remove_aggregator_model.sh 를 실행하세요."
+  echo "w4-k8s 노드(VM) 제거는 호스트 터미널에서 bash ch7/7.5.3/del_aggregator_model.sh 를 실행하세요."
 fi
 
 echo "✅ 7.5 cleanup done."

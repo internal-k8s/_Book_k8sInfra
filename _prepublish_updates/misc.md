@@ -309,9 +309,13 @@ opt-w12g와 무관한 별개의 죽은 참조라 함께 수정.
 
 - `_prepublish_updates/containerd.md`, `kubernetes.md`, `ubuntu.md`의 `ch7/7.1.1/opt-w12g/Vagrantfile`
   언급 — 해당 시점 버전 업그레이드 이력을 기록한 것이라, 다른 이력 문서와 동일하게 과거 기록으로 보존
-- `ch7/docs/7.5-design-notes.md`, `7.5-ollama-image-build-prompt.md`, `7.5-performance-test-results.md`의
-  w12g 관련 내용 — 실제 기능 코드가 아니라 당시 성능 테스트/설계 탐색 기록(트러블슈팅, 메모리 실측치)이라
-  별도 확인 후 처리 예정
+
+### ch7/docs 설계 노트 처리 (2026-07-12)
+
+`ch7/docs/7.5-design-notes.md`, `7.5-ollama-image-build-prompt.md`, `7.5-performance-test-results.md`는
+실제 기능 코드가 아니라 당시 성능 테스트/설계 탐색 기록(트러블슈팅, 메모리 실측치)이라 삭제하지 않고
+내용은 그대로 보존. 대신 세 파일 모두 맨 위에 "opt-w12g는 제거되었고 w4-k8s로 대체됨" 안내 문구를
+추가해, 최신 구현과 혼동하지 않도록 함.
 
 ### docx 영향
 

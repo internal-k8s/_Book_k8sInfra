@@ -10,11 +10,6 @@ for yaml_file in "$CH7"/7.5.2/models/base/*-ollama.yaml; do
   kubectl delete -f "$yaml_file" 2>/dev/null
 done
 
-# opt-w12g 상위 모델(gemma4:e2b-it-qat / llama3.2:3b / qwen3.5:4b)을 배포했다면 함께 삭제
-for yaml_file in "$CH7"/7.5.2/models/opt-w12g/*-ollama.yaml; do
-  kubectl delete -f "$yaml_file" 2>/dev/null
-done
-
 # 7.5.3 정제(aggregator) 전용 모델(w4-k8s의 ollama-agg-*)을 배포했다면 함께 삭제
 for yaml_file in "$CH7"/7.5.3/models/*-ollama.yaml; do
   kubectl delete -f "$yaml_file" 2>/dev/null

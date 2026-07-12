@@ -262,3 +262,59 @@ GitHub 코드 검색으로 같은 오타(`grap_kubeconfig`)를 쓰는 다른 저
 | `sysnet4admin/_Lecture_k8s_learning.kit` | `A/A.021/1.Console-k8s/` | Vagrantfile에서 활성 참조 (실제 강의 수강생에게 영향) | 동일 수정, push 완료 (`876c55b..e05cfad`) |
 
 타인이 포크한 저장소(`Eunryong/_Lecture_k8s_learning.kit`, `jonsoku-dev/k8s_learning`, `jamin12/programing_practice` 등)에도 같은 오타가 있으나, 소유 저장소가 아니라 수정하지 않음.
+
+---
+
+## ch7: opt-w12g 경로 완전 제거 (2026-07-12)
+
+### 배경
+
+7.5 절(sLLM 실습)에 호스트 메모리 여유가 있는 독자를 위한 확장 경로가 두 개 공존하고 있었다.
+
+| 경로 | 방식 | 요구 호스트 메모리 |
+|---|---|---|
+| `opt-w12g` (구) | 기존 워커(w1~w3) 전부를 12GB로 키워 각자 더 큰 모델 실행 | 약 48GB (cp+w1~w3 4대 × 12GB) |
+| `w4-k8s` (7.5.3, 신) | 기존 클러스터(13GB)에 정제(aggregator) 전용 워커 1대(16GB)만 추가 | 약 29~32GB |
+
+두 경로가 책 본문(리뷰 기준)에서 서로 참조 없이 따로 안내되어 모순처럼 읽혔고,
+`ch7/7.5.3/cleanup_7.5_tasks.sh`도 opt-w12g 모델을 여전히 정리 대상에 포함하고 있어
+코드 차원에서도 "둘 다 살아있는 옵션"처럼 보이는 상태였다.
+
+### 결정
+
+**opt-w12g 완전 제거.** 7.5.3에서 이미 w4-k8s(정제 전용 워커 1대 추가) 방식으로
+재설계됐으므로, 별도로 워커 전체를 12GB로 키우는 경로는 유지하지 않는다.
+
+### 삭제한 파일
+
+| 파일 | 내용 |
+|---|---|
+| `ch7/7.1.1/opt-w12g/Vagrantfile` | cp+w1~w3 전부 12288MB로 키운 대체 클러스터 정의 |
+| `ch7/7.5.2/install_sllm_models_for_w12g.sh` | opt-w12g 워커에 큰 모델 배포하는 스크립트 |
+| `ch7/7.5.2/models/opt-w12g/*.yaml` (3개) | gemma4:e2b, llama3.2:3b, qwen3.5:4b 배포 매니페스트 |
+
+### 수정한 파일
+
+| 파일 | 변경 내용 |
+|---|---|
+| `ch7/7.5.3/cleanup_7.5_tasks.sh` | opt-w12g 모델 정리 블록(4줄) 삭제 |
+
+### 함께 발견해 수정한 별개 버그
+
+같은 파일(`cleanup_7.5_tasks.sh`)에서, w4-k8s 노드 제거 안내 문구가 존재하지 않는
+`remove_aggregator_model.sh`를 가리키고 있었음 — 실제 파일명은 `del_aggregator_model.sh`.
+opt-w12g와 무관한 별개의 죽은 참조라 함께 수정.
+
+### 남겨둔 것 (건드리지 않음)
+
+- `_prepublish_updates/containerd.md`, `kubernetes.md`, `ubuntu.md`의 `ch7/7.1.1/opt-w12g/Vagrantfile`
+  언급 — 해당 시점 버전 업그레이드 이력을 기록한 것이라, 다른 이력 문서와 동일하게 과거 기록으로 보존
+- `ch7/docs/7.5-design-notes.md`, `7.5-ollama-image-build-prompt.md`, `7.5-performance-test-results.md`의
+  w12g 관련 내용 — 실제 기능 코드가 아니라 당시 성능 테스트/설계 탐색 기록(트러블슈팅, 메모리 실측치)이라
+  별도 확인 후 처리 예정
+
+### docx 영향
+
+7.5.2/7.5.3 본문에서 "호스트 메모리 48GB 이상이면 opt-w12g로" 안내하는 부분을 전부 제거하고,
+w4-k8s(정제 전용 워커 추가, 약 32GB 권장) 경로로 통일 필요. 상세 반영 지점은 리뷰 노트의
+213행/1830행/1920행 참고.

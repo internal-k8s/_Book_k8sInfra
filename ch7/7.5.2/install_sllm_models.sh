@@ -4,7 +4,7 @@ shopt -s nullglob
 # Deploy the base sLLM models (3.5GB workers) from models/base/.
 MODEL_DIR="$HOME/_Book_k8sInfra/ch7/7.5.2/models/base"
 
-echo "Deploy sLLM models (base)."
+echo "Deploy sLLM models."
 for yaml_file in "$MODEL_DIR"/*-ollama.yaml; do
   kubectl apply -f "$yaml_file"
 done

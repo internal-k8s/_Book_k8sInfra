@@ -322,3 +322,51 @@ opt-w12g와 무관한 별개의 죽은 참조라 함께 수정.
 7.5.2/7.5.3 본문에서 "호스트 메모리 48GB 이상이면 opt-w12g로" 안내하는 부분을 전부 제거하고,
 w4-k8s(정제 전용 워커 추가, 약 32GB 권장) 경로로 통일 필요. 상세 반영 지점은 리뷰 노트의
 213행/1830행/1920행 참고.
+
+---
+
+## ch7/7.5.3: w4 노드 추가 방식을 호스트 전용 vagrant 명령으로 재설계 (2026-07-12)
+
+### 문제
+
+기존 `add_aggregator_model.sh`는 호스트에서 실행해야 하는 스크립트였으나 (vagrant up 포함),
+원고에는 게스트(cp-k8s) 안에서 실행하는 것처럼 `root@cp-k8s:...#` 프롬프트로 표기돼 있었음.
+게스트 안에는 vagrant/virtualbox가 없어 원고대로 실행하면 실패. 게다가 Windows에서 호스트가
+bash 스크립트를 실행하려면 Git Bash/WSL이 필요한데, 책 전체 어디에도 이런 전제가 없었음
+(PowerShell 네이티브 실행 전제와 충돌).
+
+### 근본 원인
+
+`add_aggregator_model.sh`가 "vagrant up으로 VM 기동" + "ssh 프록시로 kubectl 실행"을 한
+스크립트에 몰아넣은 구조였음. 하지만:
+- `ch7/7.1.1/controlplane_node.sh`의 조인 토큰은 `--token-ttl 0`(만료 없음) — w4가 나중에
+  합류해도 w1~w3와 동일한 `worker_nodes.sh`로 조인 가능, 특별한 로직 불필요
+- `ch7/7.5.3/w4-k8s`(현 `add-node4`)는 `ch7/7.1.1`과 별개의 Vagrant 프로젝트라, 특정 머신만
+  지정해서 `vagrant up w4-k8s-1.36.1`을 실행하면 cp/w1~w3는 전혀 건드리지 않고 이름 충돌도 없음
+  — 순수 네이티브 vagrant 명령으로 충분, bash 래퍼가 애초에 불필요했음
+- kubectl은 K8s API 레벨에서 동작해 어느 vagrant 디렉터리로 VM을 띄웠는지와 무관 — w4가
+  조인되면 cp-k8s 안에서 평소처럼 바로 보임
+
+### 참고한 선례
+
+`sysnet4admin/_Lecture_k8s_learning.kit`의 `ch3/3.8/add-node4-v1.35/2.3-add-node4/` —
+클러스터에 4번째 노드를 추가하는 용도의 디렉터리를 `add-node4`로 명명하고, Vagrantfile +
+조인용 셸 스크립트만 두는 패턴. SeongJuMoon님의 `_Lecture_prom_learning.kit`도 동일 계열 구조.
+
+### 변경 내용
+
+| 항목 | 이전 | 이후 |
+|---|---|---|
+| 디렉터리 | `ch7/7.5.3/w4-k8s/` | `ch7/7.5.3/add-node4/` |
+| VM 기동 | `add_aggregator_model.sh`(호스트, bash, vagrant+ssh프록시 포함) | 호스트에서 `vagrant up w4-k8s-1.36.1` 직접 실행 (플랫폼 공통, bash 불필요) |
+| 모델 배포 | 위 스크립트가 ssh 프록시로 원격 실행 | `ch7/7.5.3/deploy_aggregator_model.sh` — cp-k8s 게스트 안에서 실행하는 순수 kubectl 스크립트 (`ch7/7.5.2/install_sllm_models.sh`와 동일 패턴) |
+| 제거(teardown) | `del_aggregator_model.sh`(호스트, bash) | 삭제 — 책 마지막 절이라 정리를 필수 단계로 다루지 않기로 함. 저자가 개인적으로 정리할 땐 `add-node4/`에서 `vagrant destroy -f w4-k8s-1.36.1` 한 줄이면 충분 |
+
+### 함께 정리
+
+- `ch7/7.5.3/cleanup_7.5_tasks.sh`에서 (이미 삭제된) `del_aggregator_model.sh`를 안내하던
+  죽은 참조 블록 제거. 모델 Deployment/Service 삭제 로직은 유지.
+
+### docx 영향
+
+7.5.3 3번 단계(정제 모델 교체) 전면 재작성 필요 — 상세 반영 지점은 별도로 정리해 전달.

@@ -10,10 +10,13 @@ ctrd_V   = '2.2.3-1~ubuntu.24.04~noble'  # Containerd
 ## /configuration variables ##
 
 # 7.5.3 정제(aggregator) 확장 구성: 기본 클러스터(7.1.1)의 cp/w1~w3에 정제 전용
-# 워커 w4-k8s(4코어/16GB)를 더한 형태다. 이미 기동 중인 클러스터에는
+# 워커 w4-k8s(4코어/16GB)를 더한 형태다. 이미 기동 중인 클러스터에는 호스트에서
 # `vagrant up w4-k8s-1.36.1` 로 w4만 추가 기동해 무중단 조인한다(조인 토큰 ttl 0).
 # cp/w1~w3 정의는 7.1.1과 같은 VM 이름을 쓰므로 기존 클러스터가 떠 있는 동안
 # 인자 없는 `vagrant up` 은 이름 충돌로 실패한다 — w4 단독 기동 용도로만 쓴다.
+# 디렉터리명(add-node4)이 나타내는 대로, 이 프로젝트는 오직 4번째 노드를
+# 추가하는 용도이며 정제 모델 배포(kubectl)는 여기서 다루지 않는다 —
+# w4가 클러스터에 조인된 뒤 cp-k8s 안에서 7.5.3/install_aggregator_model.sh로 진행한다.
 
 Vagrant.configure("2") do |config|
 

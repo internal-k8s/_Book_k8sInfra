@@ -6,7 +6,7 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-VAG_W4_DIR="$SCRIPT_DIR"                    # w4-k8s Vagrantfile 은 이 디렉터리(7.5.3)에 있다
+VAG_W4_DIR="$SCRIPT_DIR/w4-k8s"             # w4-k8s Vagrantfile 디렉터리
 VAG_CP_DIR="$SCRIPT_DIR/../7.1.1"
 CP_MACHINE="cp-k8s-1.36.1"
 W4_MACHINE="w4-k8s-1.36.1"

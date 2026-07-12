@@ -4,7 +4,7 @@ REPO=~/gitops
 APP=~/_Book_k8sInfra/ch7/7.4.2/app-gitops-nginx.yaml
 MSG="${1:-del gitops-nginx deployment}"
 
-echo "Remove deployment.yaml from ~/gitops."
+echo "Delete deployment.yaml from ~/gitops."
 rm "$REPO/deployment.yaml"
 ls "$REPO"
 

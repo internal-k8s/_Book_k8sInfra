@@ -32,9 +32,11 @@
 | 항목 | 이전 | 이후 |
 |---|---|---|
 | provisioner | `k8s-sigs.io/nfs-subdir-external-provisioner` | `nfs.csi.k8s.io` |
-| parameters | `pathPattern`, `onDelete` | `server`, `share` |
+| parameters | `pathPattern`, `onDelete` | `server`, `share`, `mountPermissions: "0777"` |
 | mountOptions | 없음 | `nfsvers=4.1` |
 | reclaimPolicy | 없음 (기본값) | `Delete` 명시 |
+
+`mountPermissions: "0777"`은 PV permission denied 방지를 위해 필수 (하단 "kubectl apply 경로 PV permission denied" 섹션 참고). **이 파라미터는 원고에서 반드시 설명해야 함** — 하단 🚨 원고 반영 필수 사항 참고.
 
 StorageClass 이름 `managed-nfs-storage`는 유지 → 기존 PVC 참조 코드 변경 불필요.
 
@@ -45,7 +47,7 @@ StorageClass 이름 `managed-nfs-storage`는 유지 → 기존 PVC 참조 코드
 | 파일 | 내용 |
 |---|---|
 | `ch3/3.4.3/csi-driver-nfs-v4.12.1.yaml` | 신규 추가 (CSIDriver + RBAC + controller + node DaemonSet) |
-| `ch3/3.4.3/storageclass.yaml` | provisioner → `nfs.csi.k8s.io`, server/share 파라미터, nfsvers=4.1 |
+| `ch3/3.4.3/storageclass.yaml` | provisioner → `nfs.csi.k8s.io`, server/share 파라미터, nfsvers=4.1, `mountPermissions: "0777"` (2026-07-12 추가 — permission denied 수정) |
 | `ch3/.init_infra.sh` | yaml 교체 + 30s CSI readiness wait |
 | `ch4/.init_infra.sh` | 동일 |
 | `ch5/.init_infra.sh` | 동일 |
@@ -170,6 +172,70 @@ Helm 차트 템플릿에 두 플래그가 하드코딩되어 있어 `helm instal
 **Go flag 패키지 특성:** 알 수 없는 플래그를 받으면 help 출력 후 즉시 종료 → CrashLoopBackOff로 나타남.
 
 v4.11.0이 현재 v4.12.1 Helm 차트와 호환되는 실질적인 최솟값.
+
+---
+
+## kubectl apply 경로 PV permission denied (2026-07-12 조사 → 수정 완료 ✅)
+
+### 증상
+
+csi-driver-nfs 전환 이후, kubectl apply 경로(`ch3/3.4.3/storageclass.yaml`)로 만든 StorageClass에서 프로비저닝된 PV에 비루트 pod가 쓰기를 시도하면 permission denied(EACCES) 발생. 기존 nfs-subdir-external-provisioner에서는 없던 문제.
+
+### 발현 기전
+
+**기존 (nfs-subdir-external-provisioner)** — upstream `provisioner.go`의 `Provision()`:
+
+```go
+if err := os.MkdirAll(fullPath, mode); err != nil { ... }
+err := os.Chmod(fullPath, mode)   // mode 기본값 0o777, 무조건 실행
+```
+
+`MkdirAll`의 mode는 umask(022)에 깎이므로 이를 무력화하려고 **명시적 `Chmod`를 항상 호출**. 모든 PVC 디렉토리가 예외 없이 777로 생성되어 어떤 uid의 컨테이너든 쓰기 가능했음. "기존에 문제가 없던" 이유가 이 하드코딩된 777.
+
+**신규 (csi-driver-nfs v4.12.1)** — `controllerserver.go`의 `CreateVolume()`:
+
+```go
+if err = os.MkdirAll(internalVolumePath, 0777); err != nil { ... }
+if mountPermissions > 0 {          // ← 조건부!
+    os.Chmod(internalVolumePath, os.FileMode(mountPermissions))
+}
+```
+
+`mountPermissions` 우선순위: StorageClass `parameters.mountPermissions` → 드라이버 플래그 `--mount-permissions` → 기본값 **0**. 현재 `csi-driver-nfs-v4.12.1.yaml`의 args에도, `ch3/3.4.3/storageclass.yaml`의 parameters에도 없으므로 0 → chmod 미실행. 결과적으로 `MkdirAll(0777)`이 umask 022에 깎인 **0755**(부모 디렉토리에 setgid가 걸린 환경에선 2775)로 남고, export가 `no_root_squash`라 controller가 root로 쓰므로 소유자는 root — 비루트 pod는 쓰기 불가.
+
+**fsGroup이 구제하지 못하는 이유**: 구 provisioner가 만들던 PV는 in-tree `nfs:` 볼륨 소스여서 kubelet이 fsGroup 소유권 변경을 아예 적용하지 않았고(그래서 777에 전적으로 의존하는 설계), 신규 CSI 쪽은 CSIDriver `fsGroupPolicy: File`이라 fsGroup을 지정한 pod는 kubelet이 recursive chown을 해주지만, `runAsUser`만 지정하고 fsGroup은 안 쓰는 차트가 많아 차트별로 동작이 들쭉날쭉함. 일관된 해결책은 `mountPermissions`뿐.
+
+**기존 테스트에서 안 잡힌 이유**: ch3/3.4.3 검증(테스트 10 "PVC (CSI NFS)")은 root로 도는 pod라 통과. uid=1000 검증(Prometheus)은 Helm 경로(ch5/5.2.3)에서만 수행되어 `mountPermissions=0777`이 Helm 스크립트에만 반영됨.
+
+### 영향 범위
+
+kubectl 경로 StorageClass(`ch3/ch4/ch5/ch6 .init_infra.sh`, `ch7/7.1.1/extra_k8s_pkgs.sh`, `app/D.Operator`)를 쓰는 비루트 워크로드 전부:
+
+| 워크로드 | uid | 위치 |
+|---|---|---|
+| Jenkins | 1000 | `ch5/5.3.1` |
+| Prometheus | 65534 | `ch6/6.2.1`, `ch7/7.2.3` |
+| Grafana | 472 | `ch6/6.4.1` |
+| Loki | 10001 | `ch6/6.6.1` |
+| Tempo | — | `ch6/6.6.2`, `ch7/7.3.3` |
+| Pyroscope | — | `ch6/6.6.3` |
+
+### 조치 내역 (2026-07-12 적용 완료)
+
+1. ✅ `ch3/3.4.3/storageclass.yaml` parameters에 `mountPermissions: "0777"` 추가 — `FROM_3.4.3` 심볼릭 링크로 ch5 쪽 자동 반영.
+2. 대안으로 검토했던 드라이버 args `--mount-permissions` 수정(`csi-driver-nfs-v4.12.1.yaml`)은 **채택하지 않음**: SC 파라미터가 우선 적용되어 중복 설정이 되고, upstream 매니페스트 드리프트가 늘어나며, 독자에게 보이지 않는 설정이기 때문. `nfs_exporter.sh` chmod도 해결책 아님(부모 디렉토리 권한은 하위 PVC 디렉토리에 전파 안 됨).
+3. 기존 클러스터 주의: StorageClass parameters는 불변이므로 **SC 삭제 후 재생성** 필요. 파라미터는 신규 프로비저닝 PV에만 적용되므로 **이미 생성된 PV 디렉토리는 NFS 서버에서 수동 `chmod 777`** 필요.
+
+### 🚨 원고 반영 필수 사항 — ch3 (절대 누락 금지)
+
+> **이 항목의 유일한 기록은 이 문서임.** 원고 작업 공간은 이 리포가 아니므로, ch3 원고 작업 시 이 문서를 반드시 다시 열어 아래 내용을 반영할 것. 반영 완료 전까지 이 섹션을 삭제하지 말 것.
+
+csi-driver-nfs로 변경되는 ch3 원고(3.4.3 StorageClass 부분)에 아래 설명을 **반드시** 추가:
+
+1. **`mountPermissions: "0777"` 파라미터가 왜 필요한지**: csi-driver-nfs는 이 값이 없으면 PVC 디렉토리 권한을 조정하지 않아(기본값 0 = chmod 생략) root 소유 0755 디렉토리가 만들어지고, 비루트로 실행되는 pod(Jenkins, Prometheus, Grafana 등 이후 장 실습 전부)가 쓰기 불가 → permission denied.
+2. **구판과의 대비**: 기존 nfs-subdir-external-provisioner는 디렉토리를 항상 777로 생성(코드에 하드코딩)했기 때문에 이런 설정이 필요 없었음 — 구판 독자가 "전에는 없던 설정"이라고 혼동하지 않도록 명시.
+3. **fsGroup 한계**: NFS 볼륨에서는 pod의 `fsGroup` 설정만으로 권한 문제를 일관되게 해결할 수 없음(차트별 fsGroup 유무 편차) — `mountPermissions`가 표준적인 해법임을 명시.
+4. **수동 chmod 안내 삭제 검토 (공저자 확인)**: 원고에 `chmod 777 /nfs_shared/...` 수동 실행 안내가 있다면 삭제 — `mountPermissions`가 자동 처리하므로 불필요하고 혼동 유발.
 
 ---
 

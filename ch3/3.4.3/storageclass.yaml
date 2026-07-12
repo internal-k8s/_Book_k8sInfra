@@ -6,6 +6,7 @@ provisioner: nfs.csi.k8s.io
 parameters:
   server: 192.168.1.10
   share: /nfs_shared/dynamic-vol
+  mountPermissions: "0777"
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 mountOptions:

@@ -326,6 +326,7 @@ parameters:
 - [x] Cilium v1.17.4 → v1.17.13
 - [x] Docker 24 → 29.x
 - [x] Harbor v2.10.0 → v2.15.0
+- [x] metrics-server v0.6.4 → v0.8.1 (ch3/3.6.1, 2026-07-13)
 
 ### 부록(app/) 재편 (2026-05 완료)
 - [x] 6개 부록(A/B/D/E/F) → 3개 체계(A/B/C)로 정리

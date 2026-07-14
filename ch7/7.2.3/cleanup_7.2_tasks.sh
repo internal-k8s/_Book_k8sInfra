@@ -8,6 +8,9 @@ helm uninstall prometheus-stack --namespace=monitoring 2>/dev/null
 # 7.2.3 프로메테우스 PVC 삭제
 kubectl delete pvc -n monitoring -l operator.prometheus.io/name=prometheus-stack-kube-prom-prometheus 2>/dev/null
 
+# 7.2.3 monitoring 네임스페이스 삭제
+kubectl delete namespace monitoring 2>/dev/null
+
 # 7.2.2 tier ping relay 리소스 삭제
 kubectl delete -f $HOME/_Book_k8sInfra/ch7/7.2.2/po-tier-ping-relay.yaml 2>/dev/null
 

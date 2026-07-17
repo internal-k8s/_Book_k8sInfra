@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-# init kubernetes 
+# init kubernetes (+kubernetes-version: kubeadm defaults to latest stable patch)
 kubeadm init --token 123456.1234567890123456 --token-ttl 0 \
+             --kubernetes-version=v$1 \
              --skip-phases=addon/kube-proxy \
              --pod-network-cidr=172.16.0.0/16 \
-             --apiserver-advertise-address=192.168.1.10 
+             --apiserver-advertise-address=192.168.1.10
 
 # config for control-plane node only 
 mkdir -p $HOME/.kube

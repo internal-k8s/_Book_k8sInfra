@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ##### Addtional configuration for All-in-one >> replace to extra-k8s-pkgs
-EXTRA_PKGS_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/extra-pkgs/v1.32"
+EXTRA_PKGS_ADDR="https://raw.githubusercontent.com/sysnet4admin/IaC/main/k8s/extra-pkgs/v1.36"
 
 # deploy nfs-provisioner & storageclass as default 
 sh -c "$HOME/_Book_k8sInfra/ch3/3.4.3/nfs_exporter.sh dynamic-vol"

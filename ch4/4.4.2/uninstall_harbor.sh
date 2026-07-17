@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TAG=v2.15.0
+TAG=v2.10.0
 HARBOR_HOST=192.168.1.10:8443
 HARBOR_FILE_DIR=/opt/harbor
 HARBOR_DATA_DIR=/data/harbor

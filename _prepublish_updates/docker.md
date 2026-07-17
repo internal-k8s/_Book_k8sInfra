@@ -1,4 +1,29 @@
-# Docker 24.0.6 → 29.3.1 ✅
+# Docker 24.0.6 → 29.3.1 (테스트 완료) → 26.0.0 (최종 결정, 2026-07-17) ⚠️
+
+> **최종 결정(2026-07-17)**: 29.3.1 테스트까지 전부 완료했으나, ch4~ch6 버전 변경 최소화 정책
+> (`_prepublish_updates/misc.md` "정책: ch4~ch6은 버전 변경 최소화" 참고)에 따라 **26.0.0으로 재조정**.
+>
+> - 원래 목표였던 24.0.6은 Ubuntu 24.04(noble) 저장소에 아예 빌드된 적이 없어 설치 불가능
+>   (noble 저장소는 26.0.0부터 시작 — 책이 이미 22.04→24.04로 전체 전환 완료되어 이 하드 블로커는 피할 수 없음)
+> - "가장 적게 벗어나는 선택" 기준으로 noble에서 설치 가능한 가장 이른 버전인 26.0.0으로 결정
+> - 26.0.0은 29.x의 두 가지 문제(containerd-snapshotter 기본값 전환, `docker images` UI 개편)를
+>   구조적으로 피함 — 둘 다 29.0.0에서 새로 도입된 변경이라 26.x엔 없음 (아래 "26.0.0 사전 조사" 참고)
+> - buildx `0.13.1`, compose `2.25.0`은 Docker 26.0.0(2024-03-20) 출시 1주일 이내 버전으로 짝을 맞춤
+> - 아래 29.3.1 관련 분석·테스트 결과는 **모두 히스토리로 보존** — 다시 최신화를 검토할 때 재사용 가능
+
+## 26.0.0 사전 조사 (2026-07-17)
+
+- 공식 릴리스 노트: containerd image store 관련 변경 전부 **수동으로 `containerd-snapshotter` 기능을
+  켰을 때만** 적용되는 옵션 기능 변경 — 26.0.0 기본값은 24.x와 동일한 classic 방식이라 해당 없음
+- "25.0.0에서 만든 컨테이너는 MAC 주소 중복 가능" — 25→26 업그레이드 시 기존 컨테이너 재사용 케이스만
+  해당. 책은 항상 새 VM에 처음 설치하므로 무관
+- [moby#47674](https://github.com/moby/moby/issues/47674) "docker image ls does not show images
+  loaded from a tar file" — `docker save`→`docker load`(`ch4/4.4.1`)와 겹치는 시나리오라 확인했으나,
+  재현 조건이 `daemon.json`에 `containerd-snapshotter`를 수동으로 켠 경우로 한정됨. 우리는 이 옵션을
+  켤 이유가 없어 해당 없음
+- Harbor push 관련 26.x 특이 이슈 없음
+
+## (히스토리) Docker 24.0.6 → 29.3.1 결정 근거
 
 > **업데이트 결정 근거**: Docker 24.x 보안 패치 중단, 29.x가 최신 안정 버전. 책에서 Docker는 컨테이너 런타임이 아닌 이미지 빌드/푸시 전용으로만 사용하므로 대부분의 변경이 영향 없음. HIGH RISK 2항목은 테스트 후 최종 결정.
 
@@ -98,31 +123,37 @@ Harbor 컴포넌트(DB, Redis, core)가 영향받을 가능성 있음. **단일 
 ### 버전 문자열 형식 — Ubuntu에 따라 변경
 
 ```bash
-# Ubuntu 22.04 Jammy (이전)
+# Ubuntu 22.04 Jammy (최초 원고 기준)
 docker_V='5:24.0.6-1~ubuntu.22.04~jammy'
 buildx_V='0.23.0-1~ubuntu.22.04~jammy'
 compose_V='2.35.1-1~ubuntu.22.04~jammy'
 
-# Ubuntu 24.04 Noble (변경 후) — APT 저장소 확인 완료 (2026-04-05)
+# Ubuntu 24.04 Noble, Docker 29.3.1 (히스토리 — 테스트까지 완료했으나 최종 미채택)
 docker_V='5:29.3.1-1~ubuntu.24.04~noble'
 buildx_V='0.33.0-1~ubuntu.24.04~noble'
 compose_V='5.1.1-1~ubuntu.24.04~noble'   # compose-plugin v5 GA (v2에서 versioning 변경, 하위호환)
+
+# Ubuntu 24.04 Noble, Docker 26.0.0 (최종 결정, 2026-07-17) — noble 최초 빌드 버전
+docker_V='5:26.0.0-1~ubuntu.24.04~noble'
+buildx_V='0.13.1-1~ubuntu.24.04~noble'   # 26.0.0(2024-03-20) 출시 8일 전 버전
+compose_V='2.25.0-1~ubuntu.24.04~noble'  # 26.0.0 출시 5일 전 버전
 ```
 
 ---
 
-## 변경 파일
+## 변경 파일 (최종, 26.0.0 기준)
 
 | 파일 | 변경 내용 |
 |---|---|
-| `ch4/4.2.1/install_docker.sh` | 버전 문자열 noble 형식으로 변경 ✅ + Harbor push 테스트 결과에 따라 `daemon.json` 추가 여부 결정 |
-| `ch4/4.4.1/copy_docker_2_containerd.sh` | `ctr image import --base-name multistage-img` → `--base-name` 제거 ✅ |
+| `ch4/4.2.1/install_docker.sh` | 버전 문자열 26.0.0/noble 형식으로 변경 ✅ |
+| `ch4/4.4.1/copy_docker_2_containerd.sh` | `ctr image import --base-name multistage-img` **복원** ✅ (26.0.0은 classic docker-archive 포맷이라 다시 필요) |
 
 > `ch5/5.3.4/install_docker_on_all_nodes.sh`는 `install_docker.sh` scp 방식이므로 자동 반영.
+> 26.0.0 자체의 실기 테스트는 아직 미수행 — 사전 조사(위 "26.0.0 사전 조사")만 완료.
 
 ---
 
-## 테스트 결과
+## (히스토리) 29.3.1 테스트 결과
 
 **환경**: ch3/3.1.3 (4-node cluster, Ubuntu 24.04 Noble, Docker 29.3.1, containerd image store 기본값 활성화)
 

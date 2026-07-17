@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 HARBOR_FILE_DIR=/opt/harbor
 HARBOR_DATA_DIR=/data/harbor
-HARBOR_VERSION=v2.15.0
+HARBOR_VERSION=v2.10.0
 echo "Remove existing configuration files"
 rm -f 2-3.prepare 2-4.install.sh commom.sh LICENSE
 
@@ -32,10 +32,12 @@ sed -i 's,$DOCKER_COMPOSE,$DOCKER_COMPOSE -f /opt/harbor/docker-compose.yml,' 2-
 sed -i 's/up -d/-p harbor up -d/' 2-4.install.sh
 
 # for arm64/aarch64 — use sysnet4admin arm64 images (built via _image-builder/build.sh)
-# The prepare image bakes only VERSION_TAG (v2.15.0-arm64) into the generated
+# The prepare image bakes only VERSION_TAG (${HARBOR_VERSION}-arm64) into the generated
 # docker-compose.yml; the goharbor/ namespace is hardcoded in its jinja template,
 # so it must be substituted after generation. Do NOT add a tag sed here —
 # tags already come out as -arm64 and would become -arm64-arm64.
+# NOTE: requires sysnet4admin/*:${HARBOR_VERSION}-arm64 images to exist on Docker
+# Hub — rebuild via _image-builder/build.sh if this HARBOR_VERSION changes.
 if [ "$(uname -m)" == "aarch64" ]; then
   echo "arm64 detected — switching to sysnet4admin/prepare:${HARBOR_VERSION}-arm64"
   sed -i "s,goharbor/prepare:${HARBOR_VERSION},sysnet4admin/prepare:${HARBOR_VERSION}-arm64,gi" 2-3.prepare

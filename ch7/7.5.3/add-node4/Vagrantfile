@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
       cfg.vm.synced_folder "../../data", "/vagrant", disabled: true
       cfg.vm.provision "shell", path: "../../7.1.1/k8s_env_build.sh", args: [ N, k8s_V[0..3] ]
       cfg.vm.provision "shell", path: "../../7.1.1/k8s_pkg_cfg.sh", args: [ k8s_V, ctrd_V, "CP"]
-      cfg.vm.provision "shell", path: "../../7.1.1/controlplane_node.sh"
+      cfg.vm.provision "shell", path: "../../7.1.1/controlplane_node.sh", args: [ k8s_V[0..5] ]
       cfg.vm.provision "shell", path: "../../7.1.1/extra_k8s_pkgs.sh"
     end
 

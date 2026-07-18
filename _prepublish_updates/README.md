@@ -14,9 +14,10 @@
 | [MetalLB](metallb.md) | v0.13.10 → v0.15.3 | ✅ 완료 | 2026-04-04 |
 | [CSI Driver NFS](csi-driver-nfs.md) | v4.0.0 → v4.12.1 | ✅ 완료 | 2026-04-04 |
 | [Helm](helm.md) | v3 → v4.1.3 | ✅ 완료 | 2026-04-04 |
+| [kustomize](kustomize.md) | v5.4.1 → v5.8.1 (ch5/5.2.2) | ✅ 완료 | 2026-07-18 |
 | [Cilium](cilium.md) | v1.17.4 → v1.17.13 | ✅ 완료 | 2026-04-05 |
-| [Docker](docker.md) | 24 → 29.x | ✅ 완료 | 2026-04-08 |
-| [Harbor](harbor.md) | v2.10.0 → v2.15.0 | ✅ 완료 | 2026-04-08 |
+| [Docker](docker.md) | 24.0.6 → 29.3.1(테스트) → 26.0.0(최종, ch4~ch6 정책) | ✅ 완료 | 2026-07-17 |
+| [Harbor](harbor.md) | v2.10.0 → v2.15.0(테스트) → v2.10.0(최종, 되돌림) | ⚠️ arm64 이미지 블로커 | 2026-07-17 |
 | [metrics-server](metrics-server.md) | v0.6.4 → v0.8.1 (ch3/3.6.1) | ✅ 완료 | 2026-07-13 |
 | [nginx rollout 실습](nginx-rollout.md) | 1.23.4/1.24.0/1.25.22 → 1.30.1/1.30.3/1.30.99 (ch3/3.2.4) | ⚠️ yaml만 완료, docx 반영 필요 | 2026-07-05 |
 

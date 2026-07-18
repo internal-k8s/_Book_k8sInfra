@@ -4,9 +4,9 @@ helm install prometheus edu/prometheus \
 --create-namespace \
 --set prometheus-pushgateway.enabled=false \
 --set alertmanager.enabled=false \
---set nodeExporter.tolerations[0].key=node-role.kubernetes.io/control-plane \
---set nodeExporter.tolerations[0].effect=NoSchedule \
---set nodeExporter.tolerations[0].operator=Exist \
+--set prometheus-node-exporter.tolerations[0].key=node-role.kubernetes.io/control-plane \
+--set prometheus-node-exporter.tolerations[0].effect=NoSchedule \
+--set prometheus-node-exporter.tolerations[0].operator=Exists \
 --set server.securityContext.runAsGroup=1000 \
 --set server.securityContext.runAsUser=1000 \
 --set server.securityContext.runAsNonRoot=false \

@@ -9,5 +9,5 @@ helm install grafana-stack edu/grafana-stack \
 --set fluent-bit.enabled=true \
 --set fluent-bit.loki.host=grafana-stack-loki-gateway.monitoring.svc.cluster.local \
 --set fluent-bit.tolerations[0].key=node-role.kubernetes.io/control-plane \
---set fluent-bit.lolerations[0].effect=NoSchedule \
+--set fluent-bit.tolerations[0].effect=NoSchedule \
 --set fluent-bit.tolerations[0].operator=Exists

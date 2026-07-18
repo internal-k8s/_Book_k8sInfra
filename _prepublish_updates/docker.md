@@ -66,6 +66,10 @@ Docker 29부터 신규 설치 시 containerd image store가 기본값 (`driver-t
 
 **`--base-name` 실패 원인**: Docker archive 형식에서는 `manifest.json`의 `RepoTags`를 `--base-name`으로 재지정하는 방식이었으나, OCI layout 형식에서는 `index.json`의 `annotations`에 이미 image name이 내장됨 → `--base-name` 오버라이드가 동작하지 않음.
 
+> **정정(2026-07-18)**: 위 분석은 오류 — `--base-name`은 애초에 재지정 옵션이 아니라 필터이며,
+> docker-archive 형식에서도 동일하게 무음 실패함 (26.0.0 실기 테스트로 확인).
+> 정확한 메커니즘은 아래 "26.0.0 실기 테스트" 섹션 참고.
+
 **코드 변경 내용 (`copy_docker_2_containerd.sh` Step 3)**:
 ```bash
 # 변경 전
@@ -146,10 +150,42 @@ compose_V='2.25.0-1~ubuntu.24.04~noble'  # 26.0.0 출시 5일 전 버전
 | 파일 | 변경 내용 |
 |---|---|
 | `ch4/4.2.1/install_docker.sh` | 버전 문자열 26.0.0/noble 형식으로 변경 ✅ |
-| `ch4/4.4.1/copy_docker_2_containerd.sh` | `ctr image import --base-name multistage-img` **복원** ✅ (26.0.0은 classic docker-archive 포맷이라 다시 필요) |
+| `ch4/4.4.1/copy_docker_2_containerd.sh` | `ctr image import` — `--base-name` **제거 유지** ✅ (한때 "26.0.0은 docker-archive 포맷이라 복원 필요"로 판단해 복원했으나 **오판** — 아래 "26.0.0 실기 테스트" 참고) |
 
 > `ch5/5.3.4/install_docker_on_all_nodes.sh`는 `install_docker.sh` scp 방식이므로 자동 반영.
-> 26.0.0 자체의 실기 테스트는 아직 미수행 — 사전 조사(위 "26.0.0 사전 조사")만 완료.
+
+---
+
+## 26.0.0 실기 테스트 (2026-07-18)
+
+**환경**: ch3/3.1.3 (4-node cluster, Ubuntu 24.04 Noble, Docker 26.0.0 build 2ae903e, 노드 containerd **v2.2.3**)
+
+| # | 항목 | 결과 |
+|---|---|---|
+| 1 | `install_docker.sh` (26.0.0/noble 버전 문자열) | ✅ `docker -v` = 26.0.0 |
+| 2 | `docker save` → `ctr import --base-name multistage-img` | ❌ **무음 실패** — exit 0이지만 `crictl images`는 물론 `ctr -n k8s.io image ls`에도 미등록. 통제 실험으로 재현(기존 이미지 이름 제거 → 26.0.0 fresh tar로 import → 양쪽 모두 미등록 확인) |
+| 3 | `docker save` → `ctr import` (`--base-name` 제거) | ✅ `docker.io/library/multistage-img:latest`로 정상 등록, `crictl images` 확인 |
+
+### Docker 24 / 26 / 29 단계별 정리 — 실패의 결정 변수는 Docker가 아니라 노드 containerd
+
+`--base-name` 무음 실패는 Docker의 save 포맷 차이가 아니라 **노드 containerd(1.x → 2.x)의
+import 이름 결정 로직 변화**가 원인. 단계별 동작:
+
+| 단계 | `docker save` 포맷 | 노드 containerd | `--base-name multistage-img` 동작 | 결과 |
+|---|---|---|---|---|
+| **24.0.6** (원고 원본, 22.04) | legacy docker-archive (`manifest.json`만 — OCI 동봉은 Docker 25부터) | 1.x | importer가 `RepoTags`(`multistage-img:latest`)를 `docker.io/library/multistage-img:latest`로 정규화해 `io.containerd.image.name` annotation에 기록. 1.x는 이 annotation이 있으면 `--base-name` 필터를 **아예 적용하지 않음** (release/1.6 `import.go`의 `imageName()` 소스 확인) | ✅ 등록 — 단, **no-op**. 옵션과 무관하게 FQDN으로 등록된 것이라 "동작했다"기보다 원래부터 아무 일도 안 하던 옵션 |
+| **26.0.0** (최종 채택, 24.04) | **이중 포맷** — Docker 25부터 classic store도 `manifest.json` + OCI `index.json`/`blobs` 동봉, `index.json`에 `io.containerd.image.name: docker.io/library/multistage-img:latest` 내장 (w1 tar 실물 확인) | 2.2.3 | 2.x의 `ctr import`는 `--base-name`을 참조 **필터**로 적용 — 내장/정규화 이름 `docker.io/library/...`가 `multistage-img` prefix와 불일치 → **모든 ref 폐기** (블롭만 저장, 이름 미등록) | ❌ exit 0, 완전 미등록 (2026-07-18 w1-k8s 통제 실험 확인) |
+| **29.3.1** (히스토리) | 순수 OCI layout (containerd image store 기본화) | 2.2.3 | 26과 동일 — 필터 불일치로 ref 폐기 | ❌ 무음 실패 (기존 29.3.1 테스트 결과와 일치) |
+
+**결론**: `--base-name multistage-img`는 원고 환경(containerd 1.x)에서는 no-op, 현행 환경
+(containerd 2.x)에서는 Docker 26/29 어느 tar든 무음 실패 — **어떤 단계에서도 필요했던 적이 없는
+옵션**이므로 제거가 불가피하고 유일하게 안전한 형태. `ctr image import $TAR`는 24/26/29 전 구간에서
+동일하게 동작(정규화/내장 FQDN `docker.io/library/multistage-img:latest`로 등록)하며, pod spec의
+`image: multistage-img`도 kubelet이 같은 규칙으로 정규화하므로 호환. 따라서 "책 본문 변경 최소화"
+관점에서도 `--base-name` 유지 선택지는 없음(현행 containerd에서 재현 불가).
+
+> 참고: "crictl이 non-FQDN 이름을 숨긴다"는 가설(외부 답변)은 검증 결과 사실이 아님 —
+> `--base-name` 사용 시 이미지는 숨겨진 게 아니라 `ctr -n k8s.io image ls` 기준으로도 존재하지 않음.
 
 ---
 

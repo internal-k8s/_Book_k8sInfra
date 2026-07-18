@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=v5.4.1
+VERSION=v5.8.1
 
 if [[ "$OSTYPE" == linux* ]]; then
   OS=linux

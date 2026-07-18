@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 helm install csi-nfs-release edu/csi-driver-nfs \
---namespace nfs-provisioner \
+--namespace csi-driver-nfs \
 --create-namespace \
 --set storageClass.create=true \
 --set storageClass.name='managed-nfs-storage' \

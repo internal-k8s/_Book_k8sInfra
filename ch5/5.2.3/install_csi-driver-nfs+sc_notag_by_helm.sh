@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 helm install csi-nfs-release edu/csi-driver-nfs \
---namespace csi-driver-nfs \
---create-namespace \
+--namespace kube-system \
 --set storageClass.create=true \
 --set storageClass.name='managed-nfs-storage' \
 --set storageClass.parameters.server='192.168.1.10' \

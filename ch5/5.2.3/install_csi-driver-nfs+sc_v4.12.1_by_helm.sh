@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 helm install csi-nfs-release edu/csi-driver-nfs \
---namespace csi-driver-nfs \
---create-namespace \
+--namespace kube-system \
 --set image.nfs.tag='v4.12.1' \
 --set storageClass.create=true \
 --set storageClass.name='managed-nfs-storage' \

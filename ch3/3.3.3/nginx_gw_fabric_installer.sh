@@ -19,7 +19,7 @@ echo ""
 
 echo "=== Step 3/3: NGINX Gateway Fabric 배포 (${NGF_VERSION}) ==="
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-kubectl apply -f "${SCRIPT_DIR}/nginx_gw_fabric_deploy.yaml"
+kubectl apply -f "${SCRIPT_DIR}/nginx-gw-fabric-deploy.yaml"
 echo ""
 
 echo "=== 설치 완료. 리소스 확인 ==="

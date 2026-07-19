@@ -19,8 +19,6 @@ helm install jenkins edu/jenkins \
 --set controller.initContainerEnv[0].value=$JK_CFG/update-center/update-center.json \
 --set controller.initContainerEnv[1].name=JENKINS_UC_DOWNLOAD \
 --set controller.initContainerEnv[1].value=https://updates.jenkins.io/download \
---set controller.runAsUser=1000 \
---set controller.runAsGroup=1000 \
 --set controller.image.tag=2.440.3-jdk17 \
 --set controller.serviceType=LoadBalancer \
 --set controller.servicePort=80 \

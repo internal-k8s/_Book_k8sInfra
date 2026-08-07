@@ -1,31 +1,30 @@
-# Harbor v2.10.0 → v2.15.0 (테스트 완료) → v2.10.0 (최종 결정, 2026-07-17) 🔴
+# Harbor v2.10.0 → v2.15.0 (테스트 완료) → v2.10.0 (최종 결정, 2026-07-17) ✅
 
 > **최종 결정(2026-07-17)**: v2.15.0까지 arm64 이미지 빌드·클린 환경 검증 전부 완료했으나, ch4~ch6
 > 버전 변경 최소화 정책(`_prepublish_updates/misc.md`)에 따라 원고에 이미 쓰인 v2.10.0으로 되돌림.
 > Docker/Docker CLI 문제(29.x의 `docker images` 출력 개편)와 달리 Harbor 자체엔 v2.15.0을 써야 할
 > 만한 새 문제가 있던 건 아니었음 — 일관성을 위한 결정.
 
-> ## 🔴 미해결 블로커: arm64 이미지가 없음
+> ## ✅ arm64 블로커 해소 (2026-08-08 클린 환경 검증)
 >
-> **v2.10.0도 v2.15.0과 마찬가지로 upstream(`goharbor`)이 arm64 이미지를 배포하지 않습니다**
-> (v2.16부터 정식 지원 예정, 2026년 9월). 이번 되돌림으로 `ch4/4.4.2/2.harbor/2-1.get_harbor.sh`,
-> `ch4/4.4.2/uninstall_harbor.sh`의 버전 문자열은 `v2.10.0`으로 수정했지만, 이 스크립트들의 arm64
-> 분기는 **`sysnet4admin/*:v2.10.0-arm64` 이미지 11개가 Docker Hub에 존재해야 동작합니다.**
+> upstream(`goharbor`)이 arm64 이미지를 배포하지 않는 것은 그대로입니다(v2.16부터 정식 지원 예정,
+> 2026년 9월). 따라서 `ch4/4.4.2/2.harbor/2-1.get_harbor.sh`와 `ch4/4.4.2/uninstall_harbor.sh`의
+> arm64 분기는 `sysnet4admin/*:v2.10.0-arm64` 이미지가 Docker Hub에 있어야 동작합니다.
 >
-> 현재 Docker Hub에는 v2.15.0용으로 빌드해 둔 `sysnet4admin/*:v2.15.0-arm64`만 있고,
-> **v2.10.0용 이미지는 아직 하나도 빌드·푸시되지 않았습니다.** 즉 지금 상태로 arm64 환경에서
-> `2-1.get_harbor.sh`를 실행하면 `docker compose up` 단계에서 이미지를 pull하지 못해 실패합니다.
+> **이 이미지들은 이미 존재합니다.** 필요한 11개 태그 전부 Docker Hub에서 확인했고
+> (`prepare`, `harbor-core`, `harbor-db`, `harbor-jobservice`, `harbor-log`, `harbor-portal`,
+> `harbor-registryctl`, `harbor-exporter`, `redis-photon`, `nginx-photon`, `registry-photon`),
+> `harbor-core:v2.10.0-arm64`의 푸시 시각은 `2026-07-17T10:37:40Z`입니다. 즉 이 문서에
+> "미착수"로 적힌 그 날 빌드·푸시가 이뤄졌고 문서만 갱신되지 않은 상태였습니다.
 >
-> **필요한 조치(저자 전용 작업)**: 아래 "arm64 지원 문제 → 해결 방법" 절차를 v2.10.0 소스 기준으로
-> 그대로 재수행 필요:
-> 1. `goharbor/harbor` 저장소를 `v2.10.0` 태그로 체크아웃
-> 2. `make/photon/exporter/Dockerfile`에서 `ENV GOARCH=amd64` 제거
-> 3. `make build` (`_image-builder/build.sh`, gitignore/저자 로컬 전용)로 11개 이미지 빌드
-> 4. `sysnet4admin/*:v2.10.0-arm64`로 Docker Hub 푸시
-> 5. **이미지 캐시 없는 클린 arm64 환경**에서 `2-1` → `2-4.install.sh` → `docker push` 재검증
->    (v2.15.0 때도 캐시가 있는 빌드 머신에서 테스트해 실패를 놓친 전례 있음 — 반드시 클린 환경에서)
+> **클린 arm64 환경 검증 완료(2026-08-08)**: Harbor를 한 번도 설치한 적 없는 ch3/3.1.3 클러스터
+> (aarch64, `/opt/harbor` 없음, Docker 컨테이너 0개)에서 `1-1` → `1-2` → `2-1` → `2-2` → `2-3` →
+> `2-4.install.sh`를 순서대로 실행. 로컬 이미지 캐시가 전혀 없는 상태에서 10개 이미지
+> (compose 9개 + `prepare`)를 전부 Docker Hub에서 pull해 9개 컨테이너 모두 healthy,
+> `docker login`·`docker push`·`/v2/_catalog` 정상. `harbor-exporter`는 metrics 미활성이라
+> 배포되지 않음(하단 "harbor-exporter 배포 여부" 절 참고).
 >
-> x86_64는 이 블로커와 무관하게 정상 동작합니다 (arm64 분기를 타지 않음).
+> x86_64는 이 분기와 무관하게 정상 동작합니다 (arm64 분기를 타지 않음).
 
 ---
 
@@ -116,7 +115,7 @@ fi
 |---|---|---|
 | `ch4/4.4.2/2.harbor/2-1.get_harbor.sh` | `HARBOR_VERSION` v2.15.0 → v2.10.0, arm64 분기 주석에 이미지 의존성 명시 | ✅ |
 | `ch4/4.4.2/uninstall_harbor.sh` | `TAG` v2.15.0 → v2.10.0 | ✅ |
-| `sysnet4admin/*:v2.10.0-arm64` (Docker Hub) | v2.10.0 소스로 arm64 이미지 11개 재빌드·재푸시 | 🔴 미착수 (위 "미해결 블로커" 참고) |
+| `sysnet4admin/*:v2.10.0-arm64` (Docker Hub) | v2.10.0 소스로 arm64 이미지 11개 재빌드·재푸시 | ✅ 완료 (2026-07-17 푸시, 2026-08-08 클린 환경 검증) |
 | docx | 원고가 원래 v2.10.0 기준이라 수정 불필요 — 단, v2.15.0 UI로 미리 손댄 부분이 있다면 원복 필요 | ⏳ 공저자 확인 필요 |
 
 ### (히스토리) v2.15.0 작업 내역
@@ -225,6 +224,50 @@ fi
 | 4 | arm64 Harbor uninstall | ✅ 전체 정리 완료 |
 | 5 | x86_64 Harbor startup | ✅ 9개 컨테이너 모두 healthy, fd 제한 문제 없음 |
 | 6 | x86_64 `docker push` → Harbor | ✅ nginx:latest 푸시 성공 |
+
+### v2.10.0 클린 arm64 환경 검증 (2026-08-08)
+
+**환경**: ch3/3.1.3 클러스터 (aarch64, VirtualBox on Apple Silicon, k8s v1.36.0, Docker 26.0.0).
+Harbor 미설치 상태(`/opt/harbor` 없음, `docker ps -a` 0개)에서 시작.
+
+| # | 항목 | 결과 |
+|---|---|---|
+| 1 | `sysnet4admin/*:v2.10.0-arm64` 태그 11개 Docker Hub 존재 확인 | ✅ 전부 200 |
+| 2 | `1-1.create_certs.sh` → `1-2.deploy_certs.sh` | ✅ 워커 3대 ca.crt 배포·containerd 재시작 |
+| 3 | `2-1.get_harbor.sh` (arm64 분기 → prepare 이미지 치환) | ✅ |
+| 4 | `2-3.prepare` 생성 compose 이미지명 | ✅ 9개 전부 `sysnet4admin/*:v2.10.0-arm64` |
+| 5 | `2-4.install.sh` (캐시 없는 상태에서 전체 pull) | ✅ 9개 컨테이너 healthy |
+| 6 | `docker login 192.168.1.10:8443 -u admin -p admin` | ✅ Login Succeeded |
+| 7 | `docker push` → `library/dashboard:blue`, `:green` | ✅ 태그 2개 등록 |
+| 8 | 워커 노드에서 `imagePullPolicy: Always` pull | ✅ w1/w2/w3 전부 성공 |
+
+ch5/5.4.3 블루그린 실습(대시보드 이미지 빌드·푸시·배포) 검증도 이 환경에서 함께 수행함 —
+`_prepublish_updates/`에 별도 기록 없음, ch5 검증 결과는 아래 "ch5/5.4.3 연계 검증" 절 참고.
+
+### ch5/5.4.3 연계 검증 (2026-08-08)
+
+편집자 리뷰 중 "5.4.3 2차 배포(green)에서 젠킨스 빌드 실패" 보고에 따른 재현 시도.
+
+| # | 항목 | 결과 |
+|---|---|---|
+| 1 | `docker build --build-arg=PHASE=blue` | ✅ 85초 (원고 390초) |
+| 2 | `docker build --build-arg=PHASE=green` | ✅ 25초 (원고 186초) |
+| 3 | 두 이미지 digest 상이 | ✅ `7eb939…` / `06a31d…` — 캐시 재사용으로 동일 이미지가 되는 문제 없음 |
+| 4 | `/v2/library/dashboard/tags/list` | ✅ `["blue","green"]` |
+| 5 | pl-blue / pl-green 각 replicas 3 배포 | ✅ 6개 파드 전부 Running |
+| 6 | 렌더링 색상 구분 | ✅ blue 파드 `text-blue-700`, green 파드 `text-green-700` |
+
+**결론**: 이미지 빌드·푸시·pull 경로에 구조적 결함 없음. 편집자 환경 고유 문제로 판단.
+
+**참고 — `/v2/` API 인증**: `library` 프로젝트는 Harbor 기본값대로 public(`"public": true`)이라
+`/v2/library/dashboard/tags/list` 읽기는 익명 허용. `Authorization` 헤더가 있기만 하면 자격 증명
+내용과 무관하게 200이 나오고(`-u admin:admin`, `-u admin:Harbor12345`, `-u nobody:wrongpw` 모두 동일),
+헤더가 아예 없을 때만 401. 따라서 태그 확인 명령의 암호는 무엇이든 상관없음. 단 `docker login`과
+`docker push`는 실제 인증이 필요하므로 `admin`/`admin`이어야 함.
+
+**부수 발견**: 재현 과정에서 `k8s-edu/Bkv2_sub_blue-green`의 Jenkinsfile 문제 2건(32번 줄 옛 저장소
+이름, 83번 줄 빈 값 정수 비교)을 확인함. 이유·수정 내용·원고 반영 위치는
+[bluegreen-pipeline.md](bluegreen-pipeline.md) 참고.
 
 ---
 

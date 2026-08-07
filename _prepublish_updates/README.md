@@ -17,7 +17,7 @@
 | [kustomize](kustomize.md) | v5.4.1 → v5.8.1 (ch5/5.2.2) | ✅ 완료 | 2026-07-18 |
 | [Cilium](cilium.md) | v1.17.4 → v1.17.13 | ✅ 완료 | 2026-04-05 |
 | [Docker](docker.md) | 24.0.6 → 29.3.1(테스트) → 26.0.0(최종, ch4~ch6 정책) | ✅ 완료 | 2026-07-17 |
-| [Harbor](harbor.md) | v2.10.0 → v2.15.0(테스트) → v2.10.0(최종, 되돌림) | ⚠️ arm64 이미지 블로커 | 2026-07-17 |
+| [Harbor](harbor.md) | v2.10.0 → v2.15.0(테스트) → v2.10.0(최종, 되돌림) | ✅ 완료 (arm64 블로커 해소, 클린 환경 검증) | 2026-08-08 |
 | [metrics-server](metrics-server.md) | v0.6.4 → v0.8.1 (ch3/3.6.1) | ✅ 완료 | 2026-07-13 |
 | [nginx rollout 실습](nginx-rollout.md) | 1.23.4/1.24.0/1.25.22 → 1.30.1/1.30.3/1.30.99 (ch3/3.2.4) | ⚠️ yaml만 완료, docx 반영 필요 | 2026-07-05 |
 
@@ -33,6 +33,7 @@
 
 | 항목 | 내용 | 상태 |
 |---|---|---|
+| [블루그린 파이프라인](bluegreen-pipeline.md) | Jenkinsfile 저장소 이름 수정 (ch5/5.4.3) | ⚠️ 저장소 완료, docx 2곳 남음 |
 | [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ✅ 완료 |
 | [kubespray](kubespray.md) | 1판→2판 변경 원인 분석 + 4개 파일 수정 (app/C.kubespray) | ✅ 완료 |
 | [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |

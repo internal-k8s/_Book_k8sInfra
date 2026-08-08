@@ -4,6 +4,9 @@
 *VBoxHeadless*.log
 *.docx
 
+# machine-local editor/agent settings (shared .claude/settings.json is not ignored)
+.claude/settings.local.json
+
 # ignore auto-generated files
 /ch4/4.4.2/1.harbor_pki/ca.crt
 /ch4/4.4.2/1.harbor_pki/ca.key

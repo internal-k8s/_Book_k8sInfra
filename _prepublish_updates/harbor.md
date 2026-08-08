@@ -261,7 +261,8 @@ ch5/5.4.3 블루그린 실습(대시보드 이미지 빌드·푸시·배포) 검
 | 5 | pl-blue / pl-green 각 replicas 3 배포 | ✅ 6개 파드 전부 Running |
 | 6 | 렌더링 색상 구분 | ✅ blue 파드 `text-blue-700`, green 파드 `text-green-700` |
 
-**결론**: 이미지 빌드·푸시·pull 경로에 구조적 결함 없음. 편집자 환경 고유 문제로 판단.
+**결론**: 이미지 빌드·푸시·pull 경로에 구조적 결함 없음. 편집자 환경 고유 문제였다.
+**2026-08-08 편집자 재실습 정상 회신으로 종결됨.**
 
 **참고 — `/v2/` API 인증**: `library` 프로젝트는 Harbor 기본값대로 public(`"public": true`)이라
 `/v2/library/dashboard/tags/list` 읽기는 익명 허용. `Authorization` 헤더가 있기만 하면 자격 증명

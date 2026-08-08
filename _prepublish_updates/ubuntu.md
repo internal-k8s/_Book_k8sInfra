@@ -93,7 +93,7 @@ Docker APT 저장소 패키지 버전이 Noble부터 distro suffix 포함:
 | `ch7/7.1.1/opt-w12g/Vagrantfile` | ✅ 완료 | 동일 |
 | `ch3/3.1.3/Vagrantfile` (containerd 버전) | ✅ 완료 | Noble 형식 적용 |
 | `ch7/7.1.1/Vagrantfile` (containerd 버전) | ✅ 완료 | Noble 형식 적용 |
-| `ch4/4.2.1/install_docker.sh` | ⏳ Docker 업데이트 항목에서 처리 | jammy → noble 버전 문자열 변경 필요 |
+| `ch4/4.2.1/install_docker.sh` | ✅ 완료 (Docker 항목에서 처리, 2026-08-08 확인) | jammy → noble 반영됨 — `5:26.0.0-1~ubuntu.24.04~noble` / buildx `0.13.1-...noble` / compose `2.25.0-...noble`. 상세는 [docker.md](docker.md) |
 
 ## 테스트 결과
 

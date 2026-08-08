@@ -1,4 +1,4 @@
-# Docker 24.0.6 → 29.3.1 (테스트 완료) → 26.0.0 (최종 결정, 2026-07-17) ⚠️
+# Docker 24.0.6 → 29.3.1 (테스트 완료) → 26.0.0 (최종 결정, 2026-07-17) ✅
 
 > **최종 결정(2026-07-17)**: 29.3.1 테스트까지 전부 완료했으나, ch4~ch6 버전 변경 최소화 정책
 > (`_prepublish_updates/misc.md` "정책: ch4~ch6은 버전 변경 최소화" 참고)에 따라 **26.0.0으로 재조정**.
@@ -45,10 +45,14 @@
 
 ### HIGH RISK — 테스트 결과 반영
 
-> **최종 요약**
-> - HIGH RISK 1: 우려했던 대부분은 정상 동작. 단, `ctr import --base-name` 무음 실패 → **코드 수정 완료**. Harbor push는 arm64 한계로 미확인.
-> - HIGH RISK 2: 단일 사용자 실습 환경에서 영향 없을 것으로 판단. Harbor startup으로 최종 확인 필요하나 arm64 한계로 미수행.
-> - 두 항목 모두 x86_64에서 Harbor 테스트 완료 후 최종 결론.
+> **최종 요약 (2026-08-08 종결)**
+> - HIGH RISK 1: 우려했던 대부분은 정상 동작. 단, `ctr import --base-name` 무음 실패 → **코드 수정 완료**.
+>   Harbor push는 **x86_64·arm64 양쪽 확인 완료** ([harbor.md](harbor.md) 테스트 결과 참고).
+> - HIGH RISK 2: 단일 사용자 실습 환경에서 영향 없음 — **Harbor startup 확인 완료.**
+>   x86_64에서 9개 컨테이너 healthy, fd 제한 문제 없음(2026-07). arm64는 클린 환경에서 Docker 26.0.0으로
+>   9개 컨테이너 healthy + `docker login`/`push` 정상(2026-08-08).
+> - **두 항목 모두 애초에 Docker 29 도입 변경이라 최종 채택 버전 26.0.0에는 해당하지 않음**
+>   (containerd image store 기본화·systemd ulimit 기본값 전환 모두 29.0.0 신규). 아래 내용은 히스토리.
 
 #### 1. containerd image store 기본값 변경 (Docker 29, 신규 설치) — ⚠️ 코드 수정 발생
 
@@ -61,7 +65,7 @@ Docker 29부터 신규 설치 시 containerd image store가 기본값 (`driver-t
 | `docker save` → `docker load` | OCI layout tar 생성 | ✅ `docker load`가 OCI tar 처리 가능 — 정상 |
 | `docker save` → `ctr import --base-name` | OCI layout tar | ❌ **`--base-name` 플래그가 OCI tar에서 무음 실패** (exit 0이지만 이미지 미등록) |
 | `docker save` → `ctr import` (base-name 제거) | OCI layout tar | ✅ `docker.io/library/multistage-img:latest`로 정상 import — k8s pod spec 호환 |
-| `docker push` → Harbor | OCI manifest list 형태로 전송 | 테스트 예정 |
+| `docker push` → Harbor | OCI manifest list 형태로 전송 | ✅ 정상 (x86_64·arm64 모두 확인 — [harbor.md](harbor.md)) |
 | `docker image ls` | untagged 이미지 기본 숨김 | ✅ 영향 없음 (BuildKit 기본값으로 intermediate 이미지 미저장) |
 
 **`--base-name` 실패 원인**: Docker archive 형식에서는 `manifest.json`의 `RepoTags`를 `--base-name`으로 재지정하는 방식이었으나, OCI layout 형식에서는 `index.json`의 `annotations`에 이미 image name이 내장됨 → `--base-name` 오버라이드가 동작하지 않음.
@@ -89,7 +93,9 @@ OCI tar의 `index.json`에 `docker.io/library/multistage-img:latest`가 이미 �
 #### 2. 파일 디스크립터 제한 변경 (Docker 29 + containerd 2.x)
 
 컨테이너 기본 ulimit `nofile`: 1,048,576 → 1,024 (systemd 기본값으로 변경).
-Harbor 컴포넌트(DB, Redis, core)가 영향받을 가능성 있음. **단일 사용자 실습 환경(이미지 1~2개 push 수준)에서는 fd 1,024개 제한이 문제가 되지 않을 것으로 판단** — Harbor startup 테스트로 최종 확인 필요하나 arm64 한계로 미수행.
+Harbor 컴포넌트(DB, Redis, core)가 영향받을 가능성 있음. **단일 사용자 실습 환경(이미지 1~2개 push 수준)에서는 fd 1,024개 제한이 문제가 되지 않음 — Harbor startup 테스트로 확인 완료** (x86_64 9개 컨테이너 healthy, fd 제한 문제 없음; [harbor.md](harbor.md) "테스트 결과" 참고).
+
+> 참고: 이 변경은 Docker 29 + containerd 2.x 조합에서 도입된 것이므로, **최종 채택 버전 26.0.0에는 애초에 해당하지 않는다.** 아래 workaround도 적용 불필요.
 
 **workaround (필요 시 적용)**:
 ```json

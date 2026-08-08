@@ -1,9 +1,11 @@
-# ch5/5.4.3 블루그린 파이프라인 — Jenkinsfile 저장소 이름 수정
+# ch5/5.4.3 블루그린 파이프라인 — Jenkinsfile 저장소 이름 수정 ✅
 
-> **작업 상태 (2026-08-08) — 저장소·원고 모두 완료 ✅**
+> **작업 상태 (2026-08-08) — 저장소·원고·arm64 실기 검증 모두 완료 ✅**
 > - ✅ **저장소 반영 완료** — `k8s-edu/Bkv2_sub_blue-green` main `d3f8457`. **32번 줄 1곳만 변경**
 > - ✅ **원고(docx) 2곳 반영 완료** — `컨테이너 - 5...젠킨스_08Aug2026.docx`(핑크 윈도 랩탑에서 작업).
 >   리스팅 101줄 전체를 저장소 `d3f8457`과 대조해 **차이 0건** 확인. 상세는 "변경 파일 → 원고" 절 참고
+> - ✅ **파이프라인 실기 검증 완료** — arm64 클러스터에서 원고 9~15번 전 구간 통과.
+>   "파이프라인 실기 검증" 절 참고
 >
 > 저장소 수정은 편집자 실습에 영향이 없다. 32번 줄이 리다이렉트로 도착하던 곳과
 > **같은 저장소·같은 내용**이라 clone 결과가 한 바이트도 달라지지 않는다.
@@ -346,9 +348,9 @@ if [ -n "$replicas" ] && [ "${ready:-0}" -eq "$replicas" ]; then
 
 ---
 
-## 남은 작업
+## 진행 상황
 
-**저장소·원고 모두 반영 완료. 남은 것은 파이프라인 실기 검증뿐이다.**
+**저장소·원고·실기 검증 모두 완료.**
 
 원고 8번이 "실제 Jenkins 코드를 살펴보겠습니다"라며 저장소 파일을 그대로 싣는 구조이므로
 인쇄될 코드와 실제 코드가 일치해야 한다. 아래 대조로 확인됨.
@@ -359,7 +361,7 @@ if [ -n "$replicas" ] && [ "${ready:-0}" -eq "$replicas" ]; then
    - 032번 줄(문단 1736) = `Bkv2_sub_blue-green.git` ✅
    - 083번 줄(문단 1787) = `if [ "$ready" -eq "$replicas" ]; then` — 원래 코드 유지 ✅
    - 5.4.3 6번 SCM 설정 안내(문단 1587)도 `Bkv2_sub_blue-green` — 6번↔8번 이름 불일치 해소
-3. ⏳ 파이프라인 재실행으로 1차(blue)/2차(green) 통과 확인 — 아직 미수행 (아래 "미해결")
+3. ✅ **파이프라인 실기 검증 — 1차(blue)/2차(green) 통과** (아래 절 참고)
 
 편집자 실습 종료를 기다릴 필요는 없다고 판단해 저장소를 먼저 반영했다. 32번 줄 변경이
 clone 결과를 바꾸지 않기 때문이다(같은 저장소·같은 내용).
@@ -367,9 +369,70 @@ clone 결과를 바꾸지 않기 때문이다(같은 저장소·같은 내용).
 > **⚠️ 편집자에게 이 docx를 보내지 말 것** — 이유는 "변경 파일 → 원고" 절의 경고 참고.
 > 이 반영은 저자 보관본 최신화 목적이며, 편집자에게는 수정 지시를 텍스트로 전달한다.
 
+---
+
+## 파이프라인 실기 검증 (2026-08-08) ✅
+
+**환경**: ch3/3.1.3 클러스터, **arm64**(aarch64, VirtualBox on Apple Silicon), k8s v1.36.0,
+cp-k8s 메모리 3.7GB. 젠킨스 컨트롤러와 에이전트 파드가 이 메모리로 함께 동작했다.
+
+### 구축 순서
+
+| 단계 | 결과 |
+|---|---|
+| MetalLB v0.15.3 (ch3/3.3.2) | controller Available, L2 IP range 적용 |
+| CSI driver NFS v4.12.1 (ch3/3.4.3) | `managed-nfs-storage` 생성, `nfs_exporter.sh dynamic-vol` |
+| Helm (ch5/5.2.3) | `v4.1.3+gc94d381`, **arm64 바이너리 정상** |
+| Jenkins (ch5/5.3.1) | `jenkins-0` 2/2 Running, LB `192.168.1.11`, JCasC 플러그인 68개 |
+| jenkins SA (ch5/5.3.4) | `clusterrolebinding jenkins-cluster-admin` → `ci-cd:jenkins` |
+| `pl-blue-green` 프로젝트 | SCM `k8s-edu/Bkv2_sub_blue-green`, `*/main` (원고 5~6번) |
+
+> 젠킨스 파드는 초기화 컨테이너가 플러그인을 받느라 Ready까지 약 2분 15초 걸렸다.
+> `Init:1/2`에서 오래 머무는 것은 정상이다.
+
+### 원고 9~15번 대조
+
+| 원고 단계 | 결과 |
+|---|---|
+| 9번 1차 빌드 | **SUCCESS** |
+| 10번 `k get deploy,svc --selector=app=dashboard` | `pl-blue 3/3`, `pl-blue-green-svc` LB `192.168.1.12` |
+| 10번 노트 `--show-labels` | `app=dashboard,deploy=blue` |
+| 11번 파란색 대시보드 | `text-blue-500`, `text-blue-700` |
+| 12~13번 2차 빌드 | **SUCCESS**, `-w` 출력이 원고와 줄 단위 일치 |
+| 14번 | `pl-green 3/3`, **서비스 IP·포트 불변**(`192.168.1.12`, `30424`) |
+| 15번 녹색 대시보드 | `text-green-500`, `text-green-700` |
+
+13번 `-w` 출력 실측:
+
+```
+pl-blue    3/3   3   3   22s      # 현재 배포된 pl-blue
+pl-green   0/3   0   0   0s       # ContainerCreating
+pl-green   0/3   0   0   0s
+pl-green   0/3   0   0   0s
+pl-green   0/3   3   0   0s       # Pending
+pl-green   1/3   3   1   1s       # Running 1/3
+pl-green   2/3   3   2   1s       # Running 2/3
+pl-green   3/3   3   3   1s       # Running 3/3
+pl-blue    3/3   3   3   52s      # pl-green 배포 후 pl-blue를 삭제
+```
+
+파드는 w1/w2/w3 세 노드에 분산돼 Harbor에서 정상 pull됐다.
+
+### 이 검증이 확인해 준 것
+
+- **kustomize arm64 수정이 실제로 동작한다.** 파이프라인이 `sysnet4admin/kustomize:5.4.1`
+  파드를 에이전트로 띄워 `kustomize create/edit/build`를 실행하는 구조다. 수정 전이었다면
+  `exec format error`로 막혔을 자리다. 관련: [multiarch-images.md](multiarch-images.md)
+- **32번 줄 저장소 이름 수정에 부작용이 없다.** `git scm update` 단계가
+  `Bkv2_sub_blue-green.git`을 clone해 정상 진행했다.
+- **83번 줄 원복 판단이 옳았다.** `switching LB`의 `[ "$ready" -eq "$replicas" ]`가
+  정상 흐름에서 문제없이 동작한다. 방어 코드가 없어도 된다.
+
 ## 미해결
 
-- 편집자 환경의 실제 실패 원인 — Console Output 캡처 필요
+- 편집자 환경의 실제 실패 원인 — Console Output 캡처 필요.
+  다만 **정상 환경에서는 1차/2차가 모두 통과함이 확인**되었으므로 책 절차 자체의 결함은 아니다
+- x86_64 환경 회귀 확인 — arm64에서만 검증했다. 편집자(LG그램) 환경 재확인 필요
 - 저장소 rename 시점·주체 — k8s-edu 조직 Audit log 확인 필요 (수정 자체엔 불필요.
   "누가 잘못 커밋했나"는 이미 규명됨 — 아무도 잘못 넣은 게 아니라 1판→2판 URL 정리에서
   blue-green 한 건이 누락된 것. "경위" 절 참고)

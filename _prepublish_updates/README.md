@@ -33,8 +33,8 @@
 
 | 항목 | 내용 | 상태 |
 |---|---|---|
-| [블루그린 파이프라인](bluegreen-pipeline.md) | Jenkinsfile 저장소 이름 수정 (ch5/5.4.3) | ✅ 완료 (저장소 + docx 2곳, 101줄 전체 대조 일치) |
-| [멀티 플랫폼 이미지](multiarch-images.md) | arm64 전수 감사 → kustomize, nginx-status 2건 수정 (ch5/5.4.3, ch6/6.2.3) | ⚠️ 이미지 재푸시 완료, 노드 캐시 삭제·실기 검증 필요 |
+| [블루그린 파이프라인](bluegreen-pipeline.md) | Jenkinsfile 저장소 이름 수정 (ch5/5.4.3) | ✅ 완료 (저장소 + docx 2곳 + arm64 파이프라인 9~15번 통과) |
+| [멀티 플랫폼 이미지](multiarch-images.md) | arm64 전수 감사 → kustomize, nginx-status 2건 수정 (ch5/5.4.3, ch6/6.2.3) | ✅ arm64 실기 검증 완료 (x86_64 회귀 확인만 남음) |
 | [Gateway API](gateway-api.md) | nginx ingress → NGINX Gateway Fabric v2.6.1 (ch3/3.3.3) | ✅ 완료 |
 | [kubespray](kubespray.md) | 1판→2판 변경 원인 분석 + 4개 파일 수정 (app/C.kubespray) | ✅ 완료 |
 | [기타 변경](misc.md) | 저장소 구조 정리 / 파일 교정 | ✅ 완료 |

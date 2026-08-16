@@ -14,5 +14,5 @@ done
 echo "Wait for aggregator model to be ready..."
 for yaml_file in "$MODEL_DIR"/*-ollama.yaml; do
   deploy_name=$(awk '/^kind: Deployment/{found=1} found && /^  name:/{print $2; exit}' "$yaml_file")
-  [ -n "$deploy_name" ] && kubectl rollout status deployment/"$deploy_name" --timeout=1200s
+  [ -n "$deploy_name" ] && kubectl rollout status deployment/"$deploy_name" --timeout=3600s
 done

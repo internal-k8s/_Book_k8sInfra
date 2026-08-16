@@ -4,6 +4,7 @@ metadata:
   name: ollama-agg-gemma4-12b-qat
 spec:
   replicas: 1
+  progressDeadlineSeconds: 3600   # 12b 이미지가 커서 기본값(600초)으로는 회선에 따라 배포 실패로 처리된다
   selector:
     matchLabels:
       app: ollama-agg-gemma4-12b-qat

@@ -10,11 +10,11 @@ sshpass -p 'vagrant' scp -o StrictHostKeyChecking=no root@192.168.1.10:/etc/kube
 git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 
-# make rerepo-Book_k8sInfra and input proper permission
-cat <<EOF > /usr/local/bin/rerepo-Book_k8sInfra
+# make rerepo-book-k8sinfra and input proper permission
+cat <<EOF > /usr/local/bin/rerepo-book-k8sinfra
 #!/usr/bin/env bash
 rm -rf $HOME/_Book_k8sInfra
 git clone https://github.com/internal-k8s/_Book_k8sInfra.git $HOME/_Book_k8sInfra
 find $HOME/_Book_k8sInfra -regex ".*\.\(sh\)" -exec chmod 700 {} \;
 EOF
-chmod 700 /usr/local/bin/rerepo-Book_k8sInfra
+chmod 700 /usr/local/bin/rerepo-book-k8sinfra

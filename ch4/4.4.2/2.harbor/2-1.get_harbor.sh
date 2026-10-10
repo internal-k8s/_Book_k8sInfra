@@ -3,7 +3,7 @@ HARBOR_FILE_DIR=/opt/harbor
 HARBOR_DATA_DIR=/data/harbor
 HARBOR_VERSION=v2.10.0
 echo "Remove existing configuration files"
-rm -f 2-3.prepare 2-4.install.sh commom.sh LICENSE
+rm -f 2-3.prepare 2-4.install.sh common.sh LICENSE
 
 echo "Create Harbor data directory($HARBOR_DATA_DIR)"
 mkdir -p $HARBOR_DATA_DIR

@@ -4,6 +4,7 @@ metadata:
   name: ollama-qwen35-0-8b
 spec:
   replicas: 1
+  progressDeadlineSeconds: 1800   # 이미지가 수 GB라 기본값(600초)으로는 회선에 따라 배포 실패로 처리된다
   selector:
     matchLabels:
       app: ollama-qwen35-0-8b

@@ -1,16 +1,16 @@
 {
     "display_information": {
-        "name": "그라파나 얼럿매니저"
+        "name": "Grafana Alert Manager"
     },
     "features": {
         "bot_user": {
-            "display_name": "Grafana Alertmanager",
+            "display_name": "Grafana Alert Manager",
             "always_online": false
         }
     },
     "oauth_config": {
         "redirect_urls": [
-            "https://192.168.1.12"
+            "http://192.168.1.12"
         ],
         "scopes": {
             "bot": [

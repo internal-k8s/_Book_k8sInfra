@@ -8,7 +8,7 @@ apt-get update && apt-get install python3-pip sshpass -y
 
 # git clone https://github.com/kubernetes-sigs/kubespray.git
 # kubespray release-2.31 deploys k8s v1.35.x by default (2026-04 release).
-# kubespray lags k8s ~1 minor; book main chapters use v1.36 but appendix B
+# kubespray lags k8s ~1 minor; book main chapters use v1.36 but appendix C
 # stays at the latest kubespray-supported version.
 git clone -b release-2.31 https://github.com/kubernetes-sigs/kubespray.git
 sudo mv kubespray /root
